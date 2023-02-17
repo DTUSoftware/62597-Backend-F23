@@ -19,4 +19,4 @@ RUN dotnet publish "ShopBackend.csproj" -c Release -o /app/publish /p:UseAppHost
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "ShopBackend.dll"]
+ENTRYPOINT ["dotnet", "ShopBackend.dll", "--environment=Production"]

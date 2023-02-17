@@ -19,8 +19,6 @@ services:
         build:
             context: ShopBackend
             dockerfile: Dockerfile
-        environment:
-            - ASPNETCORE_ENVIRONMENT=Development
         networks:
             - backend
         depends_on:
