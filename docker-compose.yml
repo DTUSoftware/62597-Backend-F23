@@ -20,7 +20,7 @@ services:
         build:
             context: ShopBackend
             dockerfile: Dockerfile
-        env-file:
+        env_file:
             - db-variables.env
         networks:
             - backend
@@ -31,7 +31,7 @@ services:
         hostname: shop-database
         image: mariadb
         restart: always
-        env-file:
+        env_file:
             - db-variables.env
         volumes:
             - shop-db-data:/var/lib/mysql
