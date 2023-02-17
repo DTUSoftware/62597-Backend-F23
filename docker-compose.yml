@@ -1,0 +1,19 @@
+version: '2'
+services:
+    shop-proxy:
+            container_name: shop-proxy
+            hostname: shop-proxy
+            image: nginx
+            volumes:
+                - ./nginx:/etc/nginx
+                - /home/project/ssl:/etc/ssl
+            ports:
+                - 80:80
+            depends_on:
+                - "test-web"
+    shop-backend:
+            container_name: shop-backend
+            hostname: shop-backend
+            build:
+                context: ./ShopBackend
+                dockerfile: ./ShopBackend/Dockerfile
