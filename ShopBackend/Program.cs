@@ -10,10 +10,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<DBContext>(options =>
-{
-    options.UseMySql(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
+//Connection string borrowed from: https://stackoverflow.com/questions/66720614/cannot-convert-from-string-to-microsoft-entityframeworkcore-serverversion
+string? connectionString = builder.Configuration.GetConnectionString("MariaDbConnection");
+builder.Services.AddDbContext<DBContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 var app = builder.Build();
 
