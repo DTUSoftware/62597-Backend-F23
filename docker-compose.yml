@@ -1,19 +1,30 @@
-version: '2'
+version: '3'
 services:
     shop-proxy:
-            container_name: shop-proxy
-            hostname: shop-proxy
-            image: nginx
-            volumes:
-                - ./nginx:/etc/nginx
-                - /home/project/ssl:/etc/ssl
-            ports:
-                - 80:80
-            depends_on:
-                - "shop-backend"
+        container_name: shop-proxy
+        hostname: shop-proxy
+        image: nginx
+        volumes:
+            - ./nginx:/etc/nginx
+            - /home/project/ssl:/etc/ssl
+        ports:
+            - 80:80
+        depends_on:
+            - "shop-backend"
     shop-backend:
-            container_name: shop-backend
-            hostname: shop-backend
-            build:
-                context: ShopBackend
-                dockerfile: Dockerfile
+        container_name: shop-backend
+        hostname: shop-backend
+        build:
+            context: ShopBackend
+            dockerfile: Dockerfile
+        depends_on:
+            - "shop-database"
+    shop-database:
+        container_name: shop-database
+        hostname: shop-database
+        image: mariadb
+        restart: always
+        environment:
+            - MARIADB_ROOT_PASSWORD=password
+        volumes:
+            - shop-db-data:/var/lib/mysql
