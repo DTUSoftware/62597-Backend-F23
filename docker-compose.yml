@@ -10,7 +10,7 @@ services:
             ports:
                 - 80:80
             depends_on:
-                - "test-web"
+                - "shop-backend"
     shop-backend:
             container_name: shop-backend
             hostname: shop-backend
