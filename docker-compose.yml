@@ -9,6 +9,8 @@ services:
             - /home/project/ssl:/etc/ssl
         ports:
             - 80:80
+        networks:
+            - backend
         depends_on:
             - "shop-backend"
     shop-backend:
@@ -17,6 +19,8 @@ services:
         build:
             context: ShopBackend
             dockerfile: Dockerfile
+        networks:
+            - backend
         depends_on:
             - "shop-database"
     shop-database:
@@ -28,3 +32,9 @@ services:
             - MARIADB_ROOT_PASSWORD=password
         volumes:
             - shop-db-data:/var/lib/mysql
+        networks:
+            - backend
+volumes:
+    shop-db-data:
+networks:
+    backend:
