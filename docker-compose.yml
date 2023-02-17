@@ -15,5 +15,5 @@ services:
             container_name: shop-backend
             hostname: shop-backend
             build:
-                context: ./ShopBackend
-                dockerfile: ./ShopBackend/Dockerfile
+                context: ShopBackend
+                dockerfile: Dockerfile
