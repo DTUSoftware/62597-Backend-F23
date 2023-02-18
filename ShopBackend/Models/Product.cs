@@ -26,6 +26,7 @@ namespace ShopBackend.Models
         [Required(ErrorMessage = "RebatePercent cannot be empty")]
         public required int RebatePercent { get; set; }
 
+        [StringLength(100)]
         public string? UpsellProductId { get; set; }
     }
 }

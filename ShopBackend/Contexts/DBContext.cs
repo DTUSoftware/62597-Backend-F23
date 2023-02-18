@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ShopBackend.Models;
-using System.Security.Cryptography.X509Certificates;
 
 namespace ShopBackend.Contexts
 {
