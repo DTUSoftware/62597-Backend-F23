@@ -1,3 +1,6 @@
+# Ignore appsettings
+appsettings.json
+
 # Environment variables
 *.env
 

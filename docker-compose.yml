@@ -37,6 +37,8 @@ services:
             - shop-db-data:/var/lib/mysql
         networks:
             - backend
+        ports:
+            - 127.0.0.1:3306:3306
 volumes:
     shop-db-data:
 networks:
