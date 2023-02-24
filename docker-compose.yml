@@ -11,7 +11,8 @@ services:
             - 80:80
             - 127.0.0.1:3000:3000
         networks:
-            - backend
+            - shop_backend
+            - shop_frontend
         depends_on:
             - "shop-backend"
     shop-backend:
@@ -23,7 +24,8 @@ services:
         env_file:
             - db-variables.env
         networks:
-            - backend
+            - shop_backend
+            - shop_db
         depends_on:
             - "shop-database"
     shop-database:
@@ -36,10 +38,15 @@ services:
         volumes:
             - shop-db-data:/var/lib/mysql
         networks:
-            - backend
+            - shop_db
         ports:
             - 127.0.0.1:3306:3306
 volumes:
     shop-db-data:
 networks:
-    backend:
+    shop_backend:
+        name: shop_backend
+    shop_frontend:
+        name: shop_frontend
+    shop_db:
+        name: shop_db
