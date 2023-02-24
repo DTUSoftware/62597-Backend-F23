@@ -1,0 +1,52 @@
+version: '3'
+services:
+    shop-proxy:
+        container_name: shop-proxy
+        hostname: shop-proxy
+        image: nginx
+        volumes:
+            - ./nginx:/etc/nginx
+            - /home/project/ssl:/etc/ssl
+        ports:
+            - 80:80
+            - 127.0.0.1:3000:3000
+        networks:
+            - shop_backend
+            - shop_frontend
+        depends_on:
+            - "shop-backend"
+    shop-backend:
+        container_name: shop-backend
+        hostname: shop-backend
+        build:
+            context: ShopBackend
+            dockerfile: Dockerfile
+        env_file:
+            - db-variables.env
+        networks:
+            - shop_backend
+            - shop_db
+        depends_on:
+            - "shop-database"
+    shop-database:
+        container_name: shop-database
+        hostname: shop-database
+        image: mariadb
+        restart: always
+        env_file:
+            - db-variables.env
+        volumes:
+            - shop-db-data:/var/lib/mysql
+        networks:
+            - shop_db
+        ports:
+            - 127.0.0.1:3306:3306
+volumes:
+    shop-db-data:
+networks:
+    shop_backend:
+        name: shop_backend
+    shop_frontend:
+        name: shop_frontend
+    shop_db:
+        name: shop_db
