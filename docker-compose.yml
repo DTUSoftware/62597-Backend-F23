@@ -10,6 +10,7 @@ services:
         ports:
             - 80:80
             - 127.0.0.1:3000:3000
+            - 127.0.0.1:5173:5173
         networks:
             - shop_backend
             - shop_frontend
