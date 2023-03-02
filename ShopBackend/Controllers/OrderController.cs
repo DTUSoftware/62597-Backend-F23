@@ -9,7 +9,7 @@ namespace ShopBackend.Controllers
 {
     [Route("api/[ordercontroller]")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class OrderController : ControllerBase
     {
         private static List<Order> orders = new List<Order> {
                 new Order
@@ -26,13 +26,13 @@ namespace ShopBackend.Controllers
         [HttpGet]
         public async Task<ActionResult<List<Order>>> GetAllOrders()
         {
-            return Ok(orders)
+            return Ok(orders);
         }
         [HttpGet]
         [Route("{id}")]
         public async Task<ActionResult<Order>> GetSingleOrder(string id)
         {
-            var order = orders.Find(x => x.Id == id);
+            var order = orders.Find(x => x.id == id);
             if (order is null)
             {
                 return NotFound("Order does not exist");
@@ -48,21 +48,21 @@ namespace ShopBackend.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Order>> UpdateOrder(string id, Order orderData)
         {
-            var order = products.Find(x => x.id == id);
+            var order = orders.Find(x => x.id == id);
             if (order is null)
             {
                 return NotFound("The order does not exist");
             }
             order.total = orderData.total;
             //TODO Do this in a better way
-            order.products.clear();
-            foreach (ProductController p in orderData.products)
+            order.products.Clear();
+            foreach (Product p in orderData.products)
             {
                 order.products.Add(p);
             }
             return Ok(order);
         }
-        HttpDelete("{id}")]
+        [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteOrder(string id)
         {
             var order = orders.Find(x => x.id == id);
