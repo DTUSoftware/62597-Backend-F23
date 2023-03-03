@@ -11,8 +11,8 @@ using ShopBackend.Contexts;
 namespace ShopBackend.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20230303112154_initialCreate")]
-    partial class initialCreate
+    [Migration("20230303115124_intialCreate")]
+    partial class intialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
