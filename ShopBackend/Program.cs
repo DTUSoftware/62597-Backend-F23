@@ -26,9 +26,9 @@ internal class Program
         string? connectionString = config.GetValue<string>("ConnectionStrings:DefaultConnection");
         builder.Services.AddDbContext<DBContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
-        builder.Services.AddSingleton<IProductRepository, ProductRepository>();
-        builder.Services.AddSingleton<ICustomerRepository, CustomerRepository>();
-        builder.Services.AddSingleton<IOrderRepository, OrderRepository>();
+        builder.Services.AddScoped<IProductRepository, ProductRepository>();
+        builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+        builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
         var app = builder.Build();
 
