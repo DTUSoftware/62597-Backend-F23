@@ -10,6 +10,8 @@ namespace ShopBackend.Contexts
 
         }
 
+        public DbSet<Address> Address { get; set; }
+
         public DbSet<Product> Products { get; set; }
 
         public virtual DbSet<Customer> Customers { get; set; }
