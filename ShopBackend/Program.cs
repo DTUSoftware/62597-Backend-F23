@@ -15,8 +15,15 @@ internal class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
+        var config =
+            new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", true)
+                .AddEnvironmentVariables()
+                .Build();
+
         //Connection string borrowed from: https://stackoverflow.com/questions/66720614/cannot-convert-from-string-to-microsoft-entityframeworkcore-serverversion
-        string? connectionString = builder.Configuration.GetConnectionString("MariaDbConnection");
+        string? connectionString = config.GetValue<string>("ConnectionStrings:DefaultConnection");
         builder.Services.AddDbContext<DBContext>(options => options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
         builder.Services.AddScoped<IProductRepository, ProductRepository>();
