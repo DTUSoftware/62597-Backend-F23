@@ -5,12 +5,15 @@ namespace ShopBackend.Models
     public class Order
     {
         [Key]
-        public int Id { get; set; }
-        public DateTime OrderDate { get; set; }
-        public String OrderStatus { get; set; } = null!;
-        public int CustomerId { get; set; }
+        public required int Id { get; set; }
+        [Required(ErrorMessage = "OrderDate cannot be empty")]
+        public DateTime? OrderDate { get; set; }
+        [Required(ErrorMessage = "OrderStatus cannot be empty")]
+        public string? OrderStatus { get; set; }
+        [Required(ErrorMessage = "CustomerId cannot be empty")]
+        public int? CustomerId { get; set; }
 
-        public Customer Customer { get; set; } = null!;
-        public ICollection<OrderDetail> OrderDetails { get; set; } = null!;
+        [Required(ErrorMessage = "OrderDetails cannot be empty")]
+        public ICollection<OrderDetail>? OrderDetails { get; set; }
     }
 }

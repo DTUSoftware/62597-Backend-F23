@@ -6,12 +6,21 @@ namespace ShopBackend.Models
 {
     public class Product
     {
-        public string Id { get; set; } = null!;
+        [Key]
+        public required string Id { get; set; }
+        [Required(ErrorMessage = "Name cannot be empty")]
+        [StringLength(100)]
         public string? Name { get; set; }
-        public decimal Price { get; set; }
-        public string Currency { get; set; } = null!;
-        public int RebateQuantity { get; set; }
-        public int RebatePercent { get; set; }
+        [Required(ErrorMessage = "Price cannot be empty")]
+        public decimal? Price { get; set; }
+        [Required(ErrorMessage = "Currency cannot be empty")]
+        [StringLength(100)]
+        public string? Currency { get; set; }
+        [Required(ErrorMessage = "RebateQuantity cannot be empty")]
+        public int? RebateQuantity { get; set; }
+        [Required(ErrorMessage = "RebatePercent cannot be empty")]
+        public int? RebatePercent { get; set; }
+        [StringLength(100)]
         public string? UpsellProductId { get; set; }
     }
 }
