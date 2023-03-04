@@ -11,6 +11,7 @@ namespace ShopBackend.Controllers
     public class CustomersController : Controller
     {
         private readonly ICustomerRepository _customerRepository;
+
         public CustomersController(ICustomerRepository customerRepository)
         { 
            _customerRepository = customerRepository;
@@ -27,7 +28,7 @@ namespace ShopBackend.Controllers
                 return Ok(customers);
             }
 
-            return NotFound("The specified customer does not exist!");
+            return NotFound("The specified customers does not exist!");
         }
 
         //Get api/Customers/5
@@ -38,10 +39,9 @@ namespace ShopBackend.Controllers
             if(customer != default)
             {
                 return Ok(customer.AsCustomerDto());
-            }else
-            {
-                return NotFound("Customer not found");
             }
+            
+            return NotFound("Customer not found!");
         }
 
 
@@ -56,16 +56,16 @@ namespace ShopBackend.Controllers
             var isEmailTaken = await _customerRepository.Get(customer.Email);
             if (isEmailTaken != default)
             {
-                return BadRequest("This email is already in use");
+                return BadRequest("This email is already in use!");
             }
 
             var result = await _customerRepository.Insert(customer.AsCustomerModel());
             if(result != default && result > 0)
             {
-                return Ok("Customer is inserted successfully");
+                return Ok("Customer is inserted successfully!");
             }
 
-            return NotFound("Customer could not be registered");
+            return NotFound("Customer could not be registered!");
         }
 
 
@@ -80,7 +80,7 @@ namespace ShopBackend.Controllers
             var customerToUpdate = await _customerRepository.Get(customer.Email);
             if (customerToUpdate == default)
             {
-                return NotFound("Customer does not exsist");
+                return NotFound("Customer does not exsist!");
             }
 
             customerToUpdate.Email = customer.Email;
@@ -94,10 +94,10 @@ namespace ShopBackend.Controllers
             var result = await _customerRepository.Update(customerToUpdate);
             if (result != default && result > 0)
             {
-                return Ok("customer is updated");
+                return Ok("customer is updated!");
             }
 
-            return NotFound("customer cannot be updated");
+            return NotFound("customer cannot be updated!");
         }
 
 
@@ -108,10 +108,10 @@ namespace ShopBackend.Controllers
             var result = await _customerRepository.Delete(email);
             if (result != default && result > 0)
             {
-                return Ok("customer is Deleted.");
+                return Ok("Customer is deleted!");
             }
 
-            return NotFound("customer cannot be deleted");
+            return NotFound("Customer could not be deleted!");
         }
         
     }

@@ -36,7 +36,7 @@ namespace ShopBackend
             return new OrderDto
             {
                 Id = order.Id,
-                OrderDate = order.OrderDate,
+                OrderDate = DateTime.Now,
                 OrderStatus = order.OrderStatus,
                 CustomerId = order.CustomerId,
                 OrderDetails = order.OrderDetails != null ? new List<OrderDetailDto>(order.OrderDetails.Select(x => x.AsOrderDetailDto())) : new List<OrderDetailDto>(),
