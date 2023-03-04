@@ -32,7 +32,7 @@ namespace ShopBackend.Controllers
 
         // GET api/<OrdersController>/5
         [HttpGet("{orderId}", Name= "GetOrderById")]
-        public async Task<ActionResult<Order>> Get(int orderId)
+        public async Task<ActionResult<Order>> Get(Guid orderId)
         {
             var order= await _orderRepository.Get(orderId);
             if (order != null)
@@ -72,7 +72,7 @@ namespace ShopBackend.Controllers
 
         // DELETE api/<OrdersController>/5
         [HttpDelete("{orderId}")]
-        public async Task<ActionResult<string>> Delete(int orderId)
+        public async Task<ActionResult<string>> Delete(Guid orderId)
         {
             
             var result= await _orderRepository.Delete(orderId);

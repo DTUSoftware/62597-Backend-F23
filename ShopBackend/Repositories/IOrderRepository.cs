@@ -4,10 +4,10 @@ namespace ShopBackend.Repositories
     public interface IOrderRepository
     {
         Task<IEnumerable<Order>> GetAll();
-        Task<Order?> Get(int OrderId);
+        Task<Order?> Get(Guid OrderId);
         Task<int> Insert(Order order);
         Task<int> Update(Order order);
-        Task<int> Delete(int OrderId);
+        Task<int> Delete(Guid OrderId);
 
     }
 }

@@ -17,7 +17,7 @@ namespace ShopBackend.Repositories
             return await _dbContext.OrdersDetails.ToListAsync();
         }
 
-        public async Task<OrderDetail?> Get(int orderDetailId)
+        public async Task<OrderDetail?> Get(Guid orderDetailId)
         {
             return await _dbContext.OrdersDetails.FirstOrDefaultAsync(od => od.Id == orderDetailId);
         }
@@ -35,7 +35,7 @@ namespace ShopBackend.Repositories
 
         }
 
-        public async Task<int> Delete(int orderDetailId)
+        public async Task<int> Delete(Guid orderDetailId)
         {
             _dbContext.OrdersDetails.Remove(new OrderDetail{ Id= orderDetailId } );
             return await _dbContext.SaveChangesAsync();
