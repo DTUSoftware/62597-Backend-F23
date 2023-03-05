@@ -31,6 +31,7 @@ namespace ShopBackend.Controllers
             return NotFound("The specified customers does not exist!");
         }
 
+
         //Get api/Customers/5
         [HttpGet("{email}", Name="GetCustomerByEmail")]
         public async Task<ActionResult<CustomerDto>> Get(string email)
@@ -94,10 +95,10 @@ namespace ShopBackend.Controllers
             var result = await _customerRepository.Update(customerToUpdate);
             if (result != default && result > 0)
             {
-                return Ok("customer is updated!");
+                return Ok("Customer has been updated!");
             }
 
-            return NotFound("customer cannot be updated!");
+            return NotFound("Customer could not be updated!");
         }
 
 
@@ -108,11 +109,10 @@ namespace ShopBackend.Controllers
             var result = await _customerRepository.Delete(email);
             if (result != default && result > 0)
             {
-                return Ok("Customer is deleted!");
+                return Ok("Customer has been deleted!");
             }
 
             return NotFound("Customer could not be deleted!");
         }
-        
     }
 }

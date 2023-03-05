@@ -31,6 +31,7 @@ namespace ShopBackend.Controllers
             return NotFound("The specified orders does not exist!"); ;
         }
 
+
         // GET api/<OrdersController>/5
         [HttpGet("{orderId}", Name= "GetOrderById")]
         public async Task<ActionResult<OrderDto>> Get(Guid orderId)
@@ -44,6 +45,7 @@ namespace ShopBackend.Controllers
             return NotFound("The specified order does not exist!");
         }
 
+
         // POST api/<OrdersController>
         [HttpPost]
         public async Task<ActionResult<string>> Create([FromBody] OrderDto order)
@@ -51,10 +53,10 @@ namespace ShopBackend.Controllers
             var result = await _orderRepository.Insert(order.AsOrderModel());
             if (result != default && result > 0)
             {
-                return Ok("order is inserted successfully:");
+                return Ok("Order is inserted successfully!");
             }
 
-            return NotFound("order can not be registered");
+            return NotFound("Order could not be registered!");
         }
 
 
@@ -77,11 +79,12 @@ namespace ShopBackend.Controllers
             var result = await _orderRepository.Update(orderToUpdate);
             if (result != default && result > 0)
             {
-                return Ok("Order is updated!");
+                return Ok("Order has been updated!");
             }
 
-            return NotFound("Order cannot be updated!");
+            return NotFound("Order could not be updated!");
         }
+
 
         // DELETE api/<OrdersController>/5
         [HttpDelete("{orderId}")]
@@ -90,7 +93,7 @@ namespace ShopBackend.Controllers
             var result = await _orderRepository.Delete(orderId);
             if (result != default && result > 0)
             {
-                return Ok("Order is deleted!");
+                return Ok("Order has been deleted!");
             }
             return NotFound("Order could not be deleted!");
         }
