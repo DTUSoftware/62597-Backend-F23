@@ -1,12 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using ShopBackend.Models;
 
-namespace ShopBackend.Models
+namespace ShopBackend.Dtos
 {
-    public class Address
+    public class CreateAddressDto
     {
-        [Key]
-        public Guid Id { get; set; }
-
         public int ZipCode { get; set; }
 
         public string? Country { get; set; }
@@ -20,7 +18,5 @@ namespace ShopBackend.Models
         public string? Type { get; set; }
 
         public string? CustomerEmail { get; set; }
-
-        public Customer? Customer { get; set; }
     }
 }

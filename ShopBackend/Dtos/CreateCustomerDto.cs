@@ -1,10 +1,10 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿
+using ShopBackend.Models;
 
-namespace ShopBackend.Models
+namespace ShopBackend.Dtos
 {
-    public class Customer
+    public class CreateCustomerDto
     {
-        [Key]
         public required string Email { get; set; }
 
         public string? FirstName { get; set; }
@@ -14,9 +14,5 @@ namespace ShopBackend.Models
         public string? Password { get; set; }
 
         public int Phone { get; set; }
-        
-        public ICollection<Address>? Address { get; set; }
-
-        public ICollection<Order>? Orders { get; set; }
     }
 }

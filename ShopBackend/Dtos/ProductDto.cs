@@ -1,13 +1,8 @@
-﻿using ShopBackend.Dtos;
-using System.ComponentModel.DataAnnotations;
-
-
-namespace ShopBackend.Models
-
+﻿
+namespace ShopBackend.Dtos
 {
-    public class Product
+    public class ProductDto
     {
-        [Key]
         public required string Id { get; set; }
 
         public string? Name { get; set; }
@@ -22,6 +17,5 @@ namespace ShopBackend.Models
 
         public string? UpsellProductId { get; set; }
 
-        public ICollection<OrderDetail>? OrderDetails { get; set; }
     }
 }
