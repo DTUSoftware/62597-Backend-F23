@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShopBackend.Repositories;
-using ShopBackend.Models;
 using ShopBackend.Dtos;
-using System.Xml.Linq;
 
 namespace ShopBackend.Controllers
 {
@@ -67,6 +65,22 @@ namespace ShopBackend.Controllers
             }
 
             return NotFound("Product could not be inserted!");
+        }
+
+        // Post: api/Products/Multiple Primarily used for populating the server database
+        [HttpPost("Multiple")]
+        public async Task<ActionResult<string>> CreateMultiple(IEnumerable<ProductDto> products)
+        {
+            foreach (ProductDto product in products)
+            {
+                var result = await _productRepository.Insert(product.AsProductModel());
+                if (result == default || result == 0)
+                {
+                    return NotFound($"Product {product.Name} could not be inserted!");
+                }
+            }
+
+            return Ok("Product is inserted successfully!");
         }
 
 
