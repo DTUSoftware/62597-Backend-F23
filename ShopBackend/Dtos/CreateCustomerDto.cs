@@ -3,7 +3,7 @@ using ShopBackend.Models;
 
 namespace ShopBackend.Dtos
 {
-    public class CustomerDto
+    public class CreateCustomerDto
     {
         public required string Email { get; set; }
 
@@ -11,10 +11,8 @@ namespace ShopBackend.Dtos
 
         public string? LastName { get; set; }
 
+        public string? Password { get; set; }
+
         public int Phone { get; set; }
-
-        public ICollection<AddressDto>? Address { get; set; }
-
-        public ICollection<OrderDto>? Orders { get; set; }
     }
 }

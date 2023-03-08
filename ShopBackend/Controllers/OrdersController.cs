@@ -11,10 +11,12 @@ namespace ShopBackend.Controllers
     public class OrdersController : Controller
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IOrderDetailRepository _orderDetailRepository;
 
-        public OrdersController(IOrderRepository orderRepository)
+        public OrdersController(IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository)
         {
             _orderRepository = orderRepository;
+            _orderDetailRepository = orderDetailRepository;
         }
 
 
@@ -48,9 +50,9 @@ namespace ShopBackend.Controllers
 
         // POST api/<OrdersController>
         [HttpPost]
-        public async Task<ActionResult<string>> Create([FromBody] OrderDto order)
+        public async Task<ActionResult<string>> Create([FromBody] CreateUpdateOrderDto order)
         {
-            var result = await _orderRepository.Insert(order.AsOrderModel());
+            var result = await _orderRepository.Insert(order.CreateAsOrderModel());
             if (result != default && result > 0)
             {
                 return Ok("Order is inserted successfully!");
@@ -61,19 +63,18 @@ namespace ShopBackend.Controllers
 
 
         // PUT api/<OrdersController>/5
-        [HttpPut]
-        public async Task<ActionResult<string>> Put([FromBody] OrderDto order)   
+        [HttpPut("{orderId}")]
+        public async Task<ActionResult<string>> Put(Guid orderId, [FromBody] CreateUpdateOrderDto order)   
         {
-            var orderToUpdate = await _orderRepository.Get(order.Id);
+            var orderToUpdate = await _orderRepository.Get(orderId);
             if (orderToUpdate == default)
             {
                 return NotFound("Order does not exsist!");
             }
 
-            orderToUpdate.OrderDate = DateTime.Now;
+            orderToUpdate.OrderDate = order.OrderDate;
             orderToUpdate.OrderStatus = order.OrderStatus;
-            orderToUpdate.CustomerId = order.CustomerId;
-            orderToUpdate.OrderDetails = order.OrderDetails != null ? new List<OrderDetail>(order.OrderDetails.Select(x => x.AsOrderDetailModel())) : new List<OrderDetail>();
+            orderToUpdate.CustomerEmail = order.CustomerEmail;
 
 
             var result = await _orderRepository.Update(orderToUpdate);
@@ -90,7 +91,9 @@ namespace ShopBackend.Controllers
         [HttpDelete("{orderId}")]
         public async Task<ActionResult<string>> Delete(Guid orderId)
         {
+
             var result = await _orderRepository.Delete(orderId);
+
             if (result != default && result > 0)
             {
                 return Ok("Order has been deleted!");

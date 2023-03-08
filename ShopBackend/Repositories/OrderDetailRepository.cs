@@ -4,10 +4,10 @@ using ShopBackend.Models;
 
 namespace ShopBackend.Repositories
 {
-    public class OrderDetailsRepository : IOrderDetailRepository
+    public class OrderDetailRepository : IOrderDetailRepository
     {
         private readonly DBContext _dbContext;
-        public OrderDetailsRepository(DBContext dbContext)
+        public OrderDetailRepository(DBContext dbContext)
         {  
             _dbContext = dbContext; 
         }

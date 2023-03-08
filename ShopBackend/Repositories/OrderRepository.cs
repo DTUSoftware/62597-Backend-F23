@@ -14,12 +14,18 @@ namespace ShopBackend.Repositories
 
         public async Task<IEnumerable<Order>> GetAll()
         {
-            return await _dbContext.Orders.ToListAsync();
+            return await _dbContext.Orders
+                .Include(x => x.OrderDetails)
+                .ThenInclude(x => x.Product)
+                .ToListAsync();
         }
 
         public async Task<Order?> Get(Guid orderId)
         {
-            return await _dbContext.Orders.FirstOrDefaultAsync(c => c.Id == orderId);
+            return await _dbContext.Orders
+                .Include(x => x.OrderDetails)
+                .ThenInclude(x => x.Product)
+                .FirstOrDefaultAsync(c => c.Id == orderId);
         }
 
 

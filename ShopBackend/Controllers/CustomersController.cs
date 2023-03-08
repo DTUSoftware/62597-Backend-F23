@@ -48,7 +48,7 @@ namespace ShopBackend.Controllers
 
         //Post api/Customers
         [HttpPost]
-        public async Task<ActionResult<string>> Create([FromBody] CustomerDto customer)
+        public async Task<ActionResult<string>> Create([FromBody] CreateCustomerDto customer)
         {
             if (customer.Email == null)
             {
@@ -60,7 +60,7 @@ namespace ShopBackend.Controllers
                 return BadRequest("This email is already in use!");
             }
 
-            var result = await _customerRepository.Insert(customer.AsCustomerModel());
+            var result = await _customerRepository.Insert(customer.CreateAsCustomerModel());
             if(result != default && result > 0)
             {
                 return Ok("Customer is inserted successfully!");
@@ -87,7 +87,7 @@ namespace ShopBackend.Controllers
             customerToUpdate.Email = customer.Email;
             customerToUpdate.FirstName = customer.FirstName;
             customerToUpdate.LastName = customer.LastName;
-            customerToUpdate.Password = customer.Password;
+            //customerToUpdate.Password = customer.Password;
             customerToUpdate.Phone = customer.Phone;
             customerToUpdate.Address = customer.Address != null ? new List<Address>(customer.Address.Select(x => x.AsAddressModel())) : new List<Address>();
             customerToUpdate.Orders = customer.Orders != null ? new List<Order>(customer.Orders.Select(x => x.AsOrderModel())) : new List<Order>();

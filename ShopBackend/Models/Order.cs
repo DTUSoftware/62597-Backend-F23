@@ -7,16 +7,14 @@ namespace ShopBackend.Models
         [Key]
         public Guid Id { get; set; }
 
-        [Required(ErrorMessage = "OrderDate cannot be empty")]
         public DateTime OrderDate { get; set; }
 
-        [Required(ErrorMessage = "OrderStatus cannot be empty")]
         public string? OrderStatus { get; set; }
 
-        [Required(ErrorMessage = "CustomerId cannot be empty")]
-        public int CustomerId { get; set; }
+        public string? CustomerEmail { get; set; }
 
-        [Required(ErrorMessage = "OrderDetails cannot be empty")]
+        public Customer? Customer { get; set; }
+
         public ICollection<OrderDetail>? OrderDetails { get; set; }
     }
 }

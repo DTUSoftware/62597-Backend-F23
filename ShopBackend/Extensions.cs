@@ -1,5 +1,7 @@
 ﻿using ShopBackend.Dtos;
 using ShopBackend.Models;
+using System.Diagnostics.Metrics;
+using System.Net;
 
 namespace ShopBackend
 {
@@ -24,6 +26,7 @@ namespace ShopBackend
             {
                 Id = address.Id,
                 ZipCode = address.ZipCode,
+                Country = address.Country,
                 Region = address.Region,
                 City = address.City,
                 StreetAddress = address.StreetAddress,
@@ -36,9 +39,8 @@ namespace ShopBackend
             return new OrderDto
             {
                 Id = order.Id,
-                OrderDate = DateTime.Now,
+                OrderDate = order.OrderDate,
                 OrderStatus = order.OrderStatus,
-                CustomerId = order.CustomerId,
                 OrderDetails = order.OrderDetails != null ? new List<OrderDetailDto>(order.OrderDetails.Select(x => x.AsOrderDetailDto())) : new List<OrderDetailDto>(),
             };
         }
@@ -88,8 +90,9 @@ namespace ShopBackend
         {
             return new Address
             {
-                Id = Guid.NewGuid(),
+                Id = addressDto.Id,
                 ZipCode = addressDto.ZipCode,
+                Country = addressDto.Country,
                 Region = addressDto.Region,
                 City = addressDto.City,
                 StreetAddress = addressDto.StreetAddress,
@@ -101,11 +104,10 @@ namespace ShopBackend
         {
             return new Order
             {
-                Id = Guid.NewGuid(),
+                Id = orderDto.Id,
                 OrderDate = orderDto.OrderDate,
                 OrderStatus = orderDto.OrderStatus,
-                CustomerId = orderDto.CustomerId,
-                OrderDetails = orderDto.OrderDetails != null ? new List<OrderDetail>(orderDto.OrderDetails.Select(x => x.AsOrderDetailModel())) : new List<OrderDetail>(),
+                OrderDetails = orderDto.OrderDetails != null ? new List<OrderDetail>(orderDto.OrderDetails.Select(x => x.AsOrderDetailModel())) : null,
             };
         }
 
@@ -113,9 +115,9 @@ namespace ShopBackend
         {
             return new OrderDetail
             {
-                Id = Guid.NewGuid(),
+                Id = orderDetailDto.Id,
                 Quantity = orderDetailDto.Quantity,
-                Product = orderDetailDto.Product!.AsProductModel(),
+                Product = orderDetailDto.Product?.AsProductModel()
             };
         }
 
@@ -130,6 +132,43 @@ namespace ShopBackend
                 RebateQuantity = productDto.RebateQuantity,
                 RebatePercent = productDto.RebatePercent,
                 UpsellProductId = productDto.UpsellProductId,
+            };
+        }
+
+
+
+
+
+
+        public static Order CreateAsOrderModel(this CreateUpdateOrderDto orderDto)
+        {
+            return new Order
+            {
+                OrderDate = orderDto.OrderDate,
+                OrderStatus = orderDto.OrderStatus,
+                CustomerEmail = orderDto.CustomerEmail,
+            };
+        }
+
+        public static OrderDetail CreateAsOrderDetailModel(this CreateOrderDetailDto orderDetailDto)
+        {
+            return new OrderDetail
+            {
+                Quantity = orderDetailDto.Quantity,
+                OrderId = orderDetailDto.OrderId,
+                ProductId = orderDetailDto.ProductId,
+            };
+        }
+
+        public static Customer CreateAsCustomerModel(this CreateCustomerDto customerDto)
+        {
+            return new Customer
+            {
+                Email = customerDto.Email,
+                FirstName = customerDto.FirstName,
+                LastName = customerDto.LastName,
+                Password= customerDto.Password,
+                Phone = customerDto.Phone,
             };
         }
     }

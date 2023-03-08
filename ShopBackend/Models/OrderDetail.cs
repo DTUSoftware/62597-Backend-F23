@@ -7,10 +7,14 @@ namespace ShopBackend.Models
         [Key]
         public Guid Id { get; set; }
 
-        [Required(ErrorMessage = "Quantity cannot be empty")]
         public int Quantity { get; set; }
 
-        [Required(ErrorMessage = "Product cannot be empty")]
+        public Guid OrderId { get; set; }
+
+        public Order? Order { get; set; }
+
+        public string? ProductId { get; set; }
+
         public Product? Product { get; set; }
     }
 }

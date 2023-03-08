@@ -3,10 +3,8 @@ using ShopBackend.Models;
 
 namespace ShopBackend.Dtos
 {
-    public class AddressDto
+    public class CreateAddressDto
     {
-        public Guid Id { get; set; }
-
         public int ZipCode { get; set; }
 
         public string? Country { get; set; }
@@ -18,5 +16,7 @@ namespace ShopBackend.Dtos
         public string? StreetAddress { get; set; }
 
         public string? Type { get; set; }
+
+        public string? CustomerEmail { get; set; }
     }
 }
