@@ -171,5 +171,19 @@ namespace ShopBackend
                 Phone = customerDto.Phone,
             };
         }
+
+        public static Address CreateAsAddressModel(this CreateAddressDto addressDto)
+        {
+            return new Address
+            {
+                ZipCode = addressDto.ZipCode,
+                Country = addressDto.Country,
+                Region = addressDto.Region,
+                City = addressDto.City,
+                StreetAddress = addressDto.StreetAddress,
+                Type = addressDto.Type,
+                CustomerEmail = addressDto.CustomerEmail,
+            };
+        }
     }
 }
