@@ -27,7 +27,6 @@ namespace ShopBackend
                 Id = address.Id,
                 ZipCode = address.ZipCode,
                 Country = address.Country,
-                Region = address.Region,
                 City = address.City,
                 StreetAddress = address.StreetAddress,
                 Type = address.Type,
@@ -93,7 +92,6 @@ namespace ShopBackend
                 Id = addressDto.Id,
                 ZipCode = addressDto.ZipCode,
                 Country = addressDto.Country,
-                Region = addressDto.Region,
                 City = addressDto.City,
                 StreetAddress = addressDto.StreetAddress,
                 Type = addressDto.Type,
@@ -178,7 +176,6 @@ namespace ShopBackend
             {
                 ZipCode = addressDto.ZipCode,
                 Country = addressDto.Country,
-                Region = addressDto.Region,
                 City = addressDto.City,
                 StreetAddress = addressDto.StreetAddress,
                 Type = addressDto.Type,
