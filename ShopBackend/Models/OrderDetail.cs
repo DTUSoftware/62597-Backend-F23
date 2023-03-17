@@ -16,5 +16,8 @@ namespace ShopBackend.Models
         public string? ProductId { get; set; }
 
         public Product? Product { get; set; }
+
+        [Timestamp]
+        public byte[]? Version { get; set; }
     }
 }

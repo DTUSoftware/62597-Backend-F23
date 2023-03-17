@@ -11,8 +11,6 @@ namespace ShopBackend.Models
 
         public string? Country { get; set; }
 
-        public string? Region { get; set; }
-
         public string? City { get; set; }
 
         public string? StreetAddress { get; set; }
@@ -22,5 +20,8 @@ namespace ShopBackend.Models
         public string? CustomerEmail { get; set; }
 
         public Customer? Customer { get; set; }
+
+        [Timestamp]
+        public byte[]? Version { get; set; }
     }
 }

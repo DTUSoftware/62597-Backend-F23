@@ -34,14 +34,16 @@ namespace ShopBackend.Migrations
                     b.Property<string>("CustomerEmail")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("Region")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("StreetAddress")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Type")
                         .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp(6)");
 
                     b.Property<int>("ZipCode")
                         .HasColumnType("int");
@@ -70,6 +72,11 @@ namespace ShopBackend.Migrations
                     b.Property<int>("Phone")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp(6)");
+
                     b.HasKey("Email");
 
                     b.ToTable("Customers");
@@ -89,6 +96,11 @@ namespace ShopBackend.Migrations
 
                     b.Property<string>("OrderStatus")
                         .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp(6)");
 
                     b.HasKey("Id");
 
@@ -111,6 +123,11 @@ namespace ShopBackend.Migrations
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<DateTime?>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp(6)");
 
                     b.HasKey("Id");
 
@@ -142,6 +159,14 @@ namespace ShopBackend.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UpsellProductId")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp(6)");
+
+                    b.Property<string>("imageUrl")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");

@@ -18,5 +18,9 @@ namespace ShopBackend.Models
         public ICollection<Address>? Address { get; set; }
 
         public ICollection<Order>? Orders { get; set; }
+
+        [Timestamp]
+        public byte[]? Version { get; set; }
     }
 }
+

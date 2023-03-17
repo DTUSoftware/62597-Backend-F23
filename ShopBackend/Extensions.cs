@@ -27,7 +27,6 @@ namespace ShopBackend
                 Id = address.Id,
                 ZipCode = address.ZipCode,
                 Country = address.Country,
-                Region = address.Region,
                 City = address.City,
                 StreetAddress = address.StreetAddress,
                 Type = address.Type,
@@ -66,6 +65,7 @@ namespace ShopBackend
                 RebateQuantity = product.RebateQuantity,
                 RebatePercent = product.RebatePercent,
                 UpsellProductId = product.UpsellProductId,
+                imageUrl = product.imageUrl,
             };
         }
 
@@ -93,7 +93,6 @@ namespace ShopBackend
                 Id = addressDto.Id,
                 ZipCode = addressDto.ZipCode,
                 Country = addressDto.Country,
-                Region = addressDto.Region,
                 City = addressDto.City,
                 StreetAddress = addressDto.StreetAddress,
                 Type = addressDto.Type,
@@ -132,6 +131,7 @@ namespace ShopBackend
                 RebateQuantity = productDto.RebateQuantity,
                 RebatePercent = productDto.RebatePercent,
                 UpsellProductId = productDto.UpsellProductId,
+                imageUrl = productDto.imageUrl,
             };
         }
 
@@ -178,7 +178,6 @@ namespace ShopBackend
             {
                 ZipCode = addressDto.ZipCode,
                 Country = addressDto.Country,
-                Region = addressDto.Region,
                 City = addressDto.City,
                 StreetAddress = addressDto.StreetAddress,
                 Type = addressDto.Type,
