@@ -22,6 +22,8 @@ namespace ShopBackend.Models
 
         public string? UpsellProductId { get; set; }
 
+        public string? imageUrl { get; set; }
+
         public ICollection<OrderDetail>? OrderDetails { get; set; }
 
         [Timestamp]

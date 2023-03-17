@@ -65,6 +65,7 @@ namespace ShopBackend
                 RebateQuantity = product.RebateQuantity,
                 RebatePercent = product.RebatePercent,
                 UpsellProductId = product.UpsellProductId,
+                imageUrl = product.imageUrl,
             };
         }
 
@@ -130,6 +131,7 @@ namespace ShopBackend
                 RebateQuantity = productDto.RebateQuantity,
                 RebatePercent = productDto.RebatePercent,
                 UpsellProductId = productDto.UpsellProductId,
+                imageUrl = productDto.imageUrl,
             };
         }
 

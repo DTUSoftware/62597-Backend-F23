@@ -11,7 +11,7 @@ using ShopBackend.Contexts;
 namespace ShopBackend.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20230317082248_initial_migration")]
+    [Migration("20230317144908_initial_migration")]
     partial class initial_migration
     {
         /// <inheritdoc />
@@ -168,6 +168,9 @@ namespace ShopBackend.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp(6)");
+
+                    b.Property<string>("imageUrl")
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
