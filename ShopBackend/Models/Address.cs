@@ -20,5 +20,8 @@ namespace ShopBackend.Models
         public string? CustomerEmail { get; set; }
 
         public Customer? Customer { get; set; }
+
+        [Timestamp]
+        public byte[]? Version { get; set; }
     }
 }

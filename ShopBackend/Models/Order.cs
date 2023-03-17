@@ -16,5 +16,8 @@ namespace ShopBackend.Models
         public Customer? Customer { get; set; }
 
         public ICollection<OrderDetail>? OrderDetails { get; set; }
+
+        [Timestamp]
+        public byte[]? Version { get; set; }
     }
 }

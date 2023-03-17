@@ -23,5 +23,8 @@ namespace ShopBackend.Models
         public string? UpsellProductId { get; set; }
 
         public ICollection<OrderDetail>? OrderDetails { get; set; }
+
+        [Timestamp]
+        public byte[]? Version { get; set; }
     }
 }
