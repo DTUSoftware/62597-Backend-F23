@@ -1,7 +1,10 @@
 ﻿
+using ShopBackend.Models;
+
 namespace ShopBackend.Dtos
+//Based on https://code-maze.com/hateoas-aspnet-core-web-api/
 {
-    public class ProductDto
+    public class ProductDto: LinkResourceBase
     {
         public required string Id { get; set; }
 
@@ -16,6 +19,8 @@ namespace ShopBackend.Dtos
         public int RebatePercent { get; set; }
 
         public string? UpsellProductId { get; set; }
+
+
 
     }
 }

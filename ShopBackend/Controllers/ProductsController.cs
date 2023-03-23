@@ -1,6 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShopBackend.Repositories;
 using ShopBackend.Dtos;
+using Microsoft.AspNetCore.Routing;
+using ShopBackend.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace ShopBackend.Controllers
 {
@@ -9,10 +12,12 @@ namespace ShopBackend.Controllers
     public class ProductsController : Controller
     {
         private readonly IProductRepository _productRepository;
+        private readonly LinkGenerator _linkGenerator;
 
-        public ProductsController(IProductRepository productRepository)
+        public ProductsController(IProductRepository productRepository, LinkGenerator linkGenerator)
         {
             _productRepository = productRepository;
+            _linkGenerator = linkGenerator;
         }
 
 
@@ -23,6 +28,11 @@ namespace ShopBackend.Controllers
             var products = (await _productRepository.GetAll()).Select(product => product.AsProductDto());
             if (products.Any())
             {
+                foreach (ProductDto prod in products)
+                {
+                    var productlinks = CreateLinksForProduct(prod.Id);
+                    prod.Links = (List<Link>)productlinks;
+                }
                 return Ok(products);
             }
 
@@ -32,12 +42,14 @@ namespace ShopBackend.Controllers
 
         // GET: api/Products/{5}
         [HttpGet("{productId}", Name ="GetProductById")]
-        public async Task<ActionResult<ProductDto>> Get(string productId)
+        public async Task<ActionResult<ProductDto>> GetProductById(string productId)
         {
             var product = await _productRepository.Get(productId);
             if(product != default)
             {
-                return Ok(product.AsProductDto()); 
+                ProductDto prod = product.AsProductDto();
+                prod.Links = (List<Link>)CreateLinksForProduct(productId);
+                return Ok(prod); 
             }
 
             return NotFound("The specified product does not exist!");
@@ -85,8 +97,8 @@ namespace ShopBackend.Controllers
 
 
         // Put: api/Products/5
-        [HttpPut]
-        public async Task<ActionResult<string>> Update([FromBody] ProductDto product)
+        [HttpPut("{productId}", Name = "UpdateProductById")]
+        public async Task<ActionResult<string>> UpdateProductById([FromBody] ProductDto product )
         {
             var productToUpdate = await _productRepository.Get(product.Id);
             if (productToUpdate == default)
@@ -112,8 +124,8 @@ namespace ShopBackend.Controllers
 
 
         // Delete: api/Products/5
-        [HttpDelete("{productId}")]
-        public async Task<ActionResult<string>> Delete(string productId)
+        [HttpDelete("{productId}", Name = "DeleteProductById")]
+        public async Task<ActionResult<string>> DeleteProductById(string productId)
         {
             var result=await _productRepository.Delete(productId);
             if(result !=default)
@@ -123,6 +135,24 @@ namespace ShopBackend.Controllers
 
             return NotFound("Product could not be deleted!");
         }
-        
+        //Based on https://code-maze.com/hateoas-aspnet-core-web-api/
+        private IEnumerable<Link> CreateLinksForProduct(String productId)
+        {
+            var links = new List<Link>
+        {
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(GetProductById), values: new { productId}),
+            "self",
+            "GET"),
+        new Link(_linkGenerator.GetUriByName(HttpContext, nameof(DeleteProductById), values: new { productId }),
+            "delete_product",
+            "DELETE"),
+        new Link(_linkGenerator.GetUriByName(HttpContext, nameof(UpdateProductById), values: new { productId }),
+        "update_product",
+        "PUT")
+    };
+            return links;
+        }
+
     }
+
 }
