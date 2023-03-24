@@ -2,7 +2,6 @@
 using ShopBackend.Models;
 using ShopBackend.Repositories;
 
-
 namespace ShopBackend.Controllers
 {
     [ApiController]
@@ -11,8 +10,8 @@ namespace ShopBackend.Controllers
     {
         private readonly ICustomerRepository _customerRepository;
         public CustomersController(ICustomerRepository customerRepository)
-        { 
-           _customerRepository = customerRepository;
+        {
+            _customerRepository = customerRepository;
         }
 
 
@@ -20,27 +19,28 @@ namespace ShopBackend.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Customer>>> Get()
         {
-            var customers= await _customerRepository.GetAll();
-            if (customers.Any())
+            var customers = await _customerRepository.GetAll();
+
+            if (customers != null && customers.Any())
             {
                 return Ok(customers);
             }
 
-            return NotFound("The specified customer does not exist!");
+            return NotFound("Customers do not existed!");
         }
 
-        //Get api/Customers/5
-        [HttpGet("{email}", Name="GetCustomerByEmail")]
+        //Get api/Customers/example@gmail.com
+        [HttpGet("{email}", Name = "GetCustomerByEmail")]
         public async Task<ActionResult<Customer>> Get(string email)
         {
-            var customer=await _customerRepository.Get(email);
-            if(customer != default)
+            var customer = await _customerRepository.Get(email);
+
+            if (customer != null)
             {
                 return Ok(customer);
-            }else
-            {
-                return NotFound("customer not found");
             }
+
+            return NotFound("The specified customer does not exist!");
         }
 
 
@@ -48,15 +48,22 @@ namespace ShopBackend.Controllers
         [HttpPost]
         public async Task<ActionResult<string>> Create([FromBody] Customer customer)
         {
-            if(customer.Email == null)
+            if (customer.Email == null)
             {
-                return BadRequest("customer email is required to register the customer!");
+                return BadRequest("customer email cannot be null.");
+            }
+
+            var existed = await _customerRepository.Get(customer.Email);
+            if (existed != null)
+            {
+                return BadRequest("Email is already in the databse.");
             }
 
             var result = await _customerRepository.Insert(customer);
-            if(result != default && result > 0)
+            if (result != default && result > 0)
             {
-                return Ok("Customer is inserted successfully");
+                var location = Url.Action(nameof(Get), new { email = customer.Email }) ?? $"/{customer.Email}";
+                return Created(location, customer.Email + " is inserted successfully.");
             }
 
             return NotFound("customer can not be registered");
@@ -69,37 +76,49 @@ namespace ShopBackend.Controllers
         {
             if (customer.Email == null)
             {
-                return BadRequest("customer email is required to update the customer!");
+                return BadRequest("Email cannot be null");
             }
 
-            var result =await _customerRepository.Update(customer);
-            if (result != default && result > 0)
+            var existed = await _customerRepository.Get(customer.Email);
+            if (existed == null)
             {
-                return Ok("customer is updated.");
-            }
-
-            return NotFound("customer cannot be updated");
-        }
-
-
-        //Delete api/Customers
-        [HttpDelete]
-        public async Task<ActionResult<string>> Delete([FromBody] Customer customer)
-        {
-            if (customer.Email == null)
-            {
-                return BadRequest("customer email is required to delete the customer!");
+                return NotFound("Csutomer cannot be found");
             }
 
             var result = await _customerRepository.Update(customer);
             if (result != default && result > 0)
             {
-                return Ok("customer is Deleted.");
+                return Ok("Customer is updated successfully.");
             }
 
-            return NotFound("customer cannot be deleted");
+            return NotFound("Customer cannot be updated");
+        }
+
+
+        //Delete api/Customers
+        [HttpDelete]
+        public async Task<ActionResult<string>> Delete(string customerEmail)
+        {
+            if (customerEmail == null)
+            {
+                return BadRequest("Email can not be null!");
+            }
+
+            var existed = await _customerRepository.Get(customerEmail);
+            if (existed == null)
+            {
+                return NotFound("customer cannot be found.");
+            }
+
+            var result = await _customerRepository.Delete(customerEmail);
+            if (result != default)
+            {
+                return Ok("Customer is deleted successfully.");
+            }
+
+            return NotFound("Customer cannot be deleted!");
 
         }
-        
+
     }
 }

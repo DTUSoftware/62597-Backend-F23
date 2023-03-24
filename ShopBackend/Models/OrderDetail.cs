@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShopBackend.Models
 {
@@ -6,10 +7,23 @@ namespace ShopBackend.Models
     {
         [Key]
         public required int Id { get; set; }
-        [Required(ErrorMessage = "Quantity cannot be empty")]
-        public int? Quantity { get; set; }
 
-        [Required(ErrorMessage = "Product cannot be empty")]
-        public Product? Product { get; set; }
+        [ForeignKey("Order")]
+        [Required(ErrorMessage = "OrderId cannot be empty")]
+        public int OrderId { get; set; }
+
+        [ForeignKey("Product")]
+        [Required(ErrorMessage = "ProductId cannot be empty")]
+        public string ProductId { get; set; } = null!;
+
+        [Required(ErrorMessage = "Quantity cannot be empty")]
+        public int Quantity { get; set; }
+
+        public bool GiftWrapper { get; set; }
+
+        public bool RecurringOrder { get; set; }
+
+        public virtual Product Product { get; set; } = null!;
+        public virtual Order Order { get; set; } = null!;
     }
 }
