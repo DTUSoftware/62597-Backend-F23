@@ -1,5 +1,6 @@
 ﻿
 using ShopBackend.Models;
+using ShopBackend.Utils;
 
 namespace ShopBackend.Dtos
 {
@@ -9,15 +10,13 @@ namespace ShopBackend.Dtos
 
         public DateTime OrderDate { get; set; }
 
-        public Enum? OrderStatus { get; set; }
-
-        public AddressDto? BillingAddress { get; set; }
-
-        public AddressDto? ShippingAddress { get; set; }
+        public OrderStatus OrderStatus { get; set; }
 
         public bool CheckMarketing { get; set; }
 
         public string? SubmitComment { get; set; }
+
+        public ICollection<AddressDto>? Addresses { get; set; }
 
         public ICollection<OrderDetailDto>? OrderDetails { get; set; }
     }

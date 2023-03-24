@@ -1,6 +1,8 @@
-﻿using ShopBackend.Dtos;
+﻿using Microsoft.AspNetCore.Http;
+using ShopBackend.Dtos;
 using ShopBackend.Models;
 using ShopBackend.Utils;
+using System.Collections.Generic;
 
 namespace ShopBackend
 {
@@ -44,10 +46,9 @@ namespace ShopBackend
                 Id = order.Id,
                 OrderDate = order.OrderDate,
                 OrderStatus = order.OrderStatus,
-                BillingAddress = order.BillingAddress?.AsAddressDto(),
-                ShippingAddress = order.ShippingAddress?.AsAddressDto(),
                 CheckMarketing = order.CheckMarketing,
                 SubmitComment = order.SubmitComment,
+                Addresses = order.Addresses != null ? new List<AddressDto>(order.Addresses.Select(x => x.AsAddressDto())) : new List<AddressDto>(),
                 OrderDetails = order.OrderDetails != null ? new List<OrderDetailDto>(order.OrderDetails.Select(x => x.AsOrderDetailDto())) : new List<OrderDetailDto>(),
             };
         }
@@ -121,10 +122,9 @@ namespace ShopBackend
                 Id = orderDto.Id,
                 OrderDate = orderDto.OrderDate,
                 OrderStatus = orderDto.OrderStatus,
-                BillingAddress = orderDto.BillingAddress?.AsAddressModel(),
-                ShippingAddress = orderDto.ShippingAddress?.AsAddressModel(),
                 CheckMarketing = orderDto.CheckMarketing,
                 SubmitComment = orderDto.SubmitComment,
+                Addresses = orderDto.Addresses != null ? new List<Address>(orderDto.Addresses.Select(x => x.AsAddressModel())) : null,
                 OrderDetails = orderDto.OrderDetails != null ? new List<OrderDetail>(orderDto.OrderDetails.Select(x => x.AsOrderDetailModel())) : null,
             };
         }
@@ -163,16 +163,29 @@ namespace ShopBackend
 
         public static Order CreateAsOrderModel(this CreateOrderDto orderDto)
         {
+            var addressList = new List<Address>();
+            if (orderDto.BillingAddress != null)
+            {
+                orderDto.BillingAddress.IsBillingAddress = true;
+                orderDto.BillingAddress.IsShippingAddress = false;
+                addressList.Add(orderDto.BillingAddress.CreateAsAddressModel());
+            }
+            if (orderDto.ShippingAddress != null)
+            {
+                orderDto.ShippingAddress.IsBillingAddress = false;
+                orderDto.ShippingAddress.IsShippingAddress = true;
+                addressList.Add(orderDto.ShippingAddress.CreateAsAddressModel());
+            }
+
             return new Order
             {
-                OrderDetails = orderDto.OrderDetails != null ? new List<OrderDetail>(orderDto.OrderDetails.Select(x => x.CreateAsOrderDetailModel())) : null,
                 OrderDate = DateTime.Now,
                 OrderStatus = OrderStatus.Pending,
-                BillingAddress = orderDto.BillingAddress?.CreateAsAddressModel(),
-                ShippingAddress = orderDto.ShippingAddress?.CreateAsAddressModel(),
                 CheckMarketing = orderDto.CheckMarketing,
                 SubmitComment = orderDto.SubmitComment,
                 CustomerEmail = orderDto.CustomerEmail,
+                Addresses = addressList,
+                OrderDetails = orderDto.OrderDetails != null ? new List<OrderDetail>(orderDto.OrderDetails.Select(x => x.CreateAsOrderDetailModel())) : null,
             };
         }
 
@@ -215,7 +228,8 @@ namespace ShopBackend
                 City = addressDto.City,
                 Address1 = addressDto.Address1,
                 Address2 = addressDto.Address2,
-                OrderId = addressDto.OrderId,
+                IsBillingAddress = addressDto.IsBillingAddress,
+                IsShippingAddress= addressDto.IsShippingAddress,
             };
         }
     }

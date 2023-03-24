@@ -1,6 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using ShopBackend.Models;
+using ShopBackend.Utils;
 using System.Reflection.Metadata;
 
 namespace ShopBackend.Contexts
@@ -28,8 +30,12 @@ namespace ShopBackend.Contexts
             .HasForeignKey(x => x.CustomerEmail)
             .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Order>().HasOne(x => x.ShippingAddress).WithOne(x => x.Order)
+            modelBuilder.Entity<Order>().HasMany(x => x.Addresses).WithOne(x => x.Order)
+            .HasForeignKey(x => x.OrderId)
             .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Order>().Property(x => x.OrderStatus)
+            .HasConversion<string>();
 
             modelBuilder.Entity<Order>().HasMany(x => x.OrderDetails).WithOne(x => x.Order)
             .HasForeignKey(x => x.OrderId)

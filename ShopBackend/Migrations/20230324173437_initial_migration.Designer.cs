@@ -11,7 +11,7 @@ using ShopBackend.Contexts;
 namespace ShopBackend.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20230317144908_initial_migration")]
+    [Migration("20230324173437_initial_migration")]
     partial class initial_migration
     {
         /// <inheritdoc />
@@ -28,19 +28,43 @@ namespace ShopBackend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<string>("Address1")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Address2")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("City")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Company")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Country")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("CustomerEmail")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("StreetAddress")
+                    b.Property<string>("Email")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Type")
+                    b.Property<string>("FirstName")
+                        .HasColumnType("longtext");
+
+                    b.Property<bool>("IsBillingAddress")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsShippingAddress")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("MobileNr")
+                        .HasColumnType("longtext");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("VatNr")
                         .HasColumnType("longtext");
 
                     b.Property<DateTime?>("Version")
@@ -48,12 +72,12 @@ namespace ShopBackend.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp(6)");
 
-                    b.Property<int>("ZipCode")
-                        .HasColumnType("int");
+                    b.Property<string>("ZipCode")
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerEmail");
+                    b.HasIndex("OrderId");
 
                     b.ToTable("Address");
                 });
@@ -91,6 +115,9 @@ namespace ShopBackend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<bool>("CheckMarketing")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("CustomerEmail")
                         .HasColumnType("varchar(255)");
 
@@ -98,6 +125,10 @@ namespace ShopBackend.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("OrderStatus")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("SubmitComment")
                         .HasColumnType("longtext");
 
                     b.Property<DateTime?>("Version")
@@ -118,6 +149,9 @@ namespace ShopBackend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<bool>("GiftWrap")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<Guid>("OrderId")
                         .HasColumnType("char(36)");
 
@@ -126,6 +160,9 @@ namespace ShopBackend.Migrations
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<bool>("RecurringOrder")
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<DateTime?>("Version")
                         .IsConcurrencyToken()
@@ -149,6 +186,9 @@ namespace ShopBackend.Migrations
                     b.Property<string>("Currency")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Name")
                         .HasColumnType("longtext");
 
@@ -169,9 +209,6 @@ namespace ShopBackend.Migrations
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("timestamp(6)");
 
-                    b.Property<string>("imageUrl")
-                        .HasColumnType("longtext");
-
                     b.HasKey("Id");
 
                     b.ToTable("Products");
@@ -179,12 +216,13 @@ namespace ShopBackend.Migrations
 
             modelBuilder.Entity("ShopBackend.Models.Address", b =>
                 {
-                    b.HasOne("ShopBackend.Models.Customer", "Customer")
-                        .WithMany("Address")
-                        .HasForeignKey("CustomerEmail")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.HasOne("ShopBackend.Models.Order", "Order")
+                        .WithMany("Addresses")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Customer");
+                    b.Navigation("Order");
                 });
 
             modelBuilder.Entity("ShopBackend.Models.Order", b =>
@@ -217,13 +255,13 @@ namespace ShopBackend.Migrations
 
             modelBuilder.Entity("ShopBackend.Models.Customer", b =>
                 {
-                    b.Navigation("Address");
-
                     b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("ShopBackend.Models.Order", b =>
                 {
+                    b.Navigation("Addresses");
+
                     b.Navigation("OrderDetails");
                 });
 

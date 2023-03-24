@@ -24,6 +24,15 @@ internal class Program
                 .AddEnvironmentVariables()
                 .Build();
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("FrontendPolicy",
+                policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173").AllowAnyHeader();
+                });
+        });
+
         //Connection string borrowed from: https://stackoverflow.com/questions/66720614/cannot-convert-from-string-to-microsoft-entityframeworkcore-serverversion
         string? connectionString = config.GetValue<string>("ConnectionStrings:DefaultConnection");
         builder.Services.AddDbContext<DBContext>(options =>
@@ -48,6 +57,8 @@ internal class Program
         }
 
         app.UseHttpsRedirection();
+
+        app.UseCors();
 
         app.UseAuthorization();
 

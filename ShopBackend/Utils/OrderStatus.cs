@@ -1,6 +1,7 @@
 ﻿namespace ShopBackend.Utils
 {
-    enum OrderStatus
+
+    public enum OrderStatus
     {
         Pending,
         Finished,

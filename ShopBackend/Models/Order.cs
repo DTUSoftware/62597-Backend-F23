@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ShopBackend.Utils;
+using System.ComponentModel.DataAnnotations;
 
 namespace ShopBackend.Models
 {
@@ -9,11 +10,7 @@ namespace ShopBackend.Models
 
         public DateTime OrderDate { get; set; }
 
-        public Enum? OrderStatus { get; set; }
-
-        public Address? BillingAddress { get; set; }
-
-        public Address? ShippingAddress { get; set; }
+        public OrderStatus OrderStatus { get; set; }
 
         public bool CheckMarketing { get; set; }
 
@@ -24,6 +21,8 @@ namespace ShopBackend.Models
         public string? CustomerEmail { get; set; }
 
         public Customer? Customer { get; set; }
+
+        public ICollection<Address>? Addresses { get; set; }
 
         public ICollection<OrderDetail>? OrderDetails { get; set; }
 

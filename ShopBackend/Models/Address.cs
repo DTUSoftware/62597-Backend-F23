@@ -30,6 +30,8 @@ namespace ShopBackend.Models
         public string? Address2 { get; set; }
 
 
+        public bool IsBillingAddress { get; set; }
+        public bool IsShippingAddress { get; set; }
 
         public Guid OrderId { get; set; }
 

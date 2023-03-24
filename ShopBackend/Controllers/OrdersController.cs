@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using ShopBackend.Dtos;
 using ShopBackend.Models;
 using ShopBackend.Repositories;
@@ -49,6 +50,7 @@ namespace ShopBackend.Controllers
 
 
         // POST api/<OrdersController>
+        [EnableCors("FrontendPolicy")]
         [HttpPost]
         public async Task<ActionResult<string>> Create([FromBody] CreateOrderDto order)
         {
