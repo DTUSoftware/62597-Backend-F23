@@ -22,7 +22,9 @@ namespace ShopBackend.Models
 
         public string? UpsellProductId { get; set; }
 
-        public string? imageUrl { get; set; }
+        public string? ImageUrl { get; set; }
+
+
 
         public ICollection<OrderDetail>? OrderDetails { get; set; }
 

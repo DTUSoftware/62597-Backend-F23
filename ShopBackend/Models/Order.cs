@@ -9,7 +9,17 @@ namespace ShopBackend.Models
 
         public DateTime OrderDate { get; set; }
 
-        public string? OrderStatus { get; set; }
+        public Enum? OrderStatus { get; set; }
+
+        public Address? BillingAddress { get; set; }
+
+        public Address? ShippingAddress { get; set; }
+
+        public bool CheckMarketing { get; set; }
+
+        public string? SubmitComment { get; set; }
+
+
 
         public string? CustomerEmail { get; set; }
 

@@ -9,6 +9,12 @@ namespace ShopBackend.Models
 
         public int Quantity { get; set; }
 
+        public bool GiftWrap { get; set; }
+
+        public bool RecurringOrder { get; set; }
+
+
+
         public Guid OrderId { get; set; }
 
         public Order? Order { get; set; }

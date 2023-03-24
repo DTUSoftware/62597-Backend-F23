@@ -13,8 +13,6 @@ namespace ShopBackend.Dtos
 
         public int Phone { get; set; }
 
-        public ICollection<AddressDto>? Address { get; set; }
-
         public ICollection<OrderDto>? Orders { get; set; }
     }
 }

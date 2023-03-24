@@ -9,7 +9,10 @@ namespace ShopBackend.Dtos
 
         public int Quantity { get; set; }
 
-        public ProductDto? Product { get; set; }
+        public bool GiftWrap { get; set; }
 
+        public bool RecurringOrder { get; set; }
+
+        public ProductDto? Product { get; set; }
     }
 }

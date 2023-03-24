@@ -24,12 +24,11 @@ namespace ShopBackend.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Customer>().HasMany(x => x.Address).WithOne(x => x.Customer)
+            modelBuilder.Entity<Customer>().HasMany(x => x.Orders).WithOne(x => x.Customer)
             .HasForeignKey(x => x.CustomerEmail)
             .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Customer>().HasMany(x => x.Orders).WithOne(x => x.Customer)
-            .HasForeignKey(x => x.CustomerEmail)
+            modelBuilder.Entity<Order>().HasOne(x => x.ShippingAddress).WithOne(x => x.Order)
             .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Order>().HasMany(x => x.OrderDetails).WithOne(x => x.Order)

@@ -14,8 +14,8 @@ namespace ShopBackend.Models
         public string? Password { get; set; }
 
         public int Phone { get; set; }
-        
-        public ICollection<Address>? Address { get; set; }
+
+
 
         public ICollection<Order>? Orders { get; set; }
 
