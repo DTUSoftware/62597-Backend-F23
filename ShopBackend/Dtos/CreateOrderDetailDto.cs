@@ -11,8 +11,8 @@ namespace ShopBackend.Dtos
 
         public bool RecurringOrder { get; set; }
 
-        public string? ProductId { get; set; }
-
         public Guid OrderId { get; set; }
+
+        public string ProductId { get; set; } = null!;
     }
 }

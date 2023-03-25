@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShopBackend.Models
 {
@@ -14,14 +15,15 @@ namespace ShopBackend.Models
         public bool RecurringOrder { get; set; }
 
 
-
+        [ForeignKey("Order")]
         public Guid OrderId { get; set; }
 
-        public Order? Order { get; set; }
+        public virtual Order Order { get; set; } = null!;
 
-        public string? ProductId { get; set; }
+        [ForeignKey("Product")]
+        public string ProductId { get; set; } = null!;
 
-        public Product? Product { get; set; }
+        public virtual Product Product { get; set; } = null!;
 
         [Timestamp]
         public byte[]? Version { get; set; }

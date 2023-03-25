@@ -14,10 +14,12 @@ namespace ShopBackend.Dtos
 
         public bool CheckMarketing { get; set; }
 
-        public string? SubmitComment { get; set; }
+        public string SubmitComment { get; set; } = null!;
 
-        public ICollection<AddressDto>? Addresses { get; set; }
+        public virtual AddressDto ShippingAddress { get; set; } = null!;
 
-        public ICollection<OrderDetailDto>? OrderDetails { get; set; }
+        public virtual AddressDto BillingAddress { get; set; } = null!;
+
+        public virtual ICollection<OrderDetailDto> OrderDetails { get; set; } = null!;
     }
 }

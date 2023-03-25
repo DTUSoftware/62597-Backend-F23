@@ -85,10 +85,7 @@ namespace ShopBackend.Controllers
             }
 
             customerToUpdate.Email = customer.Email;
-            customerToUpdate.FirstName = customer.FirstName;
-            customerToUpdate.LastName = customer.LastName;
             //customerToUpdate.Password = customer.Password;
-            customerToUpdate.Phone = customer.Phone;
             customerToUpdate.Orders = customer.Orders != null ? new List<Order>(customer.Orders.Select(x => x.AsOrderModel())) : new List<Order>();
 
             var result = await _customerRepository.Update(customerToUpdate);

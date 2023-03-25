@@ -1,5 +1,6 @@
 ﻿using ShopBackend.Utils;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShopBackend.Models
 {
@@ -14,17 +15,26 @@ namespace ShopBackend.Models
 
         public bool CheckMarketing { get; set; }
 
-        public string? SubmitComment { get; set; }
+        public string SubmitComment { get; set; } = null!;
 
-
-
+        // Nullable for now, so that frontend can create an order without a Customer
+        [ForeignKey("Customer")]
         public string? CustomerEmail { get; set; }
 
-        public Customer? Customer { get; set; }
+        [ForeignKey("Address")]
+        public Guid ShippingAddressId { get; set; }
 
-        public ICollection<Address>? Addresses { get; set; }
+        [ForeignKey("Address")]
+        public Guid BillingAddressId { get; set; }
 
-        public ICollection<OrderDetail>? OrderDetails { get; set; }
+        // Nullable for now, so that frontend can create an order without a Customer
+        public virtual Customer? Customer { get; set; }
+
+        public virtual Address ShippingAddress { get; set; } = null!;
+
+        public virtual Address BillingAddress { get; set; } = null!;
+
+        public virtual ICollection<OrderDetail> OrderDetails { get; set; } = null!;
 
         [Timestamp]
         public byte[]? Version { get; set; }

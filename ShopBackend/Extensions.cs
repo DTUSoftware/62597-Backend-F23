@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
-using ShopBackend.Dtos;
+﻿using ShopBackend.Dtos;
 using ShopBackend.Models;
 using ShopBackend.Utils;
-using System.Collections.Generic;
 
 namespace ShopBackend
 {
@@ -13,9 +11,6 @@ namespace ShopBackend
             return new CustomerDto
             {
                 Email = customer.Email,
-                FirstName = customer.FirstName,
-                LastName = customer.LastName,
-                Phone = customer.Phone,
                 Orders = customer.Orders != null ? new List<OrderDto>(customer.Orders.Select(x => x.AsOrderDto())) : new List<OrderDto>(),
             };
         }
@@ -48,8 +43,9 @@ namespace ShopBackend
                 OrderStatus = order.OrderStatus,
                 CheckMarketing = order.CheckMarketing,
                 SubmitComment = order.SubmitComment,
-                Addresses = order.Addresses != null ? new List<AddressDto>(order.Addresses.Select(x => x.AsAddressDto())) : new List<AddressDto>(),
-                OrderDetails = order.OrderDetails != null ? new List<OrderDetailDto>(order.OrderDetails.Select(x => x.AsOrderDetailDto())) : new List<OrderDetailDto>(),
+                BillingAddress = order.BillingAddress.AsAddressDto(),
+                ShippingAddress = order.ShippingAddress.AsAddressDto(),
+                OrderDetails = new List<OrderDetailDto>(order.OrderDetails.Select(x => x.AsOrderDetailDto())),
             };
         }
 
@@ -61,7 +57,7 @@ namespace ShopBackend
                 Quantity = orderDetail.Quantity,
                 GiftWrap = orderDetail.GiftWrap,
                 RecurringOrder = orderDetail.RecurringOrder,
-                Product = orderDetail.Product!.AsProductDto(),
+                Product = orderDetail.Product.AsProductDto(),
             };
         }
 
@@ -89,9 +85,6 @@ namespace ShopBackend
             return new Customer
             {
                 Email = customerDto.Email,
-                FirstName = customerDto.FirstName,
-                LastName = customerDto.LastName,
-                Phone = customerDto.Phone,
                 Orders = customerDto.Orders != null ? new List<Order>(customerDto.Orders.Select(x => x.AsOrderModel())) : new List<Order>(),
             };
         }
@@ -124,8 +117,9 @@ namespace ShopBackend
                 OrderStatus = orderDto.OrderStatus,
                 CheckMarketing = orderDto.CheckMarketing,
                 SubmitComment = orderDto.SubmitComment,
-                Addresses = orderDto.Addresses != null ? new List<Address>(orderDto.Addresses.Select(x => x.AsAddressModel())) : null,
-                OrderDetails = orderDto.OrderDetails != null ? new List<OrderDetail>(orderDto.OrderDetails.Select(x => x.AsOrderDetailModel())) : null,
+                BillingAddress = orderDto.BillingAddress.AsAddressModel(),
+                ShippingAddress = orderDto.ShippingAddress.AsAddressModel(),
+                OrderDetails = new List<OrderDetail>(orderDto.OrderDetails.Select(x => x.AsOrderDetailModel()))
             };
         }
 
@@ -137,7 +131,7 @@ namespace ShopBackend
                 Quantity = orderDetailDto.Quantity,
                 GiftWrap = orderDetailDto.GiftWrap,
                 RecurringOrder = orderDetailDto.RecurringOrder,
-                Product = orderDetailDto.Product?.AsProductModel()
+                Product = orderDetailDto.Product.AsProductModel()
             };
         }
 
@@ -163,19 +157,6 @@ namespace ShopBackend
 
         public static Order CreateAsOrderModel(this CreateOrderDto orderDto)
         {
-            var addressList = new List<Address>();
-            if (orderDto.BillingAddress != null)
-            {
-                orderDto.BillingAddress.IsBillingAddress = true;
-                orderDto.BillingAddress.IsShippingAddress = false;
-                addressList.Add(orderDto.BillingAddress.CreateAsAddressModel());
-            }
-            if (orderDto.ShippingAddress != null)
-            {
-                orderDto.ShippingAddress.IsBillingAddress = false;
-                orderDto.ShippingAddress.IsShippingAddress = true;
-                addressList.Add(orderDto.ShippingAddress.CreateAsAddressModel());
-            }
 
             return new Order
             {
@@ -183,9 +164,9 @@ namespace ShopBackend
                 OrderStatus = OrderStatus.Pending,
                 CheckMarketing = orderDto.CheckMarketing,
                 SubmitComment = orderDto.SubmitComment,
-                CustomerEmail = orderDto.CustomerEmail,
-                Addresses = addressList,
-                OrderDetails = orderDto.OrderDetails != null ? new List<OrderDetail>(orderDto.OrderDetails.Select(x => x.CreateAsOrderDetailModel())) : null,
+                ShippingAddress = orderDto.ShippingAddress.AsAddressModel(),
+                BillingAddress = orderDto.BillingAddress.AsAddressModel(),
+                OrderDetails = new List<OrderDetail>(orderDto.OrderDetails.Select(x => x.CreateAsOrderDetailModel()))
             };
         }
 
@@ -206,10 +187,7 @@ namespace ShopBackend
             return new Customer
             {
                 Email = customerDto.Email,
-                FirstName = customerDto.FirstName,
-                LastName = customerDto.LastName,
                 Password= customerDto.Password,
-                Phone = customerDto.Phone,
             };
         }
 
@@ -227,9 +205,7 @@ namespace ShopBackend
                 ZipCode = addressDto.ZipCode,
                 City = addressDto.City,
                 Address1 = addressDto.Address1,
-                Address2 = addressDto.Address2,
-                IsBillingAddress = addressDto.IsBillingAddress,
-                IsShippingAddress= addressDto.IsShippingAddress,
+                Address2 = addressDto.Address2
             };
         }
     }
