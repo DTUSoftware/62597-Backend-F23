@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using ShopBackend.Dtos;
 using ShopBackend.Models;
 using ShopBackend.Repositories;
@@ -49,8 +50,9 @@ namespace ShopBackend.Controllers
 
 
         // POST api/<OrdersController>
+        [EnableCors("FrontendPolicy")]
         [HttpPost]
-        public async Task<ActionResult<string>> Create([FromBody] CreateUpdateOrderDto order)
+        public async Task<ActionResult<string>> Create([FromBody] CreateOrderDto order)
         {
             var result = await _orderRepository.Insert(order.CreateAsOrderModel());
             if (result != default && result > 0)
@@ -64,7 +66,7 @@ namespace ShopBackend.Controllers
 
         // PUT api/<OrdersController>/5
         [HttpPut("{orderId}")]
-        public async Task<ActionResult<string>> Put(Guid orderId, [FromBody] CreateUpdateOrderDto order)   
+        public async Task<ActionResult<string>> Put(Guid orderId, [FromBody] OrderDto order)   
         {
             var orderToUpdate = await _orderRepository.Get(orderId);
             if (orderToUpdate == default)
@@ -74,8 +76,8 @@ namespace ShopBackend.Controllers
 
             orderToUpdate.OrderDate = order.OrderDate;
             orderToUpdate.OrderStatus = order.OrderStatus;
-            orderToUpdate.CustomerEmail = order.CustomerEmail;
-
+            orderToUpdate.CheckMarketing = order.CheckMarketing;
+            orderToUpdate.SubmitComment = order.SubmitComment;
 
             var result = await _orderRepository.Update(orderToUpdate);
             if (result != default && result > 0)

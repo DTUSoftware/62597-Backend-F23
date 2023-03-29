@@ -7,19 +7,27 @@ namespace ShopBackend.Models
         [Key]
         public Guid Id { get; set; }
 
-        public int ZipCode { get; set; }
+        public string FirstName { get; set; } = null!;
 
-        public string? Country { get; set; }
+        public string LastName { get; set; } = null!;
 
-        public string? City { get; set; }
+        public string Email { get; set; } = null!;
 
-        public string? StreetAddress { get; set; }
+        public string MobileNr { get; set; } = null!;
 
-        public string? Type { get; set; }
+        public string Company { get; set; } = null!;
 
-        public string? CustomerEmail { get; set; }
+        public string VatNr { get; set; } = null!;
 
-        public Customer? Customer { get; set; }
+        public string Country { get; set; } = null!;
+
+        public string ZipCode { get; set; } = null!;
+
+        public string City { get; set; } = null!;
+
+        public string Address1 { get; set; } = null!;
+
+        public string Address2 { get; set; } = null!;
 
         [Timestamp]
         public byte[]? Version { get; set; }
