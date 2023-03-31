@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using ShopBackend.Models;
 using ShopBackend.Repositories;
-
+using ShopBackend.Dtos;
 
 namespace ShopBackend.Controllers
 {
@@ -19,81 +18,96 @@ namespace ShopBackend.Controllers
 
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Product>>> Get()
+        public async Task<ActionResult<IEnumerable<ProductDto>>> Get()
         {
-            var products = await _productRepository.GetAll();
-
-            if (products != null && products.Count() > 0)
+            var products = (await _productRepository.GetAll()).Select(product => product.AsProductDto());
+            if (products.Any())
             {
                 return Ok(products);
             }
 
-            return NotFound("Products do not existed!");
+            return NotFound("The specified products does not exist!");
         }
 
+
         // GET: api/Products/{5}
-        [HttpGet("{productId}", Name = "GetProductById")]
-        public async Task<ActionResult<Product?>> Get(string productId)
+        [HttpGet("{productId}", Name ="GetProductById")]
+        public async Task<ActionResult<ProductDto>> Get(string productId)
         {
             var product = await _productRepository.Get(productId);
-
-            if (product != null)
+            if(product != default)
             {
-                return Ok(product);
+                return Ok(product.AsProductDto()); 
             }
 
             return NotFound("The specified product does not exist!");
         }
 
+
         // Post: api/Products
         [HttpPost]
-        public async Task<ActionResult<Product>> Create(Product product)
+        public async Task<ActionResult<string>> Create([FromBody] ProductDto product)
         {
             if (product.Id == null)
             {
-                return BadRequest("ProductId cannot be null");
+                return BadRequest("Product id is required to register the product!");
             }
-
-            var existed = await _productRepository.Get(product.Id);
-            if (existed != null)
+            var isIdTaken = await _productRepository.Get(product.Id);
+            if (isIdTaken != default)
             {
-                return BadRequest("ProductId is already in the databse.");
+                return BadRequest("This product id is already in use!");
             }
 
-            var result = await _productRepository.Insert(product);
-            if (result != default && result > 0)
-            {
-                var location = Url.Action(nameof(Get), new { id = product.Id }) ?? $"/{product.Id}";
-                return Created(location, product.Id + " is inserted successfully.");
+            var result = await _productRepository.Insert(product.AsProductModel());
+            if(result != default && result > 0) 
+            { 
+                return Ok("Product is inserted successfully!"); 
             }
 
-            return NotFound("Product cannot be inserted");
+            return NotFound("Product could not be inserted!");
         }
 
+        // Post: api/Products/Multiple Primarily used for populating the server database
+        [HttpPost("Multiple")]
+        public async Task<ActionResult<string>> CreateMultiple(IEnumerable<ProductDto> products)
+        {
+            foreach (ProductDto product in products)
+            {
+                var result = await _productRepository.Insert(product.AsProductModel());
+                if (result == default || result == 0)
+                {
+                    return NotFound($"Product {product.Name} could not be inserted!");
+                }
+            }
+
+            return Ok("Product is inserted successfully!");
+        }
 
 
         // Put: api/Products/5
         [HttpPut]
-        public async Task<ActionResult<string>> Update([FromBody] Product product)
+        public async Task<ActionResult<string>> Update([FromBody] ProductDto product)
         {
-            if (product.Id == null)
+            var productToUpdate = await _productRepository.Get(product.Id);
+            if (productToUpdate == default)
             {
-                return BadRequest("ProductId cannot be null");
+                return BadRequest("Product does not exsist!");
             }
 
-            var existed = await _productRepository.Get(product.Id);
-            if (existed == null)
-            {
-                return NotFound("Product cannot be found");
+            productToUpdate.Name = product.Name;
+            productToUpdate.Price = product.Price;
+            productToUpdate.Currency = product.Currency;
+            productToUpdate.RebateQuantity = product.RebateQuantity;
+            productToUpdate.RebatePercent = product.RebatePercent;
+            productToUpdate.UpsellProductId = product.UpsellProductId;
+
+            var result = await _productRepository.Update(productToUpdate);
+            if(result != default && result > 0)
+            { 
+                return Ok("Product updated successfully!"); 
             }
 
-            var result = await _productRepository.Update(product);
-            if (result != default && result > 0)
-            {
-                return Ok("Product is updated successfully");
-            }
-
-            return NotFound("Product cannot be updated!");
+            return NotFound("Product could not be updated!");
         }
 
 
@@ -101,23 +115,13 @@ namespace ShopBackend.Controllers
         [HttpDelete("{productId}")]
         public async Task<ActionResult<string>> Delete(string productId)
         {
-            if (productId == null)
+            var result=await _productRepository.Delete(productId);
+            if(result !=default)
             {
-                return BadRequest("ProductId cannot be null");
-            }
-            var existed = await _productRepository.Get(productId);
-            if (existed == null)
-            {
-                return NotFound("product cannot be found.");
+                return Ok("Product has been deleted!"); 
             }
 
-            var result = await _productRepository.Delete(productId);
-            if (result != default)
-            {
-                return Ok("product is deleted successfully.");
-            }
-
-            return NotFound("Product cannot be deleted!");
+            return NotFound("Product could not be deleted!");
         }
     }
 }

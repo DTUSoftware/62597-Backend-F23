@@ -19,9 +19,9 @@ namespace ShopBackend.Repositories
             return await _dbContext.Addresses.ToListAsync();
         }
 
-        public async Task<Address?> Get(string email, string type)
+        public async Task<Address?> Get(Guid addressId)
         {
-            return await _dbContext.Addresses.FirstOrDefaultAsync(a => a.Email == email && a.Type == type);
+            return await _dbContext.Addresses.FirstOrDefaultAsync(a => a.Id == addressId);
         }
 
         public async Task<int> Insert(Address address)
@@ -36,9 +36,9 @@ namespace ShopBackend.Repositories
             return await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<int> Delete(string addressEmail, string addressType)
+        public async Task<int> Delete(Guid addressId)
         {
-            _dbContext.Addresses.Remove(new Address { Email = addressEmail, Type = addressType });
+            _dbContext.Addresses.Remove(new Address { Id = addressId });
             return await _dbContext.SaveChangesAsync();
         }
     }

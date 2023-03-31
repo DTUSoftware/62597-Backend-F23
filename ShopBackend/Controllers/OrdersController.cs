@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
+using ShopBackend.Dtos;
 using ShopBackend.Models;
 using ShopBackend.Repositories;
 
@@ -9,98 +11,95 @@ namespace ShopBackend.Controllers
     public class OrdersController : Controller
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IOrderDetailRepository _orderDetailRepository;
 
-        public OrdersController(IOrderRepository orderRepository)
+        public OrdersController(IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository)
         {
             _orderRepository = orderRepository;
+            _orderDetailRepository = orderDetailRepository;
         }
 
 
         // GET: api/<OrdersController>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Order>>> Get()
+        public async Task<ActionResult<IEnumerable<OrderDto>>> Get()
         {
-            var orders = await _orderRepository.GetAll();
-            if (orders != null && orders.Count() > 0)
+            var orders = (await _orderRepository.GetAll()).Select(order => order.AsOrderDto());
+            if (orders.Any())
             {
                 return Ok(orders);
             }
 
-            return NotFound("Orders do not existed!"); ;
+            return NotFound("The specified orders does not exist!"); ;
         }
 
+
         // GET api/<OrdersController>/5
-        [HttpGet("{orderId}", Name = "GetOrderById")]
-        public async Task<ActionResult<Order>> Get(int orderId)
+        [HttpGet("{orderId}", Name= "GetOrderById")]
+        public async Task<ActionResult<OrderDto>> Get(Guid orderId)
         {
             var order = await _orderRepository.Get(orderId);
-            if (order != null)
+            if (order != default)
             {
-                return Ok(order);
+                return Ok(order.AsOrderDto());
             }
 
             return NotFound("The specified order does not exist!");
         }
 
+
         // POST api/<OrdersController>
+        [EnableCors("FrontendPolicy")]
         [HttpPost]
-        public async Task<ActionResult<string>> Create([FromBody] Order order)
+        public async Task<ActionResult<string>> Create([FromBody] CreateOrderDto order)
         {
-
-            var existed = await _orderRepository.Get(order.Id);
-            if (existed != null)
-            {
-                return BadRequest("OrderId is already in the databse.");
-            }
-
-            var result = await _orderRepository.Insert(order);
+            var result = await _orderRepository.Insert(order.CreateAsOrderModel());
             if (result != default && result > 0)
             {
-                var location = Url.Action(nameof(Get), new { id = order.Id }) ?? $"/{order.Id}";
-                return Created(location, order.Id + " is registered successfully.");
+                return Ok("Order is inserted successfully!");
             }
 
-            return NotFound("Order cannot be registered");
+            return NotFound("Order could not be registered!");
         }
 
 
         // PUT api/<OrdersController>/5
-        [HttpPut]
-        public async Task<ActionResult<string>> Put([FromBody] Order order)
+        [HttpPut("{orderId}")]
+        public async Task<ActionResult<string>> Put(Guid orderId, [FromBody] OrderDto order)   
         {
-
-            var existed = await _orderRepository.Get(order.Id);
-            if (existed == null)
+            var orderToUpdate = await _orderRepository.Get(orderId);
+            if (orderToUpdate == default)
             {
-                return NotFound("Order cannot be found");
+                return NotFound("Order does not exsist!");
             }
 
-            var result = await _orderRepository.Update(order);
+            orderToUpdate.OrderDate = order.OrderDate;
+            orderToUpdate.OrderStatus = order.OrderStatus;
+            orderToUpdate.CheckMarketing = order.CheckMarketing;
+            orderToUpdate.SubmitComment = order.SubmitComment;
+
+            var result = await _orderRepository.Update(orderToUpdate);
             if (result != default && result > 0)
             {
-                return Ok("Order is updated successfully.");
+                return Ok("Order has been updated!");
             }
 
-            return NotFound("Order cannot be updated!");
+            return NotFound("Order could not be updated!");
         }
+
 
         // DELETE api/<OrdersController>/5
         [HttpDelete("{orderId}")]
-        public async Task<ActionResult<string>> Delete(int orderId)
+        public async Task<ActionResult<string>> Delete(Guid orderId)
         {
-            var existed = await _orderRepository.Get(orderId);
-            if (existed == null)
-            {
-                return NotFound("Order cannot be found");
-            }
 
             var result = await _orderRepository.Delete(orderId);
+
             if (result != default && result > 0)
             {
-                return Ok("Order is deleted successfully.");
+                return Ok("Order has been deleted!");
             }
-
-            return NotFound("Order cannot be deleted!");
+            return NotFound("Order could not be deleted!");
         }
     }
 }

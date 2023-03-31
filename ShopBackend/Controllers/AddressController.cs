@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using ShopBackend.Dtos;
 using ShopBackend.Models;
 using ShopBackend.Repositories;
 
@@ -21,22 +22,22 @@ namespace ShopBackend.Controllers
         {
             var addressList = await _addressRepository.GetAll();
 
-            if (addressList != null && addressList.Count() > 0)
+            if (addressList != null && addressList.Any())
             {
                 return Ok(addressList);
             }
 
-            return NotFound("Customers do not existed!");
+            return NotFound("The specified addresses does not exist!");
         }
 
         // GET api/Addresses
-        [HttpGet(Name = "GetAddressByEmailAndType")]
-        public async Task<ActionResult<Address>> Get([FromBody] Address address)
+        [HttpGet("{addressId}")]
+        public async Task<ActionResult<AddressDto>> Get(Guid addressId)
         {
-            var result = await _addressRepository.Get(address.Email, address.Type);
+            var result = await _addressRepository.Get(addressId);
             if (result != default)
             {
-                return Ok(result);
+                return Ok(result.AsAddressDto());
             }
 
             return NotFound("The specified address does not exist!");
@@ -44,31 +45,25 @@ namespace ShopBackend.Controllers
 
         // POST api/Addresses
         [HttpPost]
-        public async Task<ActionResult<string>> Create([FromBody] Address address)
+        public async Task<ActionResult<string>> Create([FromBody] CreateAddressDto address)
         {
-            var existed = await _addressRepository.Get(address.Email, address.Type);
-            if (existed != null)
-            {
-                return BadRequest("Address is already in the databse.");
-            }
-
-            var result = await _addressRepository.Insert(address);
+            var result = await _addressRepository.Insert(address.CreateAsAddressModel());
             if (result != default && result > 0)
             {
                 return Created("shoppingApiServer", address.Email + " address is registered successfully.");
             }
 
-            return NotFound("Address cannot be registered");
+            return NotFound("Address could not be registered!");
         }
 
         // PUT api/Addresses/{address}
         [HttpPut]
         public async Task<ActionResult<string>> Put([FromBody] Address address)
         {
-            var existed = await _addressRepository.Get(address.Email, address.Type);
+            var existed = await _addressRepository.Get(address.Id);
             if (existed == null)
             {
-                return NotFound("Address cannot be found!");
+                return NotFound("The specified address could not be found!");
             }
 
             var result = await _addressRepository.Update(address);
@@ -81,24 +76,23 @@ namespace ShopBackend.Controllers
         }
 
         // DELETE api/<AddressController>/{address}
-        [HttpDelete]
-        public async Task<ActionResult<string>> Delete([FromBody] Address address)
+        [HttpDelete("{addressId}")]
+        public async Task<ActionResult<string>> Delete(Guid addressId)
         {
 
-            var existed = await _addressRepository.Get(address.Email, address.Type);
+            var existed = await _addressRepository.Get(addressId);
             if (existed == null)
             {
-                return NotFound("Address cannot be found!");
+                return NotFound("The specified address could not be found!");
             }
 
-            var result = await _addressRepository.Delete(address.Email, address.Type);
+            var result = await _addressRepository.Delete(addressId);
             if (result != default && result > 0)
             {
-                return Ok("Address is Deleted.");
+                return Ok("The specified address has been deleted!");
             }
 
-            return NotFound("Address cannot be deleted");
-
+            return NotFound("The specified address could not be deleted!");
         }
     }
 }
