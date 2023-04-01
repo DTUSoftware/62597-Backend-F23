@@ -123,6 +123,5 @@ namespace ShopBackend.Controllers
 
             return NotFound("Product could not be deleted!");
         }
-        
     }
 }

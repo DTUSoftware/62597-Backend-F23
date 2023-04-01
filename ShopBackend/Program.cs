@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using ShopBackend.Contexts;
 using ShopBackend.Repositories;
 using System.Text.Json.Serialization;
@@ -24,6 +23,15 @@ internal class Program
                 .AddEnvironmentVariables()
                 .Build();
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("FrontendPolicy",
+                policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173").AllowAnyHeader();
+                });
+        });
+
         //Connection string borrowed from: https://stackoverflow.com/questions/66720614/cannot-convert-from-string-to-microsoft-entityframeworkcore-serverversion
         string? connectionString = config.GetValue<string>("ConnectionStrings:DefaultConnection");
         builder.Services.AddDbContext<DBContext>(options =>
@@ -36,6 +44,7 @@ internal class Program
         builder.Services.AddScoped<IProductRepository, ProductRepository>();
         builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
         builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+        builder.Services.AddScoped<IAddressRepository, AddressRepository>();
         builder.Services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
 
         var app = builder.Build();
@@ -48,6 +57,8 @@ internal class Program
         }
 
         app.UseHttpsRedirection();
+
+        app.UseCors();
 
         app.UseAuthorization();
 
