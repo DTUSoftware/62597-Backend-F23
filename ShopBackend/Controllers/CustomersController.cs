@@ -52,6 +52,7 @@ namespace ShopBackend.Controllers
             {
                 return BadRequest("Customer email is required to register the customer!");
             }
+
             var isEmailTaken = await _customerRepository.Get(customer.Email);
             if (isEmailTaken != default)
             {
@@ -61,8 +62,8 @@ namespace ShopBackend.Controllers
             var result = await _customerRepository.Insert(customer.CreateAsCustomerModel());
             if(result != default && result > 0)
             {
-                return Ok("Customer is inserted successfully!");
-            }
+                return Created("CreateCustomer","Customer is inserted successfully!");
+            }         
 
             return NotFound("Customer could not be registered!");
         }
@@ -100,6 +101,17 @@ namespace ShopBackend.Controllers
         [HttpDelete("{email}")]
         public async Task<ActionResult<string>> Delete(string email)
         {
+            if (email == null)
+            {
+                return BadRequest("Customer email is required to delete the customer!");
+            }
+
+            var customerToDelete = await _customerRepository.Get(email);
+            if (customerToDelete == default)
+            {
+                return NotFound("Customer does not exsist!");
+            }
+
             var result = await _customerRepository.Delete(email);
             if (result != default && result > 0)
             {

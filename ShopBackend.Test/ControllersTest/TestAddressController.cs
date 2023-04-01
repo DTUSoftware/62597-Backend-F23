@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 
 namespace ShopBackend.Test.ControllersTest
 {
-    internal class TestAddressController
+    /**
+     * @author: Golbas Haidari
+     * @date: 01-04-203
+     */
+    public class TestAddressController
     {
     }
 }
