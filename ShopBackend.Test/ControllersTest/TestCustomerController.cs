@@ -1,6 +1,4 @@
-﻿using Castle.Core.Resource;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
+﻿using Microsoft.AspNetCore.Mvc;
 using ShopBackend.Controllers;
 using ShopBackend.Dtos;
 using ShopBackend.Models;
