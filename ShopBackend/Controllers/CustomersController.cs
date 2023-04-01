@@ -3,7 +3,6 @@ using ShopBackend.Dtos;
 using ShopBackend.Models;
 using ShopBackend.Repositories;
 
-
 namespace ShopBackend.Controllers
 {
     [ApiController]
@@ -13,8 +12,8 @@ namespace ShopBackend.Controllers
         private readonly ICustomerRepository _customerRepository;
 
         public CustomersController(ICustomerRepository customerRepository)
-        { 
-           _customerRepository = customerRepository;
+        {
+            _customerRepository = customerRepository;
         }
 
 
@@ -31,18 +30,17 @@ namespace ShopBackend.Controllers
             return NotFound("The specified customers does not exist!");
         }
 
-
-        //Get api/Customers/5
-        [HttpGet("{email}", Name="GetCustomerByEmail")]
-        public async Task<ActionResult<CustomerDto>> Get(string email)
+        //Get api/Customers/example@gmail.com
+        [HttpGet("{email}", Name = "GetCustomerByEmail")]
+        public async Task<ActionResult<Customer>> Get(string email)
         {
             var customer = await _customerRepository.Get(email);
             if(customer != default)
             {
                 return Ok(customer.AsCustomerDto());
             }
-            
-            return NotFound("Customer not found!");
+
+            return NotFound("The specified customer does not exist!");
         }
 
 

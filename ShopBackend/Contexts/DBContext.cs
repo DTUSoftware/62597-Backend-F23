@@ -1,9 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.EntityFrameworkCore;
 using ShopBackend.Models;
-using ShopBackend.Utils;
-using System.Reflection.Metadata;
 
 namespace ShopBackend.Contexts
 {
@@ -14,7 +10,7 @@ namespace ShopBackend.Contexts
     
         }
 
-        public virtual DbSet<Address> Address { get; set; }
+        public virtual DbSet<Address> Addresses { get; set; }
 
         public virtual DbSet<Product> Products { get; set; }
 

@@ -20,7 +20,7 @@ namespace ShopBackend.Repositories
 
         public async Task<Customer?> Get(string email)
         {
-            return await _dbContext.Customers.FirstOrDefaultAsync(c => c.Email== email);
+            return await _dbContext.Customers.FirstOrDefaultAsync(c => c.Email == email);
         }
 
 
@@ -28,7 +28,7 @@ namespace ShopBackend.Repositories
         {
             _dbContext.Add(customer);
             return await _dbContext.SaveChangesAsync();
-            
+
         }
 
         public async Task<int> Update(Customer customer)

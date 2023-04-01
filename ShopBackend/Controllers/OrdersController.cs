@@ -4,7 +4,6 @@ using ShopBackend.Dtos;
 using ShopBackend.Models;
 using ShopBackend.Repositories;
 
-
 namespace ShopBackend.Controllers
 {
     [ApiController]

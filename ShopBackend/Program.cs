@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using ShopBackend.Contexts;
 using ShopBackend.Repositories;
 using System.Text.Json.Serialization;
@@ -45,6 +44,7 @@ internal class Program
         builder.Services.AddScoped<IProductRepository, ProductRepository>();
         builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
         builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+        builder.Services.AddScoped<IAddressRepository, AddressRepository>();
         builder.Services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();
 
         var app = builder.Build();

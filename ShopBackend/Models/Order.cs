@@ -1,4 +1,4 @@
-﻿using ShopBackend.Utils;
+using ShopBackend.Utils;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -9,23 +9,28 @@ namespace ShopBackend.Models
         [Key]
         public Guid Id { get; set; }
 
+        [Required(ErrorMessage = "OrderDate cannot be empty")]
         public DateTime OrderDate { get; set; }
 
         public OrderStatus OrderStatus { get; set; }
 
         public bool CheckMarketing { get; set; }
 
+        [Required(ErrorMessage = "Submit comment cannot be empty")]
         public string SubmitComment { get; set; } = null!;
 
         // Nullable for now, so that frontend can create an order without a Customer
+        [Required(ErrorMessage = "CustomerEmail cannot be empty")]
         [ForeignKey("Customer")]
-        public string? CustomerEmail { get; set; }
+        public string CustomerEmail { get; set; } = null!;
 
         [ForeignKey("Address")]
-        public Guid ShippingAddressId { get; set; }
+        [Required(ErrorMessage = "ShippingAddress cannot be empty")]        
+        public int  ShippingAddressId { get; set; }
 
         [ForeignKey("Address")]
-        public Guid BillingAddressId { get; set; }
+        [Required(ErrorMessage = "BillingAddress cannot be empty")]
+        public int BillingAddressId { get; set;}
 
         // Nullable for now, so that frontend can create an order without a Customer
         public virtual Customer? Customer { get; set; }
