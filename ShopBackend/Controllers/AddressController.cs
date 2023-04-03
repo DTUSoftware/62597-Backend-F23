@@ -50,7 +50,7 @@ namespace ShopBackend.Controllers
             var result = await _addressRepository.Insert(address.CreateAsAddressModel());
             if (result != default && result > 0)
             {
-                return Created("shoppingApiServer", address.Email + " address is registered successfully.");
+                return Created("shoppingApiServer", "Address is registered successfully.");
             }
 
             return NotFound("Address could not be registered!");
@@ -58,7 +58,7 @@ namespace ShopBackend.Controllers
 
         // PUT api/Addresses/{address}
         [HttpPut]
-        public async Task<ActionResult<string>> Put([FromBody] Address address)
+        public async Task<ActionResult<string>> Update([FromBody] Address address)
         {
             var existed = await _addressRepository.Get(address.Id);
             if (existed == null)
@@ -69,7 +69,7 @@ namespace ShopBackend.Controllers
             var result = await _addressRepository.Update(address);
             if (result != default && result > 0)
             {
-                return Ok("Address is updated.");
+                return Ok("Address has been updated!");
             }
 
             return NotFound("Address cannot be updated");

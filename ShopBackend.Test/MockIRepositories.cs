@@ -1,13 +1,8 @@
 ﻿using Moq;
 using ShopBackend.Models;
 using ShopBackend.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ShopBackend.Test.ControllersTest
+namespace ShopBackend.Test
 {
     public class MockIRepositories
     {
@@ -54,5 +49,50 @@ namespace ShopBackend.Test.ControllersTest
 
             return mock;
         }
+
+        public static Mock<IAddressRepository> GetAddressRepository(List<Address> addressList)
+        {
+            var mock = new Mock<IAddressRepository>();
+
+            mock.Setup(arm => arm.GetAll()).ReturnsAsync(() => addressList);
+
+            mock.Setup(arm => arm.Get(It.IsAny<Guid>())).Returns((Guid Id) =>
+            {
+                Address? address = addressList.FirstOrDefault(a => a.Id == Id);
+                return Task.FromResult(address);
+            });
+
+            mock.Setup(arm => arm.Insert(It.IsAny<Address>())).Returns((Address newAddress) =>
+            {
+                if (addressList.Exists(a => a.Id == newAddress.Id)) { return Task.FromResult(0); }
+
+                else { addressList.Add(newAddress); return Task.FromResult(1); }
+            });
+
+            mock.Setup(arm => arm.Update(It.IsAny<Address>())).Returns((Address targetAddress) =>
+            {
+                if (!addressList.Exists(a => a.Id == targetAddress.Id)) { return Task.FromResult(0); }
+                else
+                {
+                    var orginal = addressList.Where(a => a.Id == targetAddress.Id).Single().Email = targetAddress.Email;
+
+                    return Task.FromResult(1);
+                }
+            });
+
+            mock.Setup(arm => arm.Delete(It.IsAny<Guid>())).Returns((Guid addressId) =>
+            {
+                if (!addressList.Exists(a => a.Id == addressId)) { return Task.FromResult(0); }
+                else
+                {
+                    addressList.RemoveAll(a => a.Id == addressId);
+                    return Task.FromResult(1);
+                }
+            });
+
+            return mock;
+        }
+
+
     }
 }

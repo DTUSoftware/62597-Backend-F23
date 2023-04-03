@@ -65,7 +65,7 @@ namespace ShopBackend.Controllers
 
         // PUT api/<OrdersController>/5
         [HttpPut("{orderId}")]
-        public async Task<ActionResult<string>> Put(Guid orderId, [FromBody] OrderDto order)   
+        public async Task<ActionResult<string>> Update(Guid orderId, [FromBody] OrderDto order)   
         {
             var orderToUpdate = await _orderRepository.Get(orderId);
             if (orderToUpdate == default)

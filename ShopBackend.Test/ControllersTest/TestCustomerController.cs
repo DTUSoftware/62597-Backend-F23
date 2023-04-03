@@ -12,28 +12,20 @@ namespace ShopBackend.Test.ControllersTest
     public class TestCustomerController
     {
         private readonly List<Customer> customerList;
+        private readonly CustomersController customersController;
 
         public TestCustomerController() {
-            customerList= new List<Customer>
-            {
-                new Customer{Email="goli@gmail.com", Password="1234"},
-                new Customer{Email="Karen@gmail.com", Password="1234"}
-            };
-        }
-
-        private CustomersController Controller()
-        {
             //Mutual Arrange
+            customerList = DataHelper.GetFakeCustomerList();            
             var mock = MockIRepositories.GetCustomerRepository(customerList);
-            var customerController = new CustomersController(mock.Object);
-            return customerController;
+            customersController = new CustomersController(mock.Object);
         }
 
         [Fact]
         public async Task GetAllCustomers_onOk()
         {
             //Act
-            var actionResult=  await Controller().Get();
+            var actionResult=  await customersController.Get();
 
             //Assert
             Assert.NotNull(actionResult);
@@ -66,7 +58,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task GetCustomerByEmail_onOk(string customerEmail) 
         {   
             //Act
-            var actionResult= await Controller().Get(customerEmail);
+            var actionResult= await customersController.Get(customerEmail);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -80,7 +72,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task GetCustomerByEmail_onNotFound(string customerEmail)
         {
             //Act
-            var actionResult = await Controller().Get(customerEmail);
+            var actionResult = await customersController.Get(customerEmail);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -96,7 +88,7 @@ namespace ShopBackend.Test.ControllersTest
             var newCustomer = new CreateCustomerDto { Email = "dg@gmail.com", Password = "1234" };
 
             //Act
-            var actionResult = await Controller().Create(newCustomer);
+            var actionResult = await customersController.Create(newCustomer);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -112,7 +104,7 @@ namespace ShopBackend.Test.ControllersTest
             var newCustomer = new CreateCustomerDto { Email = null, Password = "5678" };
 
             //Act
-            var actionResult = await Controller().Create(newCustomer);
+            var actionResult = await customersController.Create(newCustomer);
 
             //Assert
             Assert.NotNull (actionResult);
@@ -128,7 +120,7 @@ namespace ShopBackend.Test.ControllersTest
             var newCustomer = new CreateCustomerDto { Email = "goli@gmail.com", Password = "5678" };
 
             //Act
-            var actionResult = await Controller().Create(newCustomer);
+            var actionResult = await customersController.Create(newCustomer);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -145,7 +137,7 @@ namespace ShopBackend.Test.ControllersTest
             var targetCustomer = new CustomerDto{ Email = "goli@gmail.com" };
 
             //Act
-            var actionResult = await Controller().Update(targetCustomer);
+            var actionResult = await customersController.Update(targetCustomer);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -161,7 +153,7 @@ namespace ShopBackend.Test.ControllersTest
             var targetCustomer = new CustomerDto { Email = null };
 
             //Act
-            var actionResult = await Controller().Update(targetCustomer);
+            var actionResult = await customersController.Update(targetCustomer);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -177,7 +169,7 @@ namespace ShopBackend.Test.ControllersTest
             var targetCustomer = new CustomerDto { Email = "David@gmail.com" };
 
             //Act
-            var actionResult = await Controller().Update(targetCustomer);
+            var actionResult = await customersController.Update(targetCustomer);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -191,7 +183,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task DeleteCustomer_onOk(string customerEmail)
         {
             //Act
-            var actionResult = await Controller().Delete(customerEmail);
+            var actionResult = await customersController.Delete(customerEmail);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -206,7 +198,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task DeleteCustomer_onBadRequest_NullEmail(string customerEmail)
         {
             //Act
-            var actionResult = await Controller().Delete(customerEmail);
+            var actionResult = await customersController.Delete(customerEmail);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -221,7 +213,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task DeleteCustomer_onNotFound(string customerEmail)
         {
             //Act
-            var actionResult = await Controller().Delete(customerEmail);
+            var actionResult = await customersController.Delete(customerEmail);
 
             //Assert
             Assert.NotNull(actionResult);
