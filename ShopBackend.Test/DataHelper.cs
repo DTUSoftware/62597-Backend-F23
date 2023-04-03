@@ -24,8 +24,8 @@ namespace ShopBackend.Test
                 },
                 new Address{
                     Id= Guid.Parse("2a2b2c2d-d9cb-469f-a165-70867728950e"),
-                    FirstName = "Goli" ,
-                    LastName = "Haidari",
+                    FirstName = "Karen" ,
+                    LastName = "Hansen",
                     Email="Karen@gmail.com",
                     MobileNr = "12345678",
                     Company = "DTU",
