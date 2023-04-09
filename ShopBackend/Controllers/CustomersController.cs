@@ -2,24 +2,45 @@
 using ShopBackend.Dtos;
 using ShopBackend.Models;
 using ShopBackend.Repositories;
+using ShopBackend.Security;
 
 namespace ShopBackend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class CustomersController : Controller
+    public class CustomersController : ControllerBase
     {
         private readonly ICustomerRepository _customerRepository;
+        private readonly IAuthService _authService;
+        private readonly IPasswordAuth _passwordAuth;
 
-        public CustomersController(ICustomerRepository customerRepository)
+        public CustomersController(ICustomerRepository customerRepository, IAuthService authService, IPasswordAuth passwordAuth)
         {
             _customerRepository = customerRepository;
+            _authService = authService;
+            _passwordAuth = passwordAuth;
+        }
+
+        [HttpPost("login")]
+        public async Task<ActionResult> Login(LoginDto loginDto)
+        {
+            var result = await _authService.AuthenticateUser(loginDto);
+
+            if (!result)
+            {
+                return Unauthorized("Incorrect username or password!");
+            }
+
+            var token = _authService.CreateToken();
+
+            return Ok(token);
         }
 
 
         //Get api/Customers
+        /*
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CustomerDto>>> Get()
+        public async Task<ActionResult<IEnumerable<CustomerDto>>> GetAll()
         {
             var customers = (await _customerRepository.GetAll()).Select(customer => customer.AsCustomerDto());
             if (customers.Any())
@@ -29,15 +50,17 @@ namespace ShopBackend.Controllers
 
             return NotFound("The specified customers does not exist!");
         }
+        */
 
         //Get api/Customers/example@gmail.com
-        [HttpGet("{email}", Name = "GetCustomerByEmail")]
-        public async Task<ActionResult<Customer>> Get(string email)
+        [HttpGet]
+        public async Task<ActionResult<Customer>> Get()
         {
-            var customer = await _customerRepository.Get(email);
-            if(customer != default)
+            //Finds user email using token claims
+            var result = await _customerRepository.Get(_authService.GetEmailFromToken(User));
+            if (result != default)
             {
-                return Ok(customer.AsCustomerDto());
+                return Ok(result.AsCustomerDto());
             }
 
             return NotFound("The specified customer does not exist!");
@@ -45,23 +68,27 @@ namespace ShopBackend.Controllers
 
 
         //Post api/Customers
-        [HttpPost]
-        public async Task<ActionResult<string>> Create([FromBody] CreateCustomerDto customer)
+        [HttpPost("Register")]
+        public async Task<ActionResult> Register([FromBody] CreateCustomerDto customerDto)
         {
-            if (customer.Email == null)
-            {
-                return BadRequest("Customer email is required to register the customer!");
-            }
-            var isEmailTaken = await _customerRepository.Get(customer.Email);
+            var isEmailTaken = await _customerRepository.Get(customerDto.Email);
             if (isEmailTaken != default)
             {
                 return BadRequest("This email is already in use!");
             }
 
-            var result = await _customerRepository.Insert(customer.CreateAsCustomerModel());
-            if(result != default && result > 0)
+            var customer = new Customer
             {
-                return Ok("Customer is inserted successfully!");
+                Email = customerDto.Email,
+                Password = _passwordAuth.GeneratePasswordHash(customerDto.Password),
+            };
+
+            var result = await _customerRepository.Insert(customer);
+            if (result != default && result > 0)
+            {
+                var token = _authService.CreateToken();
+                var message = "Customer is inserted successfully!";
+                return Ok(new { token, message });
             }
 
             return NotFound("Customer could not be registered!");
@@ -70,21 +97,21 @@ namespace ShopBackend.Controllers
 
         //Put api/Customers
         [HttpPut]
-        public async Task<ActionResult<string>> Update([FromBody] CustomerDto customer)
+        public async Task<ActionResult<string>> Update([FromBody] UpdateCustomerDto customerDto)
         {
-            if (customer.Email == null)
+            if (customerDto.Email == default)
             {
                 return BadRequest("Customer email is required to update the customer!");
             }
-            var customerToUpdate = await _customerRepository.Get(customer.Email);
+            var customerToUpdate = await _customerRepository.Get(customerDto.Email);
             if (customerToUpdate == default)
             {
                 return NotFound("Customer does not exsist!");
             }
 
-            customerToUpdate.Email = customer.Email;
-            //customerToUpdate.Password = customer.Password;
-            customerToUpdate.Orders = customer.Orders != null ? new List<Order>(customer.Orders.Select(x => x.AsOrderModel())) : new List<Order>();
+            customerToUpdate.Email = customerDto.Email;
+            customerToUpdate.Password = _passwordAuth.GeneratePasswordHash(customerDto.Password);
+            customerToUpdate.Orders = customerDto.Orders != null ? new List<Order>(customerDto.Orders.Select(x => x.AsOrderModel())) : new List<Order>();
 
             var result = await _customerRepository.Update(customerToUpdate);
             if (result != default && result > 0)
@@ -97,11 +124,11 @@ namespace ShopBackend.Controllers
 
 
         //Delete api/Customers
-        [HttpDelete("{email}")]
-        public async Task<ActionResult<string>> Delete(string email)
+        [HttpDelete]
+        public async Task<ActionResult<string>> Delete()
         {
-            var result = await _customerRepository.Delete(email);
-            if (result != default && result > 0)
+            var result = await _customerRepository.Get(_authService.GetEmailFromToken(User));
+            if (result != default)
             {
                 return Ok("Customer has been deleted!");
             }

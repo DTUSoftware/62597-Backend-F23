@@ -182,15 +182,6 @@ namespace ShopBackend
             };
         }
 
-        public static Customer CreateAsCustomerModel(this CreateCustomerDto customerDto)
-        {
-            return new Customer
-            {
-                Email = customerDto.Email,
-                Password= customerDto.Password,
-            };
-        }
-
         public static Address CreateAsAddressModel(this CreateAddressDto addressDto)
         {
             return new Address

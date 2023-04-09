@@ -8,7 +8,7 @@ namespace ShopBackend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class OrdersController : Controller
+    public class OrdersController : ControllerBase
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderDetailRepository _orderDetailRepository;
@@ -22,7 +22,7 @@ namespace ShopBackend.Controllers
 
         // GET: api/<OrdersController>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<OrderDto>>> Get()
+        public async Task<ActionResult<IEnumerable<OrderDto>>> GetAll()
         {
             var orders = (await _orderRepository.GetAll()).Select(order => order.AsOrderDto());
             if (orders.Any())
@@ -65,7 +65,7 @@ namespace ShopBackend.Controllers
 
         // PUT api/<OrdersController>/5
         [HttpPut("{orderId}")]
-        public async Task<ActionResult<string>> Put(Guid orderId, [FromBody] OrderDto order)   
+        public async Task<ActionResult<string>> Update(Guid orderId, [FromBody] OrderDto order)   
         {
             var orderToUpdate = await _orderRepository.Get(orderId);
             if (orderToUpdate == default)

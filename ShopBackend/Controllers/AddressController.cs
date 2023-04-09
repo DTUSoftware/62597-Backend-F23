@@ -8,7 +8,7 @@ namespace ShopBackend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class AddressController : Controller
+    public class AddressController : ControllerBase
     {
         private readonly IAddressRepository _addressRepository;
         public AddressController(IAddressRepository addressRepository)
@@ -18,7 +18,7 @@ namespace ShopBackend.Controllers
 
         // GET: api/Addresses
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Address>>> Get()
+        public async Task<ActionResult<IEnumerable<Address>>> GetAll()
         {
             var addressList = await _addressRepository.GetAll();
 
@@ -58,7 +58,7 @@ namespace ShopBackend.Controllers
 
         // PUT api/Addresses/{address}
         [HttpPut]
-        public async Task<ActionResult<string>> Put([FromBody] Address address)
+        public async Task<ActionResult<string>> Update([FromBody] Address address)
         {
             var existed = await _addressRepository.Get(address.Id);
             if (existed == null)

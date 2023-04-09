@@ -6,7 +6,7 @@ namespace ShopBackend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProductsController : Controller
+    public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
 
@@ -18,7 +18,7 @@ namespace ShopBackend.Controllers
 
         // GET: api/Products
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductDto>>> Get()
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll()
         {
             var products = (await _productRepository.GetAll()).Select(product => product.AsProductDto());
             if (products.Any())
