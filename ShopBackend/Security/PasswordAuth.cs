@@ -1,5 +1,5 @@
-﻿using ShopBackend.Models;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 
 namespace ShopBackend.Security
 {
@@ -28,6 +28,12 @@ namespace ShopBackend.Security
             var passwordHash = Rfc2898DeriveBytes.Pbkdf2(password, passwordSalt, iterationCount, _algorithName, keyByteSize);
 
             return string.Join(';',Convert.ToBase64String(passwordSalt), Convert.ToBase64String(passwordHash));
+        }
+
+        public bool IsPasswordStrong(string password)
+        {
+            Regex validateGuidRegex = new("^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-/*_]).{8,}$");
+            return validateGuidRegex.IsMatch(password);
         }
     }
 }

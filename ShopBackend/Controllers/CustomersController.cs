@@ -56,8 +56,14 @@ namespace ShopBackend.Controllers
 
         //Post api/customers/register
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] CreateCustomerDto customerDto)
+        public async Task<ActionResult> Register([FromBody] CreateCustomerDto customerDto)
         {
+            var isPasswordStrong = _passwordAuth.IsPasswordStrong(customerDto.Password);
+            if (!isPasswordStrong)
+            {
+                return BadRequest("The password must have at least 8 letters and contain at least one upper case letter, one lower case letter, one number, and one special character!");
+            }
+
             var isEmailTaken = await _customerRepository.Get(customerDto.Email);
             if (isEmailTaken != default)
             {
