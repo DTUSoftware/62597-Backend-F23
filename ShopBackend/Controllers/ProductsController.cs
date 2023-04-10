@@ -2,6 +2,7 @@
 using ShopBackend.Repositories;
 using ShopBackend.Dtos;
 using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ShopBackend.Controllers
 {
@@ -34,6 +35,7 @@ namespace ShopBackend.Controllers
 
         // GET: api/products/{productId}
         [HttpGet("{productId}")]
+        [EnableCors("FrontendPolicy")]
         public async Task<ActionResult<ProductDto>> Get(string productId)
         {
             var product = await _productRepository.Get(productId);
@@ -48,6 +50,7 @@ namespace ShopBackend.Controllers
 
         // Post: api/products
         [HttpPost]
+        [Authorize]
         public async Task<ActionResult<string>> Create([FromBody] ProductDto product)
         {
             var isIdTaken = await _productRepository.Get(product.Id);
@@ -67,6 +70,7 @@ namespace ShopBackend.Controllers
 
         // Post: api/products/multiple
         [HttpPost("multiple")]
+        [Authorize]
         public async Task<ActionResult<string>> CreateMultiple(IEnumerable<ProductDto> products)
         {
             foreach (ProductDto product in products)
@@ -84,6 +88,7 @@ namespace ShopBackend.Controllers
 
         // Put: api/products
         [HttpPut]
+        [Authorize]
         public async Task<ActionResult<string>> Update([FromBody] ProductDto product)
         {
             var productToUpdate = await _productRepository.Get(product.Id);
@@ -111,6 +116,7 @@ namespace ShopBackend.Controllers
 
         // Delete: api/products/{productId}
         [HttpDelete("{productId}")]
+        [Authorize]
         public async Task<ActionResult<string>> Delete(string productId)
         {
             var result=await _productRepository.Delete(productId);

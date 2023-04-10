@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using ShopBackend.Dtos;
 using ShopBackend.Models;
@@ -22,6 +23,7 @@ namespace ShopBackend.Controllers
 
         // GET: api/orders
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<OrderDto>>> GetAll()
         {
             var orders = (await _orderRepository.GetAll()).Select(order => order.AsOrderDto());
@@ -36,6 +38,7 @@ namespace ShopBackend.Controllers
 
         // GET api/orders/{orderId}
         [HttpGet("{orderId}")]
+        [Authorize]
         public async Task<ActionResult<OrderDto>> Get(Guid orderId)
         {
             var order = await _orderRepository.Get(orderId);
@@ -65,6 +68,7 @@ namespace ShopBackend.Controllers
 
         // PUT api/orders
         [HttpPut]
+        [Authorize]
         public async Task<ActionResult<string>> Update([FromBody] OrderDto order)   
         {
             var orderToUpdate = await _orderRepository.Get(order.Id);
@@ -90,6 +94,7 @@ namespace ShopBackend.Controllers
 
         // DELETE api/orders/{orderId}
         [HttpDelete("{orderId}")]
+        [Authorize]
         public async Task<ActionResult<string>> Delete(Guid orderId)
         {
 
