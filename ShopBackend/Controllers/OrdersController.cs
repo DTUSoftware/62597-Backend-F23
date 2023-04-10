@@ -20,7 +20,7 @@ namespace ShopBackend.Controllers
         }
 
 
-        // GET: api/<OrdersController>
+        // GET: api/orders
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrderDto>>> GetAll()
         {
@@ -34,8 +34,8 @@ namespace ShopBackend.Controllers
         }
 
 
-        // GET api/<OrdersController>/5
-        [HttpGet("{orderId}", Name= "GetOrderById")]
+        // GET api/orders/{orderId}
+        [HttpGet("{orderId}")]
         public async Task<ActionResult<OrderDto>> Get(Guid orderId)
         {
             var order = await _orderRepository.Get(orderId);
@@ -48,9 +48,9 @@ namespace ShopBackend.Controllers
         }
 
 
-        // POST api/<OrdersController>
-        [EnableCors("FrontendPolicy")]
+        // POST api/orders
         [HttpPost]
+        [EnableCors("FrontendPolicy")]
         public async Task<ActionResult<string>> Create([FromBody] CreateOrderDto order)
         {
             var result = await _orderRepository.Insert(order.CreateAsOrderModel());
@@ -63,11 +63,11 @@ namespace ShopBackend.Controllers
         }
 
 
-        // PUT api/<OrdersController>/5
-        [HttpPut("{orderId}")]
-        public async Task<ActionResult<string>> Update(Guid orderId, [FromBody] OrderDto order)   
+        // PUT api/orders
+        [HttpPut]
+        public async Task<ActionResult<string>> Update([FromBody] OrderDto order)   
         {
-            var orderToUpdate = await _orderRepository.Get(orderId);
+            var orderToUpdate = await _orderRepository.Get(order.Id);
             if (orderToUpdate == default)
             {
                 return NotFound("Order does not exsist!");
@@ -88,7 +88,7 @@ namespace ShopBackend.Controllers
         }
 
 
-        // DELETE api/<OrdersController>/5
+        // DELETE api/orders/{orderId}
         [HttpDelete("{orderId}")]
         public async Task<ActionResult<string>> Delete(Guid orderId)
         {

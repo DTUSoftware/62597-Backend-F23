@@ -21,23 +21,7 @@ namespace ShopBackend.Controllers
             _passwordAuth = passwordAuth;
         }
 
-        [HttpPost("login")]
-        public async Task<ActionResult> Login(LoginDto loginDto)
-        {
-            var result = await _authService.AuthenticateUser(loginDto);
-
-            if (!result)
-            {
-                return Unauthorized("Incorrect username or password!");
-            }
-
-            var token = _authService.CreateToken();
-
-            return Ok(token);
-        }
-
-
-        //Get api/Customers
+        //Get api/customers
         /*
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CustomerDto>>> GetAll()
@@ -52,7 +36,7 @@ namespace ShopBackend.Controllers
         }
         */
 
-        //Get api/Customers/example@gmail.com
+        //Get api/customers
         [HttpGet]
         public async Task<ActionResult<Customer>> Get()
         {
@@ -67,8 +51,8 @@ namespace ShopBackend.Controllers
         }
 
 
-        //Post api/Customers
-        [HttpPost("Register")]
+        //Post api/customers/register
+        [HttpPost("register")]
         public async Task<ActionResult> Register([FromBody] CreateCustomerDto customerDto)
         {
             var isEmailTaken = await _customerRepository.Get(customerDto.Email);
@@ -86,16 +70,17 @@ namespace ShopBackend.Controllers
             var result = await _customerRepository.Insert(customer);
             if (result != default && result > 0)
             {
+                await _authService.AuthenticateUser(new LoginDto { Email = customerDto.Email, Password = customerDto.Password });
                 var token = _authService.CreateToken();
-                var message = "Customer is inserted successfully!";
-                return Ok(new { token, message });
+                var message = "Customer was registered successfully!";
+                return Ok(new { Token = token, message });
             }
 
             return NotFound("Customer could not be registered!");
         }
 
 
-        //Put api/Customers
+        //Put api/customers
         [HttpPut]
         public async Task<ActionResult<string>> Update([FromBody] UpdateCustomerDto customerDto)
         {
@@ -123,7 +108,7 @@ namespace ShopBackend.Controllers
         }
 
 
-        //Delete api/Customers
+        //Delete api/customers
         [HttpDelete]
         public async Task<ActionResult<string>> Delete()
         {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShopBackend.Repositories;
 using ShopBackend.Dtos;
+using Microsoft.AspNetCore.Cors;
 
 namespace ShopBackend.Controllers
 {
@@ -16,8 +17,9 @@ namespace ShopBackend.Controllers
         }
 
 
-        // GET: api/Products
+        // GET: api/products
         [HttpGet]
+        [EnableCors("FrontendPolicy")]
         public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll()
         {
             var products = (await _productRepository.GetAll()).Select(product => product.AsProductDto());
@@ -30,8 +32,8 @@ namespace ShopBackend.Controllers
         }
 
 
-        // GET: api/Products/{5}
-        [HttpGet("{productId}", Name ="GetProductById")]
+        // GET: api/products/{productId}
+        [HttpGet("{productId}")]
         public async Task<ActionResult<ProductDto>> Get(string productId)
         {
             var product = await _productRepository.Get(productId);
@@ -44,14 +46,10 @@ namespace ShopBackend.Controllers
         }
 
 
-        // Post: api/Products
+        // Post: api/products
         [HttpPost]
         public async Task<ActionResult<string>> Create([FromBody] ProductDto product)
         {
-            if (product.Id == null)
-            {
-                return BadRequest("Product id is required to register the product!");
-            }
             var isIdTaken = await _productRepository.Get(product.Id);
             if (isIdTaken != default)
             {
@@ -67,8 +65,8 @@ namespace ShopBackend.Controllers
             return NotFound("Product could not be inserted!");
         }
 
-        // Post: api/Products/Multiple Primarily used for populating the server database
-        [HttpPost("Multiple")]
+        // Post: api/products/multiple
+        [HttpPost("multiple")]
         public async Task<ActionResult<string>> CreateMultiple(IEnumerable<ProductDto> products)
         {
             foreach (ProductDto product in products)
@@ -84,7 +82,7 @@ namespace ShopBackend.Controllers
         }
 
 
-        // Put: api/Products/5
+        // Put: api/products
         [HttpPut]
         public async Task<ActionResult<string>> Update([FromBody] ProductDto product)
         {
@@ -111,7 +109,7 @@ namespace ShopBackend.Controllers
         }
 
 
-        // Delete: api/Products/5
+        // Delete: api/products/{productId}
         [HttpDelete("{productId}")]
         public async Task<ActionResult<string>> Delete(string productId)
         {
