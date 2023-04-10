@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShopBackend.Dtos;
 using ShopBackend.Models;
 using ShopBackend.Repositories;
@@ -24,6 +25,7 @@ namespace ShopBackend.Controllers
         //Get api/customers
         /*
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult<IEnumerable<CustomerDto>>> GetAll()
         {
             var customers = (await _customerRepository.GetAll()).Select(customer => customer.AsCustomerDto());
@@ -38,7 +40,8 @@ namespace ShopBackend.Controllers
 
         //Get api/customers
         [HttpGet]
-        public async Task<ActionResult<Customer>> Get()
+        [Authorize]
+        public async Task<ActionResult<CustomerDto>> Get()
         {
             //Finds user email using token claims
             var result = await _customerRepository.Get(_authService.GetEmailFromToken(User));
@@ -82,6 +85,7 @@ namespace ShopBackend.Controllers
 
         //Put api/customers
         [HttpPut]
+        [Authorize]
         public async Task<ActionResult<string>> Update([FromBody] UpdateCustomerDto customerDto)
         {
             if (customerDto.Email == default)
@@ -110,6 +114,7 @@ namespace ShopBackend.Controllers
 
         //Delete api/customers
         [HttpDelete]
+        [Authorize]
         public async Task<ActionResult<string>> Delete()
         {
             var result = await _customerRepository.Get(_authService.GetEmailFromToken(User));

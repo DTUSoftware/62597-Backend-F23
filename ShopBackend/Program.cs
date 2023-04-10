@@ -119,12 +119,11 @@ internal class Program
         }
 
         app.UseAuthentication();
+        app.UseAuthorization();
 
         app.UseHttpsRedirection();
 
         app.UseCors();
-
-        app.UseAuthorization();
 
         app.MapControllers();
 
