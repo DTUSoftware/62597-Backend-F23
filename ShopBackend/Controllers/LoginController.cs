@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShopBackend.Dtos;
-using ShopBackend.Repositories;
 using ShopBackend.Security;
 
 namespace ShopBackend.Controllers

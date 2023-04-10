@@ -55,8 +55,8 @@ namespace ShopBackend.Controllers
 
 
         //Post api/customers/register
-        [HttpPost("register")]
-        public async Task<ActionResult> Register([FromBody] CreateCustomerDto customerDto)
+        [HttpPost]
+        public async Task<ActionResult> Create([FromBody] CreateCustomerDto customerDto)
         {
             var isEmailTaken = await _customerRepository.Get(customerDto.Email);
             if (isEmailTaken != default)
