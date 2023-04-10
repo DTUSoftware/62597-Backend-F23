@@ -32,8 +32,8 @@ namespace ShopBackend.Security
 
         public bool IsPasswordStrong(string password)
         {
-            Regex validateGuidRegex = new("^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-/*_]).{8,}$");
-            return validateGuidRegex.IsMatch(password);
+            Regex validPassword = new("^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-/*_]).{8,}$");
+            return validPassword.IsMatch(password);
         }
     }
 }
