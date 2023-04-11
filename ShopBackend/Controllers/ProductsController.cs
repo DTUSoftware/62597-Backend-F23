@@ -29,13 +29,11 @@ namespace ShopBackend.Controllers
             if (products.Any())
             {
                 var productList = products.ToList();
-
                 foreach (ProductDto prod in productList)
-                //for (var i = 0; i < productList.Count(); i++)
                 {
                     prod.Links = (List<Link>)CreateLinksForProduct(prod.Id);
                 }
-                
+
                 return Ok(productList);
             }
 
@@ -44,15 +42,15 @@ namespace ShopBackend.Controllers
 
 
         // GET: api/Products/{5}
-        [HttpGet("{productId}", Name ="GetProductById")]
+        [HttpGet("{productId}", Name = "GetProductById")]
         public async Task<ActionResult<ProductDto>> GetProductById(string productId)
         {
             var product = await _productRepository.Get(productId);
-            if(product != default)
+            if (product != default)
             {
                 ProductDto prod = product.AsProductDto();
                 prod.Links = (List<Link>)CreateLinksForProduct(productId);
-                return Ok(prod); 
+                return Ok(prod);
             }
 
             return NotFound("The specified product does not exist!");
@@ -74,9 +72,9 @@ namespace ShopBackend.Controllers
             }
 
             var result = await _productRepository.Insert(product.AsProductModel());
-            if(result != default && result > 0) 
-            { 
-                return Ok("Product is inserted successfully!"); 
+            if (result != default && result > 0)
+            {
+                return Ok("Product is inserted successfully!");
             }
 
             return NotFound("Product could not be inserted!");
@@ -101,7 +99,7 @@ namespace ShopBackend.Controllers
 
         // Put: api/Products/5
         [HttpPut("{productId}", Name = "UpdateProductById")]
-        public async Task<ActionResult<string>> UpdateProductById([FromBody] ProductDto product )
+        public async Task<ActionResult<string>> UpdateProductById([FromBody] ProductDto product)
         {
             var productToUpdate = await _productRepository.Get(product.Id);
             if (productToUpdate == default)
@@ -117,9 +115,9 @@ namespace ShopBackend.Controllers
             productToUpdate.UpsellProductId = product.UpsellProductId;
 
             var result = await _productRepository.Update(productToUpdate);
-            if(result != default && result > 0)
-            { 
-                return Ok("Product updated successfully!"); 
+            if (result != default && result > 0)
+            {
+                return Ok("Product updated successfully!");
             }
 
             return NotFound("Product could not be updated!");
@@ -130,10 +128,10 @@ namespace ShopBackend.Controllers
         [HttpDelete("{productId}", Name = "DeleteProductById")]
         public async Task<ActionResult<string>> DeleteProductById(string productId)
         {
-            var result=await _productRepository.Delete(productId);
-            if(result !=default)
+            var result = await _productRepository.Delete(productId);
+            if (result != default)
             {
-                return Ok("Product has been deleted!"); 
+                return Ok("Product has been deleted!");
             }
 
             return NotFound("Product could not be deleted!");
