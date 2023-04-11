@@ -28,12 +28,15 @@ namespace ShopBackend.Controllers
             var products = (await _productRepository.GetAll()).Select(product => product.AsProductDto());
             if (products.Any())
             {
-                foreach (ProductDto prod in products)
+                var productList = products.ToList();
+
+                foreach (ProductDto prod in productList)
+                //for (var i = 0; i < productList.Count(); i++)
                 {
-                    var productlinks = CreateLinksForProduct(prod.Id);
-                    prod.Links = (List<Link>)productlinks;
+                    prod.Links = (List<Link>)CreateLinksForProduct(prod.Id);
                 }
-                return Ok(products);
+                
+                return Ok(productList);
             }
 
             return NotFound("The specified products does not exist!");
