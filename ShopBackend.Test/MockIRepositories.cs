@@ -93,6 +93,65 @@ namespace ShopBackend.Test
             return mock;
         }
 
+        public static Mock<IProductRepository> GetProductRepository(List<Product> productList)
+        {
+            var mock = new Mock<IProductRepository>();
+
+            mock.Setup(arm => arm.GetAll()).ReturnsAsync(() => productList);
+
+            mock.Setup(crm => crm.Get(It.IsAny<string>())).Returns((string productId) =>
+            {
+                Product? product = productList.FirstOrDefault(p => p.Id == productId);
+                return Task.FromResult(product);
+            });
+
+            mock.Setup(arm => arm.Insert(It.IsAny<Product>())).Returns((Product newProduct) =>
+            {
+                if (productList.Exists(p => p.Id == newProduct.Id))
+                {
+                    throw new Exception("Product already exists");
+                }
+                else
+                {
+                    productList.Add(newProduct);
+                    return Task.FromResult(1);
+                }
+            });
+
+            mock.Setup(crm => crm.Update(It.IsAny<Product>())).Returns((Product targetProduct) =>
+            {
+                var originalProduct = productList.FirstOrDefault(p => p.Id == targetProduct.Id);
+
+                if (originalProduct == null) { return Task.FromResult(0); }
+
+                // use reflection to update all properties
+                var properties = typeof(Product).GetProperties().Where(prop => prop.CanRead && prop.CanWrite);
+                foreach (var property in properties)
+                {
+                    var targetValue = property.GetValue(targetProduct);
+                    if (targetValue != null)
+                    {
+                        property.SetValue(originalProduct, targetValue);
+                    }
+                }
+
+                return Task.FromResult(1);
+            });
+
+            mock.Setup(crm => crm.Delete(It.IsAny<string>())).Returns((string productId) =>
+            {
+                var productToRemove = productList.FirstOrDefault(p => p.Id == productId);
+                if (productToRemove == null || !productList.Exists(p => p.Id == productId)) { return Task.FromResult(0); }
+                else
+                {
+                    productList.Remove(productToRemove);
+                    return Task.FromResult(1);
+                }
+            });
+
+            return mock;
+        }
+
 
     }
 }
