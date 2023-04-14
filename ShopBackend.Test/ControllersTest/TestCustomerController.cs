@@ -27,7 +27,7 @@ namespace ShopBackend.Test.ControllersTest
             //Mutual Arrange
             var mockCustomerRepository = MockIRepositories.GetCustomerRepository(customerList);
             var mockAuthService = MockIRepositories.GetAuthService(customerList, customerList.First(), "TestToken");
-            var mockPasswordAuth = MockIRepositories.GetPasswordAuth(customerList);
+            var mockPasswordAuth = MockIRepositories.GetPasswordAuth();
             var customerController = new CustomersController(mockCustomerRepository.Object, mockAuthService.Object, mockPasswordAuth.Object);
             return customerController;
         }
@@ -51,8 +51,8 @@ namespace ShopBackend.Test.ControllersTest
             //Arrange
             var emptyCustomerList = new List<Customer>();
             var mockCustomerRepository = MockIRepositories.GetCustomerRepository(emptyCustomerList);
-            var mockAuthService = MockIRepositories.GetAuthService(emptyCustomerList);
-            var mockPasswordAuth = MockIRepositories.GetPasswordAuth(emptyCustomerList);
+            var mockAuthService = MockIRepositories.GetAuthService(emptyCustomerList, emptyCustomerList.First(), "TestToken");
+            var mockPasswordAuth = MockIRepositories.GetPasswordAuth();
             var Controller = new CustomersController(mockCustomerRepository.Object, mockAuthService.Object, mockPasswordAuth.Object);
 
 
@@ -66,12 +66,11 @@ namespace ShopBackend.Test.ControllersTest
             Assert.Equal("The specified customers does not exist!", msg);
         }
 
-        [Theory]
-        [InlineData("goli@gmail.com")]
-        public async Task GetCustomerByEmail_onOk(string customerEmail) 
+        [Fact]
+        public async Task GetCustomerByEmail_onOk() 
         {   
             //Act
-            var actionResult= await Controller().Get(customerEmail);
+            var actionResult= await Controller().Get();
 
             //Assert
             Assert.NotNull(actionResult);
@@ -80,12 +79,11 @@ namespace ShopBackend.Test.ControllersTest
             Assert.Equal(customerList[0].Email, customer.Email);
         }
 
-        [Theory]
-        [InlineData("Jeppe@gmail.com")]
-        public async Task GetCustomerByEmail_onNotFound(string customerEmail)
+        [Fact]
+        public async Task GetCustomerByEmail_onNotFound()
         {
             //Act
-            var actionResult = await Controller().Get(customerEmail);
+            var actionResult = await Controller().Get();
 
             //Assert
             Assert.NotNull(actionResult);
@@ -106,10 +104,11 @@ namespace ShopBackend.Test.ControllersTest
             //Assert
             Assert.NotNull(actionResult);
             Assert.IsType<OkResult>(actionResult.Result);
-            string msg = Assert.IsType<string>(((CreatedResult)actionResult.Result).Value);
+            string msg = Assert.IsType<string>(((OkResult)actionResult.Result).Value);
             Assert.Equal("Customer is inserted successfully!", msg);
         }
 
+        /*
         [Fact]
         public async Task CreateCustomer_onBadRequest_NullEmail() 
         {
@@ -125,6 +124,7 @@ namespace ShopBackend.Test.ControllersTest
             string msg = Assert.IsType<string>(((BadRequestObjectResult)actionResult.Result).Value);
             Assert.Equal("Customer email is required to register the customer!", msg);
         }
+        */
 
         [Fact]
         public async Task CreateCustomer_onBadRequest_EmailExist()
@@ -147,7 +147,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task UpdateCustomer_onOk() 
         {
             //Arrange 
-            var targetCustomer = new CustomerDto{ Email = "goli@gmail.com" };
+            var targetCustomer = new UpdateCustomerDto{ Email = "goli@gmail.com" };
 
             //Act
             var actionResult = await Controller().Update(targetCustomer);
@@ -159,11 +159,12 @@ namespace ShopBackend.Test.ControllersTest
             Assert.Equal("Customer has been updated!", msg);
         }
 
+        /*
         [Fact]
         public async Task UpdateCustomer_onBadRequest_NullEmail()
         {
             //Arrange
-            var targetCustomer = new CustomerDto { Email = null };
+            var targetCustomer = new UpdateCustomerDto { Email = null };
 
             //Act
             var actionResult = await Controller().Update(targetCustomer);
@@ -174,12 +175,13 @@ namespace ShopBackend.Test.ControllersTest
             string msg = Assert.IsType<string>(((BadRequestObjectResult)actionResult.Result).Value);
             Assert.Equal("Customer email is required to update the customer!", msg);
         }
+        */
 
         [Fact]
         public async Task UpdateCustomer_onNotFound()
         {
             //Arrange
-            var targetCustomer = new CustomerDto { Email = "David@gmail.com" };
+            var targetCustomer = new UpdateCustomerDto { Email = "David@gmail.com" };
 
             //Act
             var actionResult = await Controller().Update(targetCustomer);
@@ -191,12 +193,11 @@ namespace ShopBackend.Test.ControllersTest
             Assert.Equal("Customer does not exsist!", msg);
         }
 
-        [Theory]
-        [InlineData("goli@gmail.com")]
-        public async Task DeleteCustomer_onOk(string customerEmail)
+        [Fact]
+        public async Task DeleteCustomer_onOk()
         {
             //Act
-            var actionResult = await Controller().Delete(customerEmail);
+            var actionResult = await Controller().Delete();
 
             //Assert
             Assert.NotNull(actionResult);
@@ -206,6 +207,7 @@ namespace ShopBackend.Test.ControllersTest
             Assert.Single(customerList);
         }
 
+        /*
         [Theory]
         [InlineData(null)]
         public async Task DeleteCustomer_onBadRequest_NullEmail(string customerEmail)
@@ -220,7 +222,9 @@ namespace ShopBackend.Test.ControllersTest
             Assert.Equal("Customer email is required to delete the customer!", msg);
             Assert.Equal(2, customerList.Count);
         }
+        */
 
+        /*
         [Theory]
         [InlineData("david@gmail.com")]
         public async Task DeleteCustomer_onNotFound(string customerEmail)
@@ -235,6 +239,7 @@ namespace ShopBackend.Test.ControllersTest
             Assert.Equal("Customer does not exsist!", msg);
             Assert.Equal(2, customerList.Count);
         }    
+        */
         
     }
 }

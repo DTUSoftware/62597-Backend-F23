@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ShopBackend.Test.ControllersTest
@@ -85,13 +86,21 @@ namespace ShopBackend.Test.ControllersTest
         {
             var mock = new Mock<IPasswordAuth>();
 
-            mock.Setup(asm => asm.VerifyPassword(It.IsAny<string>(), It.IsAny<string>())).Returns(() =>
+            mock.Setup(asm => asm.VerifyPassword(It.IsAny<string>(), It.IsAny<string>())).Returns((string password1, string password2) =>
             {
-
+                return Task.FromResult(password1 == password2);
             });
 
-            //string GeneratePasswordHash(string password);
-            //bool IsPasswordStrong(string password);
+            mock.Setup(asm => asm.GeneratePasswordHash(It.IsAny<string>())).Returns((string password) =>
+            {
+                return Task.FromResult(password);
+            });
+
+            mock.Setup(asm => asm.IsPasswordStrong(It.IsAny<string>())).Returns((string password) =>
+            {
+                Regex validPassword = new("^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-/*_]).{8,}$");
+                return Task.FromResult(validPassword.IsMatch(password));
+            });
 
             return mock;
         }
