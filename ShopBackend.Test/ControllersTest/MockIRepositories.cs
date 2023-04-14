@@ -71,12 +71,12 @@ namespace ShopBackend.Test.ControllersTest
 
             mock.Setup(asm => asm.GetEmailFromToken(It.IsAny<ClaimsPrincipal>())).Returns((ClaimsPrincipal claimsPrincipal) =>
             {
-                return Task.FromResult(authenticatedCustomer.Email);
+                return authenticatedCustomer.Email;
             });
 
             mock.Setup(asm => asm.CreateToken()).Returns(() =>
             {
-                return Task.FromResult(testToken);
+                return testToken;
             });
 
             return mock;
@@ -88,18 +88,18 @@ namespace ShopBackend.Test.ControllersTest
 
             mock.Setup(asm => asm.VerifyPassword(It.IsAny<string>(), It.IsAny<string>())).Returns((string password1, string password2) =>
             {
-                return Task.FromResult(password1 == password2);
+                return password1 == password2;
             });
 
             mock.Setup(asm => asm.GeneratePasswordHash(It.IsAny<string>())).Returns((string password) =>
             {
-                return Task.FromResult(password);
+                return password;
             });
 
             mock.Setup(asm => asm.IsPasswordStrong(It.IsAny<string>())).Returns((string password) =>
             {
                 Regex validPassword = new("^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-/*_]).{8,}$");
-                return Task.FromResult(validPassword.IsMatch(password));
+                return validPassword.IsMatch(password);
             });
 
             return mock;

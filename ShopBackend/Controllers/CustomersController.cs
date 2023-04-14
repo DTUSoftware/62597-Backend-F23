@@ -23,7 +23,6 @@ namespace ShopBackend.Controllers
         }
 
         //Get api/customers
-        /*
         [HttpGet]
         [Authorize]
         public async Task<ActionResult<IEnumerable<CustomerDto>>> GetAll()
@@ -36,7 +35,6 @@ namespace ShopBackend.Controllers
 
             return NotFound("The specified customers does not exist!");
         }
-        */
 
         //Get api/customers
         [HttpGet]
@@ -56,7 +54,7 @@ namespace ShopBackend.Controllers
 
         //Post api/customers/register
         [HttpPost]
-        public async Task<ActionResult> Register([FromBody] CreateCustomerDto customerDto)
+        public async Task<ActionResult<string>> Register([FromBody] CreateCustomerDto customerDto)
         {
             var isPasswordStrong = _passwordAuth.IsPasswordStrong(customerDto.Password);
             if (!isPasswordStrong)
@@ -81,8 +79,7 @@ namespace ShopBackend.Controllers
             {
                 await _authService.AuthenticateUser(new LoginDto { Email = customerDto.Email, Password = customerDto.Password });
                 var token = _authService.CreateToken();
-                var message = "Customer was registered successfully!";
-                return Ok(new { Token = token, message });
+                return Ok(new Tuple<string, string>( token, "Customer was created successfully!" ));
             }
 
             return NotFound("Customer could not be registered!");
@@ -123,7 +120,7 @@ namespace ShopBackend.Controllers
         [Authorize]
         public async Task<ActionResult<string>> Delete()
         {
-            var result = await _customerRepository.Get(_authService.GetEmailFromToken(User));
+            var result = await _customerRepository.Delete(_authService.GetEmailFromToken(User));
             if (result != default)
             {
                 return Ok("Customer has been deleted!");
