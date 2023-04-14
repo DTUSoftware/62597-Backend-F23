@@ -23,8 +23,8 @@ namespace ShopBackend.Controllers
         }
 
         //Get api/customers
-        [HttpGet]
-        [Authorize]
+        [HttpGet("all")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<CustomerDto>>> GetAll()
         {
             var customers = (await _customerRepository.GetAll()).Select(customer => customer.AsCustomerDto());
@@ -38,7 +38,7 @@ namespace ShopBackend.Controllers
 
         //Get api/customers
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Customer,Admin")]
         public async Task<ActionResult<CustomerDto>> Get()
         {
             //Finds user email using token claims
@@ -54,6 +54,7 @@ namespace ShopBackend.Controllers
 
         //Post api/customers/register
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult<string>> Register([FromBody] CreateCustomerDto customerDto)
         {
             var isPasswordStrong = _passwordAuth.IsPasswordStrong(customerDto.Password);
@@ -72,6 +73,7 @@ namespace ShopBackend.Controllers
             {
                 Email = customerDto.Email,
                 Password = _passwordAuth.GeneratePasswordHash(customerDto.Password),
+                Role = Utils.UserRoles.Customer,
             };
 
             var result = await _customerRepository.Insert(customer);
@@ -88,7 +90,7 @@ namespace ShopBackend.Controllers
 
         //Put api/customers
         [HttpPut]
-        [Authorize]
+        [Authorize(Roles = "Customer,Admin")]
         public async Task<ActionResult<string>> Update([FromBody] UpdateCustomerDto customerDto)
         {
             if (customerDto.Email == default)
@@ -117,7 +119,7 @@ namespace ShopBackend.Controllers
 
         //Delete api/customers
         [HttpDelete]
-        [Authorize]
+        [Authorize(Roles = "Customer,Admin")]
         public async Task<ActionResult<string>> Delete()
         {
             var result = await _customerRepository.Delete(_authService.GetEmailFromToken(User));

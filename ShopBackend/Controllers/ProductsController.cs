@@ -20,6 +20,7 @@ namespace ShopBackend.Controllers
 
         // GET: api/products
         [HttpGet]
+        [AllowAnonymous]
         [EnableCors("FrontendPolicy")]
         public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll()
         {
@@ -35,6 +36,7 @@ namespace ShopBackend.Controllers
 
         // GET: api/products/{productId}
         [HttpGet("{productId}")]
+        [AllowAnonymous]
         [EnableCors("FrontendPolicy")]
         public async Task<ActionResult<ProductDto>> Get(string productId)
         {

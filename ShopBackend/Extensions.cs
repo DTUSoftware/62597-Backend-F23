@@ -11,6 +11,7 @@ namespace ShopBackend
             return new CustomerDto
             {
                 Email = customer.Email,
+                Role = customer.Role,
                 Orders = customer.Orders != null ? new List<OrderDto>(customer.Orders.Select(x => x.AsOrderDto())) : new List<OrderDto>(),
             };
         }
@@ -85,6 +86,7 @@ namespace ShopBackend
             return new Customer
             {
                 Email = customerDto.Email,
+                Role = customerDto.Role,
                 Orders = customerDto.Orders != null ? new List<Order>(customerDto.Orders.Select(x => x.AsOrderModel())) : new List<Order>(),
             };
         }

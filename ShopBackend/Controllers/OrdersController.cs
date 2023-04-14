@@ -53,6 +53,7 @@ namespace ShopBackend.Controllers
 
         // POST api/orders
         [HttpPost]
+        [AllowAnonymous]
         [EnableCors("FrontendPolicy")]
         public async Task<ActionResult<string>> Create([FromBody] CreateOrderDto order)
         {

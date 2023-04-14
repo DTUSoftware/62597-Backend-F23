@@ -16,7 +16,7 @@ namespace ShopBackend.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.4")
+                .HasAnnotation("ProductVersion", "7.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("ShopBackend.Models.Address", b =>
@@ -85,6 +85,10 @@ namespace ShopBackend.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Role")
                         .IsRequired()
                         .HasColumnType("longtext");
 

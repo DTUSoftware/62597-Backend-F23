@@ -52,7 +52,8 @@ namespace ShopBackend.Security
         {
             var tokenClaims = new List<Claim>()
             {
-                new Claim(ClaimTypes.Email, _user!.Email)
+                new Claim(ClaimTypes.Email, _user!.Email),
+                new Claim(ClaimTypes.Role, _user!.Role.ToString())
             };
 
             return tokenClaims;
