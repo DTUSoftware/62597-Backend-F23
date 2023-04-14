@@ -1,9 +1,12 @@
 ﻿using Moq;
+using ShopBackend.Dtos;
 using ShopBackend.Models;
 using ShopBackend.Repositories;
+using ShopBackend.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -54,5 +57,44 @@ namespace ShopBackend.Test.ControllersTest
 
             return mock;
         }
+
+        public static Mock<IAuthService> GetAuthService(List<Customer> customerList, Customer authenticatedCustomer, string testToken)
+        {
+            var mock = new Mock<IAuthService>();
+
+            mock.Setup(asm => asm.AuthenticateUser(It.IsAny<LoginDto>())).Returns((LoginDto loginDto) =>
+            {
+                if (loginDto != null && customerList.Exists(c => c.Email == loginDto.Email && c.Password == loginDto.Password)) { return Task.FromResult(true); }
+                else { return Task.FromResult(false); }
+            });
+
+            mock.Setup(asm => asm.GetEmailFromToken(It.IsAny<ClaimsPrincipal>())).Returns((ClaimsPrincipal claimsPrincipal) =>
+            {
+                return Task.FromResult(authenticatedCustomer.Email);
+            });
+
+            mock.Setup(asm => asm.CreateToken()).Returns(() =>
+            {
+                return Task.FromResult(testToken);
+            });
+
+            return mock;
+        }
+
+        public static Mock<IPasswordAuth> GetPasswordAuth()
+        {
+            var mock = new Mock<IPasswordAuth>();
+
+            mock.Setup(asm => asm.VerifyPassword(It.IsAny<string>(), It.IsAny<string>())).Returns(() =>
+            {
+
+            });
+
+            //string GeneratePasswordHash(string password);
+            //bool IsPasswordStrong(string password);
+
+            return mock;
+        }
+
     }
 }

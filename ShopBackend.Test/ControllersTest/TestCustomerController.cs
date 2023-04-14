@@ -11,7 +11,7 @@ namespace ShopBackend.Test.ControllersTest
      */
     public class TestCustomerController
     {
-        /*
+        
         private readonly List<Customer> customerList;
 
         public TestCustomerController() {
@@ -25,8 +25,10 @@ namespace ShopBackend.Test.ControllersTest
         private CustomersController Controller()
         {
             //Mutual Arrange
-            var mock = MockIRepositories.GetCustomerRepository(customerList);
-            var customerController = new CustomersController(mock.Object);
+            var mockCustomerRepository = MockIRepositories.GetCustomerRepository(customerList);
+            var mockAuthService = MockIRepositories.GetAuthService(customerList, customerList.First(), "TestToken");
+            var mockPasswordAuth = MockIRepositories.GetPasswordAuth(customerList);
+            var customerController = new CustomersController(mockCustomerRepository.Object, mockAuthService.Object, mockPasswordAuth.Object);
             return customerController;
         }
 
@@ -48,8 +50,10 @@ namespace ShopBackend.Test.ControllersTest
         {
             //Arrange
             var emptyCustomerList = new List<Customer>();
-            var mock = MockIRepositories.GetCustomerRepository(emptyCustomerList);
-            var Controller = new CustomersController(mock.Object);
+            var mockCustomerRepository = MockIRepositories.GetCustomerRepository(emptyCustomerList);
+            var mockAuthService = MockIRepositories.GetAuthService(emptyCustomerList);
+            var mockPasswordAuth = MockIRepositories.GetPasswordAuth(emptyCustomerList);
+            var Controller = new CustomersController(mockCustomerRepository.Object, mockAuthService.Object, mockPasswordAuth.Object);
 
 
             //Act
@@ -97,11 +101,11 @@ namespace ShopBackend.Test.ControllersTest
             var newCustomer = new CreateCustomerDto { Email = "dg@gmail.com", Password = "1234" };
 
             //Act
-            var actionResult = await Controller().Create(newCustomer);
+            var actionResult = await Controller().Register(newCustomer);
 
             //Assert
             Assert.NotNull(actionResult);
-            Assert.IsType<CreatedResult>(actionResult.Result);
+            Assert.IsType<OkResult>(actionResult.Result);
             string msg = Assert.IsType<string>(((CreatedResult)actionResult.Result).Value);
             Assert.Equal("Customer is inserted successfully!", msg);
         }
@@ -113,7 +117,7 @@ namespace ShopBackend.Test.ControllersTest
             var newCustomer = new CreateCustomerDto { Email = null, Password = "5678" };
 
             //Act
-            var actionResult = await Controller().Create(newCustomer);
+            var actionResult = await Controller().Register(newCustomer);
 
             //Assert
             Assert.NotNull (actionResult);
@@ -129,7 +133,7 @@ namespace ShopBackend.Test.ControllersTest
             var newCustomer = new CreateCustomerDto { Email = "goli@gmail.com", Password = "5678" };
 
             //Act
-            var actionResult = await Controller().Create(newCustomer);
+            var actionResult = await Controller().Register(newCustomer);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -231,6 +235,6 @@ namespace ShopBackend.Test.ControllersTest
             Assert.Equal("Customer does not exsist!", msg);
             Assert.Equal(2, customerList.Count);
         }    
-        */
+        
     }
 }
