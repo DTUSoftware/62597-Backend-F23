@@ -79,5 +79,10 @@ namespace ShopBackend.Security
         {
             return claimsPrincipal.Claims.First(claim => claim.Type == ClaimTypes.Email).Value;
         }
+
+        public string GetRoleFromToken(ClaimsPrincipal claimsPrincipal)
+        {
+            return claimsPrincipal.Claims.First(claim => claim.Type == ClaimTypes.Role).Value;
+        }
     }
 }

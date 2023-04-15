@@ -8,7 +8,6 @@ namespace ShopBackend.Security
         Task<bool> AuthenticateUser(LoginDto loginDto);
         string CreateToken();
         string GetEmailFromToken(ClaimsPrincipal claimsPrincipal);
-
-
+        string GetRoleFromToken(ClaimsPrincipal claimsPrincipal);
     }
 }

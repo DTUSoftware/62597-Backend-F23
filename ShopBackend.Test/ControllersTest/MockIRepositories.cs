@@ -74,6 +74,11 @@ namespace ShopBackend.Test.ControllersTest
                 return authenticatedCustomer.Email;
             });
 
+            mock.Setup(asm => asm.GetRoleFromToken(It.IsAny<ClaimsPrincipal>())).Returns((ClaimsPrincipal claimsPrincipal) =>
+            {
+                return authenticatedCustomer.Role.ToString();
+            });
+
             mock.Setup(asm => asm.CreateToken()).Returns(() =>
             {
                 return testToken;

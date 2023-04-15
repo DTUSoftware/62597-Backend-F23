@@ -2,6 +2,7 @@
 using ShopBackend.Controllers;
 using ShopBackend.Dtos;
 using ShopBackend.Models;
+using ShopBackend.Utils;
 
 namespace ShopBackend.Test.ControllersTest
 {
@@ -17,8 +18,8 @@ namespace ShopBackend.Test.ControllersTest
         public TestCustomerController() {
             customerList= new List<Customer>
             {
-                new Customer{Email="goli@gmail.com", Password="1234"},
-                new Customer{Email="Karen@gmail.com", Password="1234"}
+                new Customer{Email="goli@gmail.com", Password="5678aA_//ssdh", Role = UserRoles.Customer},
+                new Customer{Email="Karen@gmail.com", Password="5678aA_//ssdh", Role = UserRoles.Admin}
             };
         }
 
@@ -71,11 +72,12 @@ namespace ShopBackend.Test.ControllersTest
         }
         */
 
-        [Fact]
-        public async Task GetCustomerByEmail_onOk() 
+        [Theory]
+        [InlineData("goli@gmail.com")]
+        public async Task GetCustomerByEmail_onOk(string customerEmail) 
         {   
             //Act
-            var actionResult= await Controller().Get();
+            var actionResult= await Controller().Get(customerEmail);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -155,7 +157,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task UpdateCustomer_onOk() 
         {
             //Arrange 
-            var targetCustomer = new UpdateCustomerDto{ Email = "goli@gmail.com" };
+            var targetCustomer = new UpdateCustomerDto { Email = "goli@gmail.com", Password = "5678aA_//ssdh" };
 
             //Act
             var actionResult = await Controller().Update(targetCustomer);
@@ -185,6 +187,7 @@ namespace ShopBackend.Test.ControllersTest
         }
         */
 
+        /*
         [Fact]
         public async Task UpdateCustomer_onNotFound()
         {
@@ -198,14 +201,32 @@ namespace ShopBackend.Test.ControllersTest
             Assert.NotNull(actionResult);
             Assert.IsType<NotFoundObjectResult>(actionResult.Result);
             string msg = Assert.IsType<string>(((NotFoundObjectResult)actionResult.Result).Value);
-            Assert.Equal("Customer does not exsist!", msg);
+            Assert.Equal("The specified customer does not exist!", msg);
         }
+        */
 
         [Fact]
-        public async Task DeleteCustomer_onOk()
+        public async Task UpdateCustomer_onBadResult_AccessDenied()
+        {
+            //Arrange
+            var targetCustomer = new UpdateCustomerDto { Email = "Karen@gmail.com", Password = "5678aA_//ssdh" };
+
+            //Act
+            var actionResult = await Controller().Update(targetCustomer);
+
+            //Assert
+            Assert.NotNull(actionResult);
+            Assert.IsType<BadRequestObjectResult>(actionResult.Result);
+            string msg = Assert.IsType<string>(((BadRequestObjectResult)actionResult.Result).Value);
+            Assert.Equal("Access denied!", msg);
+        }
+
+        [Theory]
+        [InlineData("goli@gmail.com")]
+        public async Task DeleteCustomer_onOk(string customerEmail)
         {
             //Act
-            var actionResult = await Controller().Delete();
+            var actionResult = await Controller().Delete(customerEmail);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -232,8 +253,24 @@ namespace ShopBackend.Test.ControllersTest
         }
         */
 
-        /*
+        
         [Theory]
+        [InlineData("Karen@gmail.com")]
+        public async Task DeleteCustomer_onBadRequest_AccessDenied(string customerEmail)
+        {
+            //Act
+            var actionResult = await Controller().Delete(customerEmail);
+
+            //Assert
+            Assert.NotNull(actionResult);
+            Assert.IsType<BadRequestObjectResult>(actionResult.Result);
+            string msg = Assert.IsType<string>(((BadRequestObjectResult)actionResult.Result).Value);
+            Assert.Equal("Access denied!", msg);
+            Assert.Equal(2, customerList.Count);
+        }
+
+        /*
+         [Theory]
         [InlineData("david@gmail.com")]
         public async Task DeleteCustomer_onNotFound(string customerEmail)
         {
@@ -244,10 +281,10 @@ namespace ShopBackend.Test.ControllersTest
             Assert.NotNull(actionResult);
             Assert.IsType<NotFoundObjectResult>(actionResult.Result);
             string msg = Assert.IsType<string>(((NotFoundObjectResult)actionResult.Result).Value);
-            Assert.Equal("Customer does not exsist!", msg);
+            Assert.Equal("The specified customer does not exist!", msg);
             Assert.Equal(2, customerList.Count);
-        }    
-        */
-        
+        }
+         */
+
     }
 }

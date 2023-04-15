@@ -4,6 +4,7 @@ using ShopBackend.Dtos;
 using ShopBackend.Models;
 using ShopBackend.Repositories;
 using ShopBackend.Security;
+using ShopBackend.Utils;
 
 namespace ShopBackend.Controllers
 {
@@ -37,11 +38,17 @@ namespace ShopBackend.Controllers
         }
 
         //Get api/customers
-        [HttpGet]
+        [HttpGet("{email}")]
         [Authorize(Roles = "Customer,Admin")]
-        public async Task<ActionResult<CustomerDto>> Get()
+        public async Task<ActionResult<CustomerDto>> Get(string email)
         {
-            //Finds user email using token claims
+            var userEmail = _authService.GetEmailFromToken(User);
+            var userRole = _authService.GetRoleFromToken(User);
+            if (userRole != UserRoles.Admin.ToString() && userEmail != email)
+            {
+                return BadRequest("Access denied!");
+            }
+
             var result = await _customerRepository.Get(_authService.GetEmailFromToken(User));
             if (result != default)
             {
@@ -93,10 +100,13 @@ namespace ShopBackend.Controllers
         [Authorize(Roles = "Customer,Admin")]
         public async Task<ActionResult<string>> Update([FromBody] UpdateCustomerDto customerDto)
         {
-            if (customerDto.Email == default)
+            var userEmail = _authService.GetEmailFromToken(User);
+            var userRole = _authService.GetRoleFromToken(User);
+            if (userRole != UserRoles.Admin.ToString() && userEmail != customerDto.Email)
             {
-                return BadRequest("Customer email is required to update the customer!");
+                return BadRequest("Access denied!");
             }
+
             var customerToUpdate = await _customerRepository.Get(customerDto.Email);
             if (customerToUpdate == default)
             {
@@ -113,22 +123,29 @@ namespace ShopBackend.Controllers
                 return Ok("Customer has been updated!");
             }
 
-            return NotFound("Customer could not be updated!");
+            return NotFound("The specified customer does not exist!");
         }
 
 
         //Delete api/customers
-        [HttpDelete]
+        [HttpDelete("{email}")]
         [Authorize(Roles = "Customer,Admin")]
-        public async Task<ActionResult<string>> Delete()
+        public async Task<ActionResult<string>> Delete(string email)
         {
+            var userEmail = _authService.GetEmailFromToken(User);
+            var userRole = _authService.GetRoleFromToken(User);
+            if (userRole != UserRoles.Admin.ToString() && userEmail != email)
+            {
+                return BadRequest("Access denied!");
+            }
+
             var result = await _customerRepository.Delete(_authService.GetEmailFromToken(User));
             if (result != default)
             {
                 return Ok("Customer has been deleted!");
             }
 
-            return NotFound("Customer could not be deleted!");
+            return NotFound("The specified customer does not exist!");
         }
     }
 }
