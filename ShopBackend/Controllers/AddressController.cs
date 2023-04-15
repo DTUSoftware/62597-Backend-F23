@@ -19,8 +19,8 @@ namespace ShopBackend.Controllers
 
         // GET: api/addresses
         [HttpGet]
-        [Authorize]
-        public async Task<ActionResult<IEnumerable<AddressDto>>> GetAll()
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<IEnumerable<AddressDto>>> Get()
         {
             var addressList = (await _addressRepository.GetAll()).Select(address => address.AsAddressDto());
 
@@ -34,7 +34,7 @@ namespace ShopBackend.Controllers
 
         // GET api/addresses/{addressId}
         [HttpGet("{addressId}")]
-        [Authorize]
+        [Authorize(Roles = "Customer,Admin")]
         public async Task<ActionResult<AddressDto>> Get(Guid addressId)
         {
             var result = await _addressRepository.Get(addressId);
@@ -48,7 +48,7 @@ namespace ShopBackend.Controllers
 
         // POST api/addresses
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Customer,Admin")]
         public async Task<ActionResult<string>> Create([FromBody] CreateAddressDto address)
         {
             var result = await _addressRepository.Insert(address.CreateAsAddressModel());
@@ -62,7 +62,7 @@ namespace ShopBackend.Controllers
 
         // PUT api/addresses
         [HttpPut]
-        [Authorize]
+        [Authorize(Roles = "Customer,Admin")]
         public async Task<ActionResult<string>> Update([FromBody] AddressDto address)
         {
             var existed = await _addressRepository.Get(address.Id);
@@ -82,10 +82,9 @@ namespace ShopBackend.Controllers
 
         // DELETE api/addresses/{addressId}
         [HttpDelete("{addressId}")]
-        [Authorize]
+        [Authorize(Roles = "Customer,Admin")]
         public async Task<ActionResult<string>> Delete(Guid addressId)
         {
-
             var existed = await _addressRepository.Get(addressId);
             if (existed == null)
             {

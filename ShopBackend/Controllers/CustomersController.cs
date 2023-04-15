@@ -26,7 +26,7 @@ namespace ShopBackend.Controllers
         //Get api/customers
         [HttpGet("all")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<IEnumerable<CustomerDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<CustomerDto>>> Get()
         {
             var customers = (await _customerRepository.GetAll()).Select(customer => customer.AsCustomerDto());
             if (customers.Any())
@@ -49,7 +49,7 @@ namespace ShopBackend.Controllers
                 return BadRequest("Access denied!");
             }
 
-            var result = await _customerRepository.Get(_authService.GetEmailFromToken(User));
+            var result = await _customerRepository.Get(email);
             if (result != default)
             {
                 return Ok(result.AsCustomerDto());
@@ -70,6 +70,12 @@ namespace ShopBackend.Controllers
                 return BadRequest("The password must have at least 8 letters and contain at least one upper case letter, one lower case letter, one number, and one special character!");
             }
 
+            //CreateCustomerDto has Email as a required field parameter, meaning that Email it cannot be instantiated as null.
+            if (customerDto.Email == null)
+            {
+                return BadRequest("Customer email is required to register the customer!");
+            }
+
             var isEmailTaken = await _customerRepository.Get(customerDto.Email);
             if (isEmailTaken != default)
             {
@@ -80,7 +86,7 @@ namespace ShopBackend.Controllers
             {
                 Email = customerDto.Email,
                 Password = _passwordAuth.GeneratePasswordHash(customerDto.Password),
-                Role = Utils.UserRoles.Customer,
+                Role = UserRoles.Customer,
             };
 
             var result = await _customerRepository.Insert(customer);
@@ -88,7 +94,8 @@ namespace ShopBackend.Controllers
             {
                 await _authService.AuthenticateUser(new LoginDto { Email = customerDto.Email, Password = customerDto.Password });
                 var token = _authService.CreateToken();
-                return Ok(new Tuple<string, string>( token, "Customer was created successfully!" ));
+                var msg = "Customer is inserted successfully!";
+                return Ok(new { Token = token, Msg = msg });
             }
 
             return NotFound("Customer could not be registered!");
@@ -100,6 +107,18 @@ namespace ShopBackend.Controllers
         [Authorize(Roles = "Customer,Admin")]
         public async Task<ActionResult<string>> Update([FromBody] UpdateCustomerDto customerDto)
         {
+            var isPasswordStrong = _passwordAuth.IsPasswordStrong(customerDto.Password);
+            if (!isPasswordStrong)
+            {
+                return BadRequest("The password must have at least 8 letters and contain at least one upper case letter, one lower case letter, one number, and one special character!");
+            }
+
+            //UpdateCustomerDto has Email as a required field parameter, meaning that Email it cannot be instantiated as null.
+            if (customerDto.Email == null)
+            {
+                return BadRequest("Customer email is required to register the customer!");
+            }
+
             var userEmail = _authService.GetEmailFromToken(User);
             var userRole = _authService.GetRoleFromToken(User);
             if (userRole != UserRoles.Admin.ToString() && userEmail != customerDto.Email)
@@ -132,11 +151,24 @@ namespace ShopBackend.Controllers
         [Authorize(Roles = "Customer,Admin")]
         public async Task<ActionResult<string>> Delete(string email)
         {
+            //This null check is not needed as it is against the scheme of the API endpoint. (http parameter email can never be null)
+            if (email == null)
+            {
+                return BadRequest("Customer email is required to delete the customer!");
+            }
+
             var userEmail = _authService.GetEmailFromToken(User);
             var userRole = _authService.GetRoleFromToken(User);
             if (userRole != UserRoles.Admin.ToString() && userEmail != email)
             {
                 return BadRequest("Access denied!");
+            }
+
+            //Does this one make sense to if we are going to try and delete the customer anyway? (it would go to NotFound anyway in case result == default)
+            var customerToDelete = await _customerRepository.Get(email);
+            if (customerToDelete == default)
+            {
+                return NotFound("Customer does not exsist!");
             }
 
             var result = await _customerRepository.Delete(_authService.GetEmailFromToken(User));
@@ -145,7 +177,7 @@ namespace ShopBackend.Controllers
                 return Ok("Customer has been deleted!");
             }
 
-            return NotFound("The specified customer does not exist!");
+            return NotFound("Customer could not be deleted!");
         }
     }
 }

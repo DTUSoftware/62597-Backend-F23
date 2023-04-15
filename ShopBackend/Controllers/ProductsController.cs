@@ -22,7 +22,7 @@ namespace ShopBackend.Controllers
         [HttpGet]
         [AllowAnonymous]
         [EnableCors("FrontendPolicy")]
-        public async Task<ActionResult<IEnumerable<ProductDto>>> GetAll()
+        public async Task<ActionResult<IEnumerable<ProductDto>>> Get()
         {
             var products = (await _productRepository.GetAll()).Select(product => product.AsProductDto());
             if (products.Any())
@@ -52,9 +52,15 @@ namespace ShopBackend.Controllers
 
         // Post: api/products
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<string>> Create([FromBody] ProductDto product)
         {
+            //ProductDto has Id as a required field parameter, meaning that Id it cannot be instantiated as null.
+            if (product.Id == null)
+            {
+                return BadRequest("Product id is required to register the product!");
+            }
+
             var isIdTaken = await _productRepository.Get(product.Id);
             if (isIdTaken != default)
             {
@@ -72,7 +78,7 @@ namespace ShopBackend.Controllers
 
         // Post: api/products/multiple
         [HttpPost("multiple")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<string>> CreateMultiple(IEnumerable<ProductDto> products)
         {
             foreach (ProductDto product in products)
@@ -90,7 +96,7 @@ namespace ShopBackend.Controllers
 
         // Put: api/products
         [HttpPut]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<string>> Update([FromBody] ProductDto product)
         {
             var productToUpdate = await _productRepository.Get(product.Id);
@@ -118,7 +124,7 @@ namespace ShopBackend.Controllers
 
         // Delete: api/products/{productId}
         [HttpDelete("{productId}")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<string>> Delete(string productId)
         {
             var result=await _productRepository.Delete(productId);

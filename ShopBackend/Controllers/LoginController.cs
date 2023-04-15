@@ -29,7 +29,8 @@ namespace ShopBackend.Controllers
             }
 
             var token = _authService.CreateToken();
-            return Accepted(new Tuple<string, string>(token, "Login successful!"));
+            var msg = "Login successful!";
+            return Accepted(new { Token = token, Msg = msg });
         }
     }
 }
