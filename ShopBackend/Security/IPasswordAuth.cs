@@ -7,5 +7,6 @@ namespace ShopBackend.Security
         bool VerifyPassword(string userPassword, string passwordToVerify);
         string GeneratePasswordHash(string password);
         bool IsPasswordStrong(string password);
+        bool IsEmailValid(string password);
     }
 }

@@ -3,13 +3,8 @@ using ShopBackend.Dtos;
 using ShopBackend.Models;
 using ShopBackend.Repositories;
 using ShopBackend.Security;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace ShopBackend.Test.ControllersTest
 {
@@ -105,6 +100,12 @@ namespace ShopBackend.Test.ControllersTest
             {
                 Regex validPassword = new("^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-/*_]).{8,}$");
                 return validPassword.IsMatch(password);
+            });
+
+            mock.Setup(asm => asm.IsEmailValid(It.IsAny<string>())).Returns((string email) =>
+            {
+                Regex validEmail = new("^(.+)@(.+)$");
+                return validEmail.IsMatch(email);
             });
 
             return mock;

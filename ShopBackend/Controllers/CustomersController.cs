@@ -76,6 +76,12 @@ namespace ShopBackend.Controllers
                 return BadRequest("Customer email is required to register the customer!");
             }
 
+            var isEmailValid = _passwordAuth.IsEmailValid(customerDto.Email);
+            if (!isEmailValid)
+            {
+                return BadRequest("Email format is not valid!");
+            }
+
             var isEmailTaken = await _customerRepository.Get(customerDto.Email);
             if (isEmailTaken != default)
             {
@@ -117,6 +123,12 @@ namespace ShopBackend.Controllers
             if (customerDto.Email == null)
             {
                 return BadRequest("Customer email is required to register the customer!");
+            }
+
+            var isEmailValid = _passwordAuth.IsEmailValid(customerDto.Email);
+            if (!isEmailValid)
+            {
+                return BadRequest("Email format is not valid!");
             }
 
             var userEmail = _authService.GetEmailFromToken(User);

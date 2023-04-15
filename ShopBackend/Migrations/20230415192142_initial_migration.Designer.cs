@@ -11,7 +11,7 @@ using ShopBackend.Contexts;
 namespace ShopBackend.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20230414203928_initial_migration")]
+    [Migration("20230415192142_initial_migration")]
     partial class initial_migration
     {
         /// <inheritdoc />
@@ -220,7 +220,6 @@ namespace ShopBackend.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UpsellProductId")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime?>("Version")

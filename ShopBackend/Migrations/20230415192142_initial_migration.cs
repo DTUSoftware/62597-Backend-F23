@@ -83,7 +83,7 @@ namespace ShopBackend.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     RebateQuantity = table.Column<int>(type: "int", nullable: false),
                     RebatePercent = table.Column<int>(type: "int", nullable: false),
-                    UpsellProductId = table.Column<string>(type: "longtext", nullable: false)
+                    UpsellProductId = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ImageUrl = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),

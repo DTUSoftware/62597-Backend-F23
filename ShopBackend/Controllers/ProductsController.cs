@@ -90,7 +90,7 @@ namespace ShopBackend.Controllers
                 }
             }
 
-            return Ok("Product is inserted successfully!");
+            return Ok("Products is inserted successfully!");
         }
 
 

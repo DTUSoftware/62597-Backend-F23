@@ -35,5 +35,11 @@ namespace ShopBackend.Security
             Regex validPassword = new("^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-/*_]).{8,}$");
             return validPassword.IsMatch(password);
         }
+
+        public bool IsEmailValid(string email)
+        {
+            Regex validEmail = new("^(.+)@(.+)$");
+            return validEmail.IsMatch(email);
+        }
     }
 }

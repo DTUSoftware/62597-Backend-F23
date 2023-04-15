@@ -70,6 +70,8 @@ internal class Program
                 policy =>
                 {
                     policy.WithOrigins("http://localhost:5173").AllowAnyHeader();
+                    policy.WithOrigins("https://web-shop-app.netlify.app/").AllowAnyHeader();
+                    policy.WithOrigins("https://dtu.herogamers.dev/").AllowAnyHeader();
                 });
         });
 

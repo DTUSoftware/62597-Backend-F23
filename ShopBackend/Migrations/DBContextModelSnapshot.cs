@@ -217,7 +217,6 @@ namespace ShopBackend.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UpsellProductId")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime?>("Version")
