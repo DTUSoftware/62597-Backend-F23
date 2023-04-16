@@ -107,7 +107,7 @@ namespace ShopBackend.Migrations
                     CheckMarketing = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     SubmitComment = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    CustomerEmail = table.Column<string>(type: "varchar(255)", nullable: false)
+                    CustomerEmail = table.Column<string>(type: "varchar(255)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     ShippingAddressId = table.Column<int>(type: "int", nullable: false),
                     BillingAddressId = table.Column<int>(type: "int", nullable: false),

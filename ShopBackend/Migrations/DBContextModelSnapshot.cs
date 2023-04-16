@@ -118,7 +118,6 @@ namespace ShopBackend.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("CustomerEmail")
-                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<DateTime>("OrderDate")
@@ -240,8 +239,7 @@ namespace ShopBackend.Migrations
                     b.HasOne("ShopBackend.Models.Customer", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerEmail")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ShopBackend.Models.Address", "ShippingAddress")
                         .WithMany()

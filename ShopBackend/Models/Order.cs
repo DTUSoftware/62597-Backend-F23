@@ -20,9 +20,9 @@ namespace ShopBackend.Models
         public string SubmitComment { get; set; } = null!;
 
         // Nullable for now, so that frontend can create an order without a Customer
-        [Required(ErrorMessage = "CustomerEmail cannot be empty")]
+        // [Required(ErrorMessage = "CustomerEmail cannot be empty")]
         [ForeignKey("Customer")]
-        public string CustomerEmail { get; set; } = null!;
+        public string? CustomerEmail { get; set; }
 
         [ForeignKey("Address")]
         [Required(ErrorMessage = "ShippingAddress cannot be empty")]        
