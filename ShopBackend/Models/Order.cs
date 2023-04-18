@@ -26,11 +26,11 @@ namespace ShopBackend.Models
 
         [ForeignKey("Address")]
         [Required(ErrorMessage = "ShippingAddress cannot be empty")]        
-        public int  ShippingAddressId { get; set; }
+        public Guid  ShippingAddressId { get; set; }
 
         [ForeignKey("Address")]
         [Required(ErrorMessage = "BillingAddress cannot be empty")]
-        public int BillingAddressId { get; set;}
+        public Guid BillingAddressId { get; set;}
 
         // Nullable for now, so that frontend can create an order without a Customer
         public virtual Customer? Customer { get; set; }

@@ -11,12 +11,10 @@ namespace ShopBackend.Controllers
     public class OrdersController : Controller
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly IOrderDetailRepository _orderDetailRepository;
 
-        public OrdersController(IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository)
+        public OrdersController(IOrderRepository orderRepository)
         {
             _orderRepository = orderRepository;
-            _orderDetailRepository = orderDetailRepository;
         }
 
 
@@ -53,10 +51,15 @@ namespace ShopBackend.Controllers
         [HttpPost]
         public async Task<ActionResult<string>> Create([FromBody] CreateOrderDto order)
         {
+            if (order.OrderDetails.Count == 0)
+            {
+                return BadRequest("ProductDetails is required to register the order!");
+            }
+
             var result = await _orderRepository.Insert(order.CreateAsOrderModel());
             if (result != default && result > 0)
             {
-                return Ok("Order is inserted successfully!");
+                return Created("CreateOrder","Order is inserted successfully!");
             }
 
             return NotFound("Order could not be registered!");

@@ -48,7 +48,7 @@ namespace ShopBackend.Controllers
         [HttpPost]
         public async Task<ActionResult<string>> Create([FromBody] CreateCustomerDto customer)
         {
-            if (customer.Email == null)
+            if (string.IsNullOrEmpty(customer.Email))
             {
                 return BadRequest("Customer email is required to register the customer!");
             }
@@ -73,10 +73,11 @@ namespace ShopBackend.Controllers
         [HttpPut]
         public async Task<ActionResult<string>> Update([FromBody] CustomerDto customer)
         {
-            if (customer.Email == null)
+            if (string.IsNullOrEmpty(customer.Email))
             {
                 return BadRequest("Customer email is required to update the customer!");
             }
+
             var customerToUpdate = await _customerRepository.Get(customer.Email);
             if (customerToUpdate == default)
             {
@@ -101,7 +102,7 @@ namespace ShopBackend.Controllers
         [HttpDelete("{email}")]
         public async Task<ActionResult<string>> Delete(string email)
         {
-            if (email == null)
+            if (string.IsNullOrEmpty(email))
             {
                 return BadRequest("Customer email is required to delete the customer!");
             }
