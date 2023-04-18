@@ -11,13 +11,10 @@ namespace ShopBackend.Controllers
     public class OrdersController : Controller
     {
         private readonly IOrderRepository _orderRepository;
-        //private readonly IOrderDetailRepository _orderDetailRepository;
 
-        //IOrderDetailRepository orderDetailRepository
         public OrdersController(IOrderRepository orderRepository)
         {
             _orderRepository = orderRepository;
-            //_orderDetailRepository = orderDetailRepository;
         }
 
 
