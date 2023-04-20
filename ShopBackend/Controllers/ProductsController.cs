@@ -4,6 +4,7 @@ using ShopBackend.Dtos;
 using Microsoft.AspNetCore.Routing;
 using ShopBackend.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Routing;
 
 namespace ShopBackend.Controllers
 {
@@ -31,7 +32,7 @@ namespace ShopBackend.Controllers
                 var productList = products.ToList();
                 foreach (ProductDto prod in productList)
                 {
-                    prod.Links = (List<Link>)CreateLinksForProduct(prod.Id);
+                    prod.Links = (List<Link>)CreateLinksForProduct(prod.Id,"GET");
                 }
 
                 return Ok(productList);
@@ -49,7 +50,7 @@ namespace ShopBackend.Controllers
             if (product != default)
             {
                 ProductDto prod = product.AsProductDto();
-                prod.Links = (List<Link>)CreateLinksForProduct(productId);
+                prod.Links = (List<Link>)CreateLinksForProduct(productId, "GET");
                 return Ok(prod);
             }
 
@@ -74,7 +75,7 @@ namespace ShopBackend.Controllers
             var result = await _productRepository.Insert(product.AsProductModel());
             if (result != default && result > 0)
             {
-                return Ok("Product is inserted successfully!");
+                return Ok(CreateLinksForProduct(product.Id,"POST"));
             }
 
             return NotFound("Product could not be inserted!");
@@ -117,7 +118,7 @@ namespace ShopBackend.Controllers
             var result = await _productRepository.Update(productToUpdate);
             if (result != default && result > 0)
             {
-                return Ok("Product updated successfully!");
+                return Ok(CreateLinksForProduct(product.Id, "PUT"));
             }
 
             return NotFound("Product could not be updated!");
@@ -137,21 +138,53 @@ namespace ShopBackend.Controllers
             return NotFound("Product could not be deleted!");
         }
         //Based on https://code-maze.com/hateoas-aspnet-core-web-api/
-        private IEnumerable<Link> CreateLinksForProduct(String productId)
+        private IEnumerable<Link> CreateLinksForProduct(String productId, String requestType)
         {
-            var links = new List<Link>
-        {
+            switch (requestType)
+            {
+                case "GET":
+                    var linksGet = new List<Link> {
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(DeleteProductById), values: new { productId }),
+            "delete_product",
+            "DELETE"),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(UpdateProductById), values: new { productId }),
+        "update_product",
+        "PUT")
+            };
+            return linksGet;
+                case "PUT":
+                    var linksPut = new List<Link>
+                        {
         new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(GetProductById), values: new { productId}),
             "self",
             "GET"),
-        new Link(_linkGenerator.GetUriByName(HttpContext, nameof(DeleteProductById), values: new { productId }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(DeleteProductById), values: new { productId }),
+            "delete_product",
+            "DELETE")
+            };
+                    return linksPut;
+
+
+
+                case "POST":
+                    var linksPost = new List<Link> {
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(GetProductById), values: new { productId}),
+            "self",
+            "GET"),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(DeleteProductById), values: new { productId }),
             "delete_product",
             "DELETE"),
-        new Link(_linkGenerator.GetUriByName(HttpContext, nameof(UpdateProductById), values: new { productId }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(UpdateProductById), values: new { productId }),
         "update_product",
         "PUT")
-    };
-            return links;
+            };
+                    return linksPost;
+
+                default:
+                    throw new Exception("Invalid requestType");
+            }
+
+
         }
 
     }
