@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShopBackend.Repositories;
 using ShopBackend.Dtos;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ShopBackend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProductsController : Controller
+    public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
 
@@ -16,8 +18,10 @@ namespace ShopBackend.Controllers
         }
 
 
-        // GET: api/Products
+        // GET: api/products
         [HttpGet]
+        [AllowAnonymous]
+        [EnableCors("FrontendPolicy")]
         public async Task<ActionResult<IEnumerable<ProductDto>>> Get()
         {
             var products = (await _productRepository.GetAll()).Select(product => product.AsProductDto());
@@ -30,8 +34,10 @@ namespace ShopBackend.Controllers
         }
 
 
-        // GET: api/Products/{5}
-        [HttpGet("{productId}", Name ="GetProductById")]
+        // GET: api/products/{productId}
+        [HttpGet("{productId}")]
+        [AllowAnonymous]
+        [EnableCors("FrontendPolicy")]
         public async Task<ActionResult<ProductDto>> Get(string productId)
         {
             var product = await _productRepository.Get(productId);
@@ -44,14 +50,17 @@ namespace ShopBackend.Controllers
         }
 
 
-        // Post: api/Products
+        // Post: api/products
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<string>> Create([FromBody] ProductDto product)
         {
+            //ProductDto has Id as a required field parameter, meaning that Id it cannot be instantiated as null.
             if (product.Id == null)
             {
                 return BadRequest("Product id is required to register the product!");
             }
+
             var isIdTaken = await _productRepository.Get(product.Id);
             if (isIdTaken != default)
             {
@@ -67,8 +76,9 @@ namespace ShopBackend.Controllers
             return NotFound("Product could not be inserted!");
         }
 
-        // Post: api/Products/Multiple Primarily used for populating the server database
-        [HttpPost("Multiple")]
+        // Post: api/products/multiple
+        [HttpPost("multiple")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<string>> CreateMultiple(IEnumerable<ProductDto> products)
         {
             foreach (ProductDto product in products)
@@ -80,12 +90,13 @@ namespace ShopBackend.Controllers
                 }
             }
 
-            return Ok("Product is inserted successfully!");
+            return Ok("Products is inserted successfully!");
         }
 
 
-        // Put: api/Products/5
+        // Put: api/products
         [HttpPut]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<string>> Update([FromBody] ProductDto product)
         {
             var productToUpdate = await _productRepository.Get(product.Id);
@@ -111,8 +122,9 @@ namespace ShopBackend.Controllers
         }
 
 
-        // Delete: api/Products/5
+        // Delete: api/products/{productId}
         [HttpDelete("{productId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<string>> Delete(string productId)
         {
             var result=await _productRepository.Delete(productId);

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using ShopBackend.Utils;
+using System.ComponentModel.DataAnnotations;
 
 namespace ShopBackend.Models
 {
@@ -9,6 +10,8 @@ namespace ShopBackend.Models
 
         [Required(ErrorMessage = "Password cannot be empty")]
         public string Password { get; set; } = null!;
+
+        public UserRoles Role { get; set; }
 
         public virtual ICollection<Order>? Orders { get; set; }
 

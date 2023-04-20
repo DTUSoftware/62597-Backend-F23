@@ -1,9 +1,6 @@
-﻿
-using ShopBackend.Models;
-
-namespace ShopBackend.Dtos
+﻿namespace ShopBackend.Dtos
 {
-    public class CreateCustomerDto
+    public class LoginDto
     {
         public required string Email { get; set; }
 

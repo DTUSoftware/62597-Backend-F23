@@ -11,6 +11,7 @@ namespace ShopBackend
             return new CustomerDto
             {
                 Email = customer.Email,
+                Role = customer.Role,
                 Orders = customer.Orders != null ? new List<OrderDto>(customer.Orders.Select(x => x.AsOrderDto())) : new List<OrderDto>(),
             };
         }
@@ -85,6 +86,7 @@ namespace ShopBackend
             return new Customer
             {
                 Email = customerDto.Email,
+                Role = customerDto.Role,
                 Orders = customerDto.Orders != null ? new List<Order>(customerDto.Orders.Select(x => x.AsOrderModel())) : new List<Order>(),
             };
         }
@@ -164,6 +166,7 @@ namespace ShopBackend
                 OrderStatus = OrderStatus.Pending,
                 CheckMarketing = orderDto.CheckMarketing,
                 SubmitComment = orderDto.SubmitComment,
+                CustomerEmail = orderDto.CustomerEmail,
                 ShippingAddress = orderDto.ShippingAddress.AsAddressModel(),
                 BillingAddress = orderDto.BillingAddress.AsAddressModel(),
                 OrderDetails = new List<OrderDetail>(orderDto.OrderDetails.Select(x => x.CreateAsOrderDetailModel()))
@@ -179,15 +182,6 @@ namespace ShopBackend
                 RecurringOrder = orderDetailDto.RecurringOrder,
                 OrderId = orderDetailDto.OrderId,
                 ProductId = orderDetailDto.ProductId,
-            };
-        }
-
-        public static Customer CreateAsCustomerModel(this CreateCustomerDto customerDto)
-        {
-            return new Customer
-            {
-                Email = customerDto.Email,
-                Password= customerDto.Password,
             };
         }
 

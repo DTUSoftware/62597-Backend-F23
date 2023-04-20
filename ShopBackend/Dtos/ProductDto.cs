@@ -15,7 +15,7 @@ namespace ShopBackend.Dtos
 
         public int RebatePercent { get; set; }
 
-        public string UpsellProductId { get; set; } = null!;
+        public string? UpsellProductId { get; set; }
 
         public string ImageUrl { get; set; } = null!;
     }
