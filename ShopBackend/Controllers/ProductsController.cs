@@ -124,7 +124,6 @@ namespace ShopBackend.Controllers
             return NotFound("Product could not be updated!");
         }
 
-
         // Delete: api/Products/5
         [HttpDelete("{productId}", Name = "DeleteProductById")]
         public async Task<ActionResult<string>> DeleteProductById(string productId)
@@ -137,6 +136,7 @@ namespace ShopBackend.Controllers
 
             return NotFound("Product could not be deleted!");
         }
+
         //Based on https://code-maze.com/hateoas-aspnet-core-web-api/
         private IEnumerable<Link> CreateLinksForProduct(String productId, String requestType)
         {
@@ -163,9 +163,6 @@ namespace ShopBackend.Controllers
             "DELETE")
             };
                     return linksPut;
-
-
-
                 case "POST":
                     var linksPost = new List<Link> {
         new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(GetProductById), values: new { productId}),
@@ -179,14 +176,9 @@ namespace ShopBackend.Controllers
         "PUT")
             };
                     return linksPost;
-
                 default:
                     throw new Exception("Invalid requestType");
             }
-
-
         }
-
     }
-
 }

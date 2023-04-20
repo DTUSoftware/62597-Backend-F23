@@ -3,7 +3,7 @@ using ShopBackend.Models;
 
 namespace ShopBackend.Dtos
 {
-    public class CustomerDto
+    public class CustomerDto: LinkResourceBase
     {
         public required string Email { get; set; }
 
