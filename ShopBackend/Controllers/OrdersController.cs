@@ -12,11 +12,13 @@ namespace ShopBackend.Controllers
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderDetailRepository _orderDetailRepository;
+        private readonly LinkGenerator _linkGenerator;
 
-        public OrdersController(IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository)
+        public OrdersController(IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository,LinkGenerator linkGenerator)
         {
             _orderRepository = orderRepository;
             _orderDetailRepository = orderDetailRepository;
+            _linkGenerator = linkGenerator;
         }
 
 
@@ -27,7 +29,12 @@ namespace ShopBackend.Controllers
             var orders = (await _orderRepository.GetAll()).Select(order => order.AsOrderDto());
             if (orders.Any())
             {
-                return Ok(orders);
+                var orderList = orders.ToList();
+                foreach (OrderDto orderDto in orderList)
+                {
+                    orderDto.Links = (List<Link>)CreateLinksForOrder(orderDto.Id, "GET");
+                }
+                return Ok(orderList);
             }
 
             return NotFound("The specified orders does not exist!"); ;
@@ -36,12 +43,14 @@ namespace ShopBackend.Controllers
 
         // GET api/<OrdersController>/5
         [HttpGet("{orderId}", Name= "GetOrderById")]
-        public async Task<ActionResult<OrderDto>> Get(Guid orderId)
+        public async Task<ActionResult<OrderDto>> GetOrderById(Guid orderId)
         {
             var order = await _orderRepository.Get(orderId);
             if (order != default)
             {
-                return Ok(order.AsOrderDto());
+                OrderDto orderDto = order.AsOrderDto();
+                orderDto.Links = (List<Link>)CreateLinksForOrder(orderId, "GET");
+                return Ok(orderDto);
             }
 
             return NotFound("The specified order does not exist!");
@@ -55,6 +64,7 @@ namespace ShopBackend.Controllers
             var result = await _orderRepository.Insert(order.CreateAsOrderModel());
             if (result != default && result > 0)
             {
+            
                 return Ok("Order is inserted successfully!");
             }
 
@@ -63,8 +73,8 @@ namespace ShopBackend.Controllers
 
 
         // PUT api/<OrdersController>/5
-        [HttpPut("{orderId}")]
-        public async Task<ActionResult<string>> Put(Guid orderId, [FromBody] CreateUpdateOrderDto order)   
+        [HttpPut("{orderId}",Name = "UpdateOrderById")]
+        public async Task<ActionResult<string>> UpdateOrderById(Guid orderId, [FromBody] CreateUpdateOrderDto order)   
         {
             var orderToUpdate = await _orderRepository.Get(orderId);
             if (orderToUpdate == default)
@@ -88,8 +98,8 @@ namespace ShopBackend.Controllers
 
 
         // DELETE api/<OrdersController>/5
-        [HttpDelete("{orderId}")]
-        public async Task<ActionResult<string>> Delete(Guid orderId)
+        [HttpDelete("{orderId}",Name ="DeleteOrderById")]
+        public async Task<ActionResult<string>> DeleteOrderById(Guid orderId)
         {
 
             var result = await _orderRepository.Delete(orderId);
@@ -99,6 +109,50 @@ namespace ShopBackend.Controllers
                 return Ok("Order has been deleted!");
             }
             return NotFound("Order could not be deleted!");
+        }
+
+        //Based on https://code-maze.com/hateoas-aspnet-core-web-api/
+        private IEnumerable<Link> CreateLinksForOrder(Guid orderId, String requestType)
+        {
+            switch (requestType)
+            {
+                case "GET":
+                    var linksGet = new List<Link> {
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(DeleteOrderById), values: new { orderId }),
+            "delete_order",
+            "DELETE"),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(UpdateOrderById), values: new { orderId }),
+        "update_order",
+        "PUT")
+            };
+                    return linksGet;
+                case "PUT":
+                    var linksPut = new List<Link>
+                        {
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(GetOrderById), values: new { orderId}),
+            "self",
+            "GET"),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(DeleteOrderById), values: new { orderId }),
+            "delete_order",
+            "DELETE")
+            };
+                    return linksPut;
+                case "POST":
+                    var linksPost = new List<Link> {
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(GetOrderById), values: new { orderId}),
+            "self",
+            "GET"),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(DeleteOrderById), values: new { orderId }),
+            "delete_order",
+            "DELETE"),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(UpdateOrderById), values: new { orderId }),
+        "update_order",
+        "PUT")
+            };
+                    return linksPost;
+                default:
+                    throw new Exception("Invalid requestType");
+            }
         }
     }
 }

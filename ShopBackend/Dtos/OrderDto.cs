@@ -1,7 +1,9 @@
 ﻿
+using ShopBackend.Models;
+
 namespace ShopBackend.Dtos
 {
-    public class OrderDto
+    public class OrderDto: LinkResourceBase
     {
         public Guid Id { get; set; }
         public DateTime OrderDate { get; set; }
