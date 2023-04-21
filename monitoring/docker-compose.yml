@@ -1,0 +1,90 @@
+# Lots of inspiration taken from https://grafana.com/docs/grafana-cloud/quickstart/docker-compose-linux/
+version: '3.8'
+services:
+    node-exporter:
+        image: prom/node-exporter
+        container_name: node-exporter
+        restart: unless-stopped
+        volumes:
+            - /proc:/host/proc:ro
+            - /sys:/host/sys:ro
+            - /:/rootfs:ro
+        command:
+            - '--path.procfs=/host/proc'
+            - '--path.rootfs=/rootfs'
+            - '--path.sysfs=/host/sys'
+            - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+#        ports:
+#            - 127.0.0.1:9100:9100
+        networks:
+            - monitoring
+    nginx-exporter:
+        image: nginx/nginx-prometheus-exporter
+        container_name: nginx-exporter
+        restart: unless-stopped
+        command:
+            - -nginx.scrape-uri
+            - http://127.0.0.1:3000/stub_status
+#        ports:
+#            - 127.0.0.1:9113:9113
+        networks:
+            - monitoring
+    mysql-exporter:
+        image: prom/mysqld-exporter
+        container_name: mysql-exporter
+        restart: unless-stopped
+        command:
+            - --link=my_mysql_container:bdd
+#        ports:
+#            - 127.0.0.1:9104:9104
+        networks:
+            - monitoring
+            - shop_db
+    otel-collector:
+        image: otel/opentelemetry-collector
+        command:
+            - --config=/etc/otel-collector-config.yaml
+        volumes:
+            - ./exporters/opentelemetry/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+#        ports:
+#            - 1888:1888 # pprof extension
+#            - 8888:8888 # Prometheus metrics exposed by the collector
+#            - 8889:8889 # Prometheus exporter metrics
+#            - 13133:13133 # health_check extension
+#            - 4317:4317 # OTLP gRPC receiver
+#            - 4318:4318 # OTLP http receiver
+#            - 55679:55679 # zpages extension
+    prometheus:
+        image: prom/prometheus
+        container_name: prometheus
+        restart: unless-stopped
+        volumes:
+            - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+            - prometheus_data:/prometheus
+        command:
+            - '--config.file=/etc/prometheus/prometheus.yml'
+            - '--storage.tsdb.path=/prometheus'
+            - '--web.console.libraries=/etc/prometheus/console_libraries'
+            - '--web.console.templates=/etc/prometheus/consoles'
+            - '--web.enable-lifecycle'
+#        ports:
+#            - 9090:9090
+        networks:
+            - monitoring
+    grafana:
+        image: grafana/grafana
+        container_name: grafana
+        restart: unless-stopped
+        volumes:
+            - ./provisioning:/etc/grafana/provisioning
+            - ./grafana.ini:/etc/grafana/grafana.ini
+            - ./dashboards:/etc/grafana/dashboards
+        networks:
+            - monitoring
+volumes:
+    prometheus_data:
+networks:
+    monitoring:
+        name: monitoring
+    shop_db:
+        name: shop_db
