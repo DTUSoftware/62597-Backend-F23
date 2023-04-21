@@ -7,12 +7,25 @@ using ShopBackend.Repositories;
 using ShopBackend.Security;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Diagnostics.Metrics;
+using System.Threading;
+using OpenTelemetry;
+using OpenTelemetry.Metrics;
 
 internal class Program
 {
     private static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
+
+        // https://learn.microsoft.com/en-us/dotnet/core/diagnostics/metrics-collection
+        using MeterProvider meterProvider = Sdk.CreateMeterProviderBuilder()
+                .AddPrometheusExporter(opt =>
+                {
+                    opt.StartHttpListener = true;
+                    opt.HttpListenerPrefixes = new string[] { $"http://localhost:9184/" };
+                })
+                .Build();
 
         // Add services to the container.
         builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
