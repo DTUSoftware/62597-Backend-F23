@@ -11,7 +11,7 @@ using ShopBackend.Contexts;
 namespace ShopBackend.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20230416205822_initial_migration")]
+    [Migration("20230421181128_initial_migration")]
     partial class initial_migration
     {
         /// <inheritdoc />
@@ -111,10 +111,7 @@ namespace ShopBackend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
-                    b.Property<int>("BillingAddressId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("BillingAddressId1")
+                    b.Property<Guid>("BillingAddressId")
                         .HasColumnType("char(36)");
 
                     b.Property<bool>("CheckMarketing")
@@ -130,10 +127,7 @@ namespace ShopBackend.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("ShippingAddressId")
-                        .HasColumnType("int");
-
-                    b.Property<Guid>("ShippingAddressId1")
+                    b.Property<Guid>("ShippingAddressId")
                         .HasColumnType("char(36)");
 
                     b.Property<string>("SubmitComment")
@@ -147,11 +141,11 @@ namespace ShopBackend.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("BillingAddressId1");
+                    b.HasIndex("BillingAddressId");
 
                     b.HasIndex("CustomerEmail");
 
-                    b.HasIndex("ShippingAddressId1");
+                    b.HasIndex("ShippingAddressId");
 
                     b.ToTable("Orders");
                 });
@@ -235,18 +229,17 @@ namespace ShopBackend.Migrations
                 {
                     b.HasOne("ShopBackend.Models.Address", "BillingAddress")
                         .WithMany()
-                        .HasForeignKey("BillingAddressId1")
+                        .HasForeignKey("BillingAddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ShopBackend.Models.Customer", "Customer")
                         .WithMany("Orders")
-                        .HasForeignKey("CustomerEmail")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CustomerEmail");
 
                     b.HasOne("ShopBackend.Models.Address", "ShippingAddress")
                         .WithMany()
-                        .HasForeignKey("ShippingAddressId1")
+                        .HasForeignKey("ShippingAddressId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

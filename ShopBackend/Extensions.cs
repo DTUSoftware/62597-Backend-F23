@@ -167,8 +167,8 @@ namespace ShopBackend
                 CheckMarketing = orderDto.CheckMarketing,
                 SubmitComment = orderDto.SubmitComment,
                 CustomerEmail = orderDto.CustomerEmail,
-                ShippingAddress = orderDto.ShippingAddress.AsAddressModel(),
-                BillingAddress = orderDto.BillingAddress.AsAddressModel(),
+                ShippingAddress = orderDto.ShippingAddress.CreateAsAddressModel(),
+                BillingAddress = orderDto.BillingAddress.CreateAsAddressModel(),
                 OrderDetails = new List<OrderDetail>(orderDto.OrderDetails.Select(x => x.CreateAsOrderDetailModel()))
             };
         }

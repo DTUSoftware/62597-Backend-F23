@@ -16,15 +16,14 @@ namespace ShopBackend.Models
         public bool RecurringOrder { get; set; }
 
         [Required(ErrorMessage = "OrderId cannot be empty")]
-        [ForeignKey("Order")]
         public Guid OrderId { get; set; }
 
         [Required(ErrorMessage = "ProductId cannot be empty")]
-        [ForeignKey("Product")]
         public string ProductId { get; set; } = null!;
 
         public virtual Order Order { get; set; } = null!;
 
+        [ForeignKey("ProductId")]
         public virtual Product Product { get; set; } = null!;
 
         [Timestamp]

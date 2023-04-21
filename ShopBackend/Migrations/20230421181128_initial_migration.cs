@@ -109,10 +109,8 @@ namespace ShopBackend.Migrations
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     CustomerEmail = table.Column<string>(type: "varchar(255)", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ShippingAddressId = table.Column<int>(type: "int", nullable: false),
-                    BillingAddressId = table.Column<int>(type: "int", nullable: false),
-                    ShippingAddressId1 = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
-                    BillingAddressId1 = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    ShippingAddressId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
+                    BillingAddressId = table.Column<Guid>(type: "char(36)", nullable: false, collation: "ascii_general_ci"),
                     Version = table.Column<DateTime>(type: "timestamp(6)", rowVersion: true, nullable: true)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.ComputedColumn)
                 },
@@ -120,14 +118,14 @@ namespace ShopBackend.Migrations
                 {
                     table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Orders_Addresses_BillingAddressId1",
-                        column: x => x.BillingAddressId1,
+                        name: "FK_Orders_Addresses_BillingAddressId",
+                        column: x => x.BillingAddressId,
                         principalTable: "Addresses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Orders_Addresses_ShippingAddressId1",
-                        column: x => x.ShippingAddressId1,
+                        name: "FK_Orders_Addresses_ShippingAddressId",
+                        column: x => x.ShippingAddressId,
                         principalTable: "Addresses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -135,8 +133,7 @@ namespace ShopBackend.Migrations
                         name: "FK_Orders_Customers_CustomerEmail",
                         column: x => x.CustomerEmail,
                         principalTable: "Customers",
-                        principalColumn: "Email",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Email");
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -173,9 +170,9 @@ namespace ShopBackend.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_BillingAddressId1",
+                name: "IX_Orders_BillingAddressId",
                 table: "Orders",
-                column: "BillingAddressId1");
+                column: "BillingAddressId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerEmail",
@@ -183,9 +180,9 @@ namespace ShopBackend.Migrations
                 column: "CustomerEmail");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Orders_ShippingAddressId1",
+                name: "IX_Orders_ShippingAddressId",
                 table: "Orders",
-                column: "ShippingAddressId1");
+                column: "ShippingAddressId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_OrdersDetails_OrderId",
