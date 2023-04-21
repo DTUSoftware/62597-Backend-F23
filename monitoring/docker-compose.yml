@@ -79,9 +79,9 @@ services:
         container_name: grafana
         restart: unless-stopped
         volumes:
-            - ./provisioning:/etc/grafana/provisioning
-            - ./grafana.ini:/etc/grafana/grafana.ini
-            - ./dashboards:/etc/grafana/dashboards
+            - ./grafana/provisioning:/etc/grafana/provisioning
+            - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+            - ./grafana/dashboards:/etc/grafana/dashboards
         networks:
             - monitoring
 volumes:
