@@ -1,7 +1,6 @@
 ﻿using ShopBackend.Dtos;
 using ShopBackend.Models;
-using System.Diagnostics.Metrics;
-using System.Net;
+using ShopBackend.Utils;
 
 namespace ShopBackend
 {
@@ -12,10 +11,7 @@ namespace ShopBackend
             return new CustomerDto
             {
                 Email = customer.Email,
-                FirstName = customer.FirstName,
-                LastName = customer.LastName,
-                Phone = customer.Phone,
-                Address = customer.Address != null ? new List<AddressDto>(customer.Address.Select(x => x.AsAddressDto())) : new List<AddressDto>(),
+                Role = customer.Role,
                 Orders = customer.Orders != null ? new List<OrderDto>(customer.Orders.Select(x => x.AsOrderDto())) : new List<OrderDto>(),
             };
         }
@@ -25,12 +21,17 @@ namespace ShopBackend
             return new AddressDto
             {
                 Id = address.Id,
-                ZipCode = address.ZipCode,
+                FirstName = address.FirstName,
+                LastName = address.LastName,
+                Email = address.Email,
+                MobileNr = address.MobileNr,
+                Company = address.Company,
+                VatNr = address.VatNr,
                 Country = address.Country,
-                Region = address.Region,
+                ZipCode = address.ZipCode,
                 City = address.City,
-                StreetAddress = address.StreetAddress,
-                Type = address.Type,
+                Address1 = address.Address1,
+                Address2 = address.Address2,
             };
         }
 
@@ -41,7 +42,11 @@ namespace ShopBackend
                 Id = order.Id,
                 OrderDate = order.OrderDate,
                 OrderStatus = order.OrderStatus,
-                OrderDetails = order.OrderDetails != null ? new List<OrderDetailDto>(order.OrderDetails.Select(x => x.AsOrderDetailDto())) : new List<OrderDetailDto>(),
+                CheckMarketing = order.CheckMarketing,
+                SubmitComment = order.SubmitComment,
+                BillingAddress = order.BillingAddress.AsAddressDto(),
+                ShippingAddress = order.ShippingAddress.AsAddressDto(),
+                OrderDetails = new List<OrderDetailDto>(order.OrderDetails.Select(x => x.AsOrderDetailDto())),
             };
         }
 
@@ -51,7 +56,9 @@ namespace ShopBackend
             {
                 Id = orderDetail.Id,
                 Quantity = orderDetail.Quantity,
-                Product = orderDetail.Product!.AsProductDto(),
+                GiftWrap = orderDetail.GiftWrap,
+                RecurringOrder = orderDetail.RecurringOrder,
+                Product = orderDetail.Product.AsProductDto(),
             };
         }
 
@@ -66,6 +73,7 @@ namespace ShopBackend
                 RebateQuantity = product.RebateQuantity,
                 RebatePercent = product.RebatePercent,
                 UpsellProductId = product.UpsellProductId,
+                ImageUrl = product.ImageUrl,
             };
         }
 
@@ -78,10 +86,7 @@ namespace ShopBackend
             return new Customer
             {
                 Email = customerDto.Email,
-                FirstName = customerDto.FirstName,
-                LastName = customerDto.LastName,
-                Phone = customerDto.Phone,
-                Address = customerDto.Address != null ? new List<Address>(customerDto.Address.Select(x => x.AsAddressModel())) : new List<Address>(),
+                Role = customerDto.Role,
                 Orders = customerDto.Orders != null ? new List<Order>(customerDto.Orders.Select(x => x.AsOrderModel())) : new List<Order>(),
             };
         }
@@ -91,12 +96,17 @@ namespace ShopBackend
             return new Address
             {
                 Id = addressDto.Id,
-                ZipCode = addressDto.ZipCode,
+                FirstName = addressDto.FirstName,
+                LastName = addressDto.LastName,
+                Email = addressDto.Email,
+                MobileNr = addressDto.MobileNr,
+                Company = addressDto.Company,
+                VatNr = addressDto.VatNr,
                 Country = addressDto.Country,
-                Region = addressDto.Region,
+                ZipCode = addressDto.ZipCode,
                 City = addressDto.City,
-                StreetAddress = addressDto.StreetAddress,
-                Type = addressDto.Type,
+                Address1 = addressDto.Address1,
+                Address2 = addressDto.Address2,
             };
         }
 
@@ -107,7 +117,11 @@ namespace ShopBackend
                 Id = orderDto.Id,
                 OrderDate = orderDto.OrderDate,
                 OrderStatus = orderDto.OrderStatus,
-                OrderDetails = orderDto.OrderDetails != null ? new List<OrderDetail>(orderDto.OrderDetails.Select(x => x.AsOrderDetailModel())) : null,
+                CheckMarketing = orderDto.CheckMarketing,
+                SubmitComment = orderDto.SubmitComment,
+                BillingAddress = orderDto.BillingAddress.AsAddressModel(),
+                ShippingAddress = orderDto.ShippingAddress.AsAddressModel(),
+                OrderDetails = new List<OrderDetail>(orderDto.OrderDetails.Select(x => x.AsOrderDetailModel()))
             };
         }
 
@@ -117,7 +131,9 @@ namespace ShopBackend
             {
                 Id = orderDetailDto.Id,
                 Quantity = orderDetailDto.Quantity,
-                Product = orderDetailDto.Product?.AsProductModel()
+                GiftWrap = orderDetailDto.GiftWrap,
+                RecurringOrder = orderDetailDto.RecurringOrder,
+                Product = orderDetailDto.Product.AsProductModel()
             };
         }
 
@@ -132,6 +148,7 @@ namespace ShopBackend
                 RebateQuantity = productDto.RebateQuantity,
                 RebatePercent = productDto.RebatePercent,
                 UpsellProductId = productDto.UpsellProductId,
+                ImageUrl = productDto.ImageUrl,
             };
         }
 
@@ -140,13 +157,19 @@ namespace ShopBackend
 
 
 
-        public static Order CreateAsOrderModel(this CreateUpdateOrderDto orderDto)
+        public static Order CreateAsOrderModel(this CreateOrderDto orderDto)
         {
+
             return new Order
             {
-                OrderDate = orderDto.OrderDate,
-                OrderStatus = orderDto.OrderStatus,
+                OrderDate = DateTime.Now,
+                OrderStatus = OrderStatus.Pending,
+                CheckMarketing = orderDto.CheckMarketing,
+                SubmitComment = orderDto.SubmitComment,
                 CustomerEmail = orderDto.CustomerEmail,
+                ShippingAddress = orderDto.ShippingAddress.AsAddressModel(),
+                BillingAddress = orderDto.BillingAddress.AsAddressModel(),
+                OrderDetails = new List<OrderDetail>(orderDto.OrderDetails.Select(x => x.CreateAsOrderDetailModel()))
             };
         }
 
@@ -155,20 +178,28 @@ namespace ShopBackend
             return new OrderDetail
             {
                 Quantity = orderDetailDto.Quantity,
+                GiftWrap = orderDetailDto.GiftWrap,
+                RecurringOrder = orderDetailDto.RecurringOrder,
                 OrderId = orderDetailDto.OrderId,
                 ProductId = orderDetailDto.ProductId,
             };
         }
 
-        public static Customer CreateAsCustomerModel(this CreateCustomerDto customerDto)
+        public static Address CreateAsAddressModel(this CreateAddressDto addressDto)
         {
-            return new Customer
+            return new Address
             {
-                Email = customerDto.Email,
-                FirstName = customerDto.FirstName,
-                LastName = customerDto.LastName,
-                Password= customerDto.Password,
-                Phone = customerDto.Phone,
+                FirstName = addressDto.FirstName,
+                LastName = addressDto.LastName,
+                Email = addressDto.Email,
+                MobileNr = addressDto.MobileNr,
+                Company = addressDto.Company,
+                VatNr = addressDto.VatNr,
+                Country = addressDto.Country,
+                ZipCode = addressDto.ZipCode,
+                City = addressDto.City,
+                Address1 = addressDto.Address1,
+                Address2 = addressDto.Address2
             };
         }
     }

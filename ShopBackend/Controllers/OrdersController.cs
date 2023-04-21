@@ -1,14 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using ShopBackend.Dtos;
 using ShopBackend.Models;
 using ShopBackend.Repositories;
-
 
 namespace ShopBackend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class OrdersController : Controller
+    public class OrdersController : ControllerBase
     {
         private readonly IOrderRepository _orderRepository;
         private readonly IOrderDetailRepository _orderDetailRepository;
@@ -22,8 +23,9 @@ namespace ShopBackend.Controllers
         }
 
 
-        // GET: api/<OrdersController>
+        // GET: api/orders
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<OrderDto>>> Get()
         {
             var orders = (await _orderRepository.GetAll()).Select(order => order.AsOrderDto());
@@ -41,9 +43,10 @@ namespace ShopBackend.Controllers
         }
 
 
-        // GET api/<OrdersController>/5
-        [HttpGet("{orderId}", Name= "GetOrderById")]
-        public async Task<ActionResult<OrderDto>> GetOrderById(Guid orderId)
+        // GET api/orders/{orderId}
+        [HttpGet("{orderId}")]
+        [Authorize(Roles = "Customer,Admin")]
+        public async Task<ActionResult<OrderDto>> Get(Guid orderId)
         {
             var order = await _orderRepository.Get(orderId);
             if (order != default)
@@ -57,9 +60,11 @@ namespace ShopBackend.Controllers
         }
 
 
-        // POST api/<OrdersController>
+        // POST api/orders
         [HttpPost]
-        public async Task<ActionResult<string>> Create([FromBody] CreateUpdateOrderDto order)
+        [AllowAnonymous]
+        [EnableCors("FrontendPolicy")]
+        public async Task<ActionResult<string>> Create([FromBody] CreateOrderDto order)
         {
             var result = await _orderRepository.Insert(order.CreateAsOrderModel());
             if (result != default && result > 0)
@@ -72,11 +77,12 @@ namespace ShopBackend.Controllers
         }
 
 
-        // PUT api/<OrdersController>/5
-        [HttpPut("{orderId}",Name = "UpdateOrderById")]
-        public async Task<ActionResult<string>> UpdateOrderById(Guid orderId, [FromBody] CreateUpdateOrderDto order)   
+        // PUT api/orders
+        [HttpPut]
+        [Authorize(Roles = "Customer,Admin")]
+        public async Task<ActionResult<string>> Update([FromBody] OrderDto order)   
         {
-            var orderToUpdate = await _orderRepository.Get(orderId);
+            var orderToUpdate = await _orderRepository.Get(order.Id);
             if (orderToUpdate == default)
             {
                 return NotFound("Order does not exsist!");
@@ -84,8 +90,8 @@ namespace ShopBackend.Controllers
 
             orderToUpdate.OrderDate = order.OrderDate;
             orderToUpdate.OrderStatus = order.OrderStatus;
-            orderToUpdate.CustomerEmail = order.CustomerEmail;
-
+            orderToUpdate.CheckMarketing = order.CheckMarketing;
+            orderToUpdate.SubmitComment = order.SubmitComment;
 
             var result = await _orderRepository.Update(orderToUpdate);
             if (result != default && result > 0)
@@ -97,9 +103,10 @@ namespace ShopBackend.Controllers
         }
 
 
-        // DELETE api/<OrdersController>/5
-        [HttpDelete("{orderId}",Name ="DeleteOrderById")]
-        public async Task<ActionResult<string>> DeleteOrderById(Guid orderId)
+        // DELETE api/orders/{orderId}
+        [HttpDelete("{orderId}")]
+        [Authorize(Roles = "Customer,Admin")]
+        public async Task<ActionResult<string>> Delete(Guid orderId)
         {
 
             var result = await _orderRepository.Delete(orderId);
@@ -118,10 +125,10 @@ namespace ShopBackend.Controllers
             {
                 case "GET":
                     var linksGet = new List<Link> {
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(DeleteOrderById), values: new { orderId }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { orderId }),
             "delete_order",
             "DELETE"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(UpdateOrderById), values: new { orderId }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update), values: new { orderId }),
         "update_order",
         "PUT")
             };
@@ -129,23 +136,23 @@ namespace ShopBackend.Controllers
                 case "PUT":
                     var linksPut = new List<Link>
                         {
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(GetOrderById), values: new { orderId}),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { orderId}),
             "self",
             "GET"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(DeleteOrderById), values: new { orderId }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { orderId }),
             "delete_order",
             "DELETE")
             };
                     return linksPut;
                 case "POST":
                     var linksPost = new List<Link> {
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(GetOrderById), values: new { orderId}),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { orderId}),
             "self",
             "GET"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(DeleteOrderById), values: new { orderId }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { orderId }),
             "delete_order",
             "DELETE"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(UpdateOrderById), values: new { orderId }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update), values: new { orderId }),
         "update_order",
         "PUT")
             };

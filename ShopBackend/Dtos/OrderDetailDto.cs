@@ -1,5 +1,6 @@
 ﻿
 using ShopBackend.Models;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShopBackend.Dtos
 {
@@ -9,7 +10,12 @@ namespace ShopBackend.Dtos
 
         public int Quantity { get; set; }
 
-        public ProductDto? Product { get; set; }
+        public bool GiftWrap { get; set; }
 
+        public bool RecurringOrder { get; set; }
+
+        public virtual OrderDto Order { get; set; } = null!;
+
+        public virtual ProductDto Product { get; set; } = null!;
     }
 }

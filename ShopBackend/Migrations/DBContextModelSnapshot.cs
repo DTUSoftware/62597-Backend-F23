@@ -16,7 +16,7 @@ namespace ShopBackend.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.3")
+                .HasAnnotation("ProductVersion", "7.0.5")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("ShopBackend.Models.Address", b =>
@@ -25,32 +25,58 @@ namespace ShopBackend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<string>("Address1")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Address2")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
                     b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Company")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Country")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("CustomerEmail")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Region")
+                    b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("StreetAddress")
+                    b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Type")
+                    b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("ZipCode")
-                        .HasColumnType("int");
+                    b.Property<string>("MobileNr")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("VatNr")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp(6)");
+
+                    b.Property<string>("ZipCode")
+                        .IsRequired()
+                        .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerEmail");
-
-                    b.ToTable("Address");
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("ShopBackend.Models.Customer", b =>
@@ -58,17 +84,18 @@ namespace ShopBackend.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("varchar(255)");
 
-                    b.Property<string>("FirstName")
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("longtext");
-
                     b.Property<string>("Password")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<int>("Phone")
-                        .HasColumnType("int");
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp(6)");
 
                     b.HasKey("Email");
 
@@ -81,6 +108,15 @@ namespace ShopBackend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<int>("BillingAddressId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("BillingAddressId1")
+                        .HasColumnType("char(36)");
+
+                    b.Property<bool>("CheckMarketing")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<string>("CustomerEmail")
                         .HasColumnType("varchar(255)");
 
@@ -88,11 +124,31 @@ namespace ShopBackend.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("OrderStatus")
+                        .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<int>("ShippingAddressId")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("ShippingAddressId1")
+                        .HasColumnType("char(36)");
+
+                    b.Property<string>("SubmitComment")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp(6)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BillingAddressId1");
+
                     b.HasIndex("CustomerEmail");
+
+                    b.HasIndex("ShippingAddressId1");
 
                     b.ToTable("Orders");
                 });
@@ -103,14 +159,26 @@ namespace ShopBackend.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<bool>("GiftWrap")
+                        .HasColumnType("tinyint(1)");
+
                     b.Property<Guid>("OrderId")
                         .HasColumnType("char(36)");
 
                     b.Property<string>("ProductId")
+                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
+
+                    b.Property<bool>("RecurringOrder")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp(6)");
 
                     b.HasKey("Id");
 
@@ -127,9 +195,15 @@ namespace ShopBackend.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Currency")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<decimal>("Price")
@@ -144,29 +218,40 @@ namespace ShopBackend.Migrations
                     b.Property<string>("UpsellProductId")
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime?>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp(6)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("ShopBackend.Models.Address", b =>
-                {
-                    b.HasOne("ShopBackend.Models.Customer", "Customer")
-                        .WithMany("Address")
-                        .HasForeignKey("CustomerEmail")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Customer");
-                });
-
             modelBuilder.Entity("ShopBackend.Models.Order", b =>
                 {
+                    b.HasOne("ShopBackend.Models.Address", "BillingAddress")
+                        .WithMany()
+                        .HasForeignKey("BillingAddressId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("ShopBackend.Models.Customer", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerEmail")
                         .OnDelete(DeleteBehavior.Cascade);
 
+                    b.HasOne("ShopBackend.Models.Address", "ShippingAddress")
+                        .WithMany()
+                        .HasForeignKey("ShippingAddressId1")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BillingAddress");
+
                     b.Navigation("Customer");
+
+                    b.Navigation("ShippingAddress");
                 });
 
             modelBuilder.Entity("ShopBackend.Models.OrderDetail", b =>
@@ -178,9 +263,10 @@ namespace ShopBackend.Migrations
                         .IsRequired();
 
                     b.HasOne("ShopBackend.Models.Product", "Product")
-                        .WithMany("OrderDetails")
+                        .WithMany()
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Order");
 
@@ -189,17 +275,10 @@ namespace ShopBackend.Migrations
 
             modelBuilder.Entity("ShopBackend.Models.Customer", b =>
                 {
-                    b.Navigation("Address");
-
                     b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("ShopBackend.Models.Order", b =>
-                {
-                    b.Navigation("OrderDetails");
-                });
-
-            modelBuilder.Entity("ShopBackend.Models.Product", b =>
                 {
                     b.Navigation("OrderDetails");
                 });

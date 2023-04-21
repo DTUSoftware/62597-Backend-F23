@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShopBackend.Repositories;
 using ShopBackend.Dtos;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Routing;
 using ShopBackend.Models;
 using Microsoft.AspNetCore.Http;
@@ -10,7 +12,7 @@ namespace ShopBackend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProductsController : Controller
+    public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
         private readonly LinkGenerator _linkGenerator;
@@ -22,8 +24,10 @@ namespace ShopBackend.Controllers
         }
 
 
-        // GET: api/Products
+        // GET: api/products
         [HttpGet]
+        [AllowAnonymous]
+        [EnableCors("FrontendPolicy")]
         public async Task<ActionResult<IEnumerable<ProductDto>>> Get()
         {
             var products = (await _productRepository.GetAll()).Select(product => product.AsProductDto());
@@ -42,9 +46,11 @@ namespace ShopBackend.Controllers
         }
 
 
-        // GET: api/Products/{5}
-        [HttpGet("{productId}", Name = "GetProductById")]
-        public async Task<ActionResult<ProductDto>> GetProductById(string productId)
+        // GET: api/products/{productId}
+        [HttpGet("{productId}")]
+        [AllowAnonymous]
+        [EnableCors("FrontendPolicy")]
+        public async Task<ActionResult<ProductDto>> Get(string productId)
         {
             var product = await _productRepository.Get(productId);
             if (product != default)
@@ -58,14 +64,17 @@ namespace ShopBackend.Controllers
         }
 
 
-        // Post: api/Products
+        // Post: api/products
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<string>> Create([FromBody] ProductDto product)
         {
+            //ProductDto has Id as a required field parameter, meaning that Id it cannot be instantiated as null.
             if (product.Id == null)
             {
                 return BadRequest("Product id is required to register the product!");
             }
+
             var isIdTaken = await _productRepository.Get(product.Id);
             if (isIdTaken != default)
             {
@@ -81,8 +90,9 @@ namespace ShopBackend.Controllers
             return NotFound("Product could not be inserted!");
         }
 
-        // Post: api/Products/Multiple Primarily used for populating the server database
-        [HttpPost("Multiple")]
+        // Post: api/products/multiple
+        [HttpPost("multiple")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<string>> CreateMultiple(IEnumerable<ProductDto> products)
         {
             foreach (ProductDto product in products)
@@ -94,13 +104,14 @@ namespace ShopBackend.Controllers
                 }
             }
 
-            return Ok("Product is inserted successfully!");
+            return Ok("Products is inserted successfully!");
         }
 
 
-        // Put: api/Products/5
-        [HttpPut("{productId}", Name = "UpdateProductById")]
-        public async Task<ActionResult<string>> UpdateProductById([FromBody] ProductDto product)
+        // Put: api/products
+        [HttpPut]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<string>> Update([FromBody] ProductDto product)
         {
             var productToUpdate = await _productRepository.Get(product.Id);
             if (productToUpdate == default)
@@ -124,9 +135,11 @@ namespace ShopBackend.Controllers
             return NotFound("Product could not be updated!");
         }
 
-        // Delete: api/Products/5
-        [HttpDelete("{productId}", Name = "DeleteProductById")]
-        public async Task<ActionResult<string>> DeleteProductById(string productId)
+
+        // Delete: api/products/{productId}
+        [HttpDelete("{productId}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<string>> Delete(string productId)
         {
             var result = await _productRepository.Delete(productId);
             if (result != default)
@@ -144,10 +157,10 @@ namespace ShopBackend.Controllers
             {
                 case "GET":
                     var linksGet = new List<Link> {
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(DeleteProductById), values: new { productId }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId }),
             "delete_product",
             "DELETE"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(UpdateProductById), values: new { productId }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update), values: new { productId }),
         "update_product",
         "PUT")
             };
@@ -155,23 +168,23 @@ namespace ShopBackend.Controllers
                 case "PUT":
                     var linksPut = new List<Link>
                         {
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(GetProductById), values: new { productId}),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { productId}),
             "self",
             "GET"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(DeleteProductById), values: new { productId }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId }),
             "delete_product",
             "DELETE")
             };
                     return linksPut;
                 case "POST":
                     var linksPost = new List<Link> {
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(GetProductById), values: new { productId}),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { productId}),
             "self",
             "GET"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(DeleteProductById), values: new { productId }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId }),
             "delete_product",
             "DELETE"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(UpdateProductById), values: new { productId }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update), values: new { productId }),
         "update_product",
         "PUT")
             };

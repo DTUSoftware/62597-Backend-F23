@@ -4,22 +4,19 @@ using ShopBackend.Utils;
 
 namespace ShopBackend.Dtos
 {
-    public class OrderDto: LinkResourceBase
+    public class CreateOrderDto
     {
-        public Guid Id { get; set; }
-
-        public DateTime OrderDate { get; set; }
-
-        public OrderStatus OrderStatus { get; set; }
-
         public bool CheckMarketing { get; set; }
 
         public string SubmitComment { get; set; } = null!;
+
+        // Nullable for now, so that frontend can create an order without a Customer
+        public string? CustomerEmail { get; set; }
 
         public virtual AddressDto ShippingAddress { get; set; } = null!;
 
         public virtual AddressDto BillingAddress { get; set; } = null!;
 
-        public virtual ICollection<OrderDetailDto> OrderDetails { get; set; } = null!;
+        public virtual ICollection<CreateOrderDetailDto> OrderDetails { get; set; } = null!;
     }
 }
