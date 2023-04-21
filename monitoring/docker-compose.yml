@@ -24,7 +24,7 @@ services:
         restart: unless-stopped
         command:
             - -nginx.scrape-uri
-            - http://127.0.0.1:3000/stub_status
+            - http://shop-proxy:3000/stub_status
 #        ports:
 #            - 127.0.0.1:9113:9113
         networks:
