@@ -15,9 +15,23 @@ scrape_configs:
     static_configs:
       - targets: ['nginx-exporter:9113']
 
-  - job_name: 'mariadb'
+  - job_name: mysql # To get metrics about the mysql exporter’s targets
     static_configs:
-      - targets: ['mysql-exporter:9104']
+      - targets:
+        # All mysql hostnames or unix sockets to monitor.
+        - shop-database:3306
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        # The mysqld_exporter host:port
+        replacement: mysql-exporter:9104
+
+#  - job_name: 'mariadb'
+#    static_configs:
+#      - targets: ['mysql-exporter:9104']
 
   - job_name: 'webshop'
     static_configs:

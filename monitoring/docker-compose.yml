@@ -33,8 +33,10 @@ services:
         image: prom/mysqld-exporter
         container_name: mysql-exporter
         restart: unless-stopped
+        volumes:
+            - ./exporters/mysql/config.my-cnf:/etc/config.my-cnf
         command:
-            - --link=my_mysql_container:bdd
+            - --config.my-cnf=/etc/config.my-cnf
 #        ports:
 #            - 127.0.0.1:9104:9104
         networks:
@@ -74,6 +76,7 @@ services:
         networks:
             - monitoring
             - shop_backend
+            - shop_db
     grafana:
         image: grafana/grafana
         container_name: grafana
