@@ -10,14 +10,14 @@ namespace ShopBackend.Test.ControllersTest
      * @date: 18-04-2023
      */
     public class TestOrderController{
-        private readonly List<Customer> customerList;
-        private readonly CustomersController customersController;
+        private readonly List<Order> orderList;
+        private readonly OrdersController orderController;
         public TestOrderController(){
             //Mutual Arrange
             orderList = DataHelper.GetFakeOrderList();
             var mock = MockIRepositories.GetOrderRepository(orderList);
             orderController = new OrdersController(mock.Object);
-            }
+        }
             
         [Fact]
         public async Task GetAllOrders_onOk(){
@@ -26,17 +26,17 @@ namespace ShopBackend.Test.ControllersTest
             
             //Assert
             Assert.NotNull(actionResult);
-            Assert.IsType<OkObject>(actionResult.Result);
+            Assert.IsType<OkObjectResult>(actionResult.Result);
             IEnumerable<OrderDto> list = Assert.IsAssignableFrom<IEnumerable<OrderDto>>(((OkObjectResult)actionResult.Result).Value);
             Assert.Equal(2,list.Count());
-            }
+        }
             
         [Fact]
         public async Task GetAllOrders_onNotFound(){
             //Arrange
             var emptyOrderList = new List<Order>();
             var mock = MockIRepositories.GetOrderRepository(emptyOrderList);
-            var Controller = new OrderController(mock.Object);
+            var Controller = new OrdersController(mock.Object);
             
             //Act
             var actionResult = await Controller.Get();
@@ -45,8 +45,8 @@ namespace ShopBackend.Test.ControllersTest
             Assert.NotNull(actionResult);
             Assert.IsType<NotFoundObjectResult>(actionResult.Result);
             string msg =Assert.IsType<string>(((NotFoundObjectResult)actionResult.Result).Value);
-            Assert.Equal("The specified order does not exist!", msg);
-            }
+            Assert.Equal("The specified orders does not exist!", msg);
+        }
         
         [Theory]
         [InlineData("1a1b1c1d-d9cb-469f-a165-70867728555e")]
@@ -59,7 +59,7 @@ namespace ShopBackend.Test.ControllersTest
             Assert.IsType<OkObjectResult>(actionResult.Result);
             var order = Assert.IsType<OrderDto>(((OkObjectResult)actionResult.Result).Value);
             Assert.Equal(orderList[0].Id, order.Id);
-            }
+        }
             
         [Theory]
         [InlineData("5a1b1c1d-d9cb-469f-a165-70867728555e")]
@@ -72,7 +72,7 @@ namespace ShopBackend.Test.ControllersTest
             Assert.IsType<NotFoundObjectResult>(actionResult.Result);
             string msg = Assert.IsType<string>(((NotFoundObjectResult)actionResult.Result).Value);
             Assert.Equal("The specified order does not exist!", msg);
-            }
+        }
             
         [Fact]
         public async Task CreateOrder_onOk(){
@@ -108,7 +108,7 @@ namespace ShopBackend.Test.ControllersTest
             string msg = Assert.IsType<string>(((CreatedResult)actionResult.Result).Value);
             Assert.Equal("Order is inserted successfully!", msg);
             Assert.Equal(3, orderList.Count);
-            }
+        }
             
         [Fact]
         public async Task CreateOrder_onBadRequest_EmptyProducts(){
@@ -129,7 +129,7 @@ namespace ShopBackend.Test.ControllersTest
             string msg = Assert.IsType<string>(((BadRequestObjectResult)actionResult.Result).Value);
             Assert.Equal("ProductDetails is required to register the order!", msg);
             Assert.Equal(2, orderList.Count);
-            }
+        }
             
         [Fact]
         public async Task UpdateOrder_onOk(){
@@ -146,7 +146,7 @@ namespace ShopBackend.Test.ControllersTest
             string msg = Assert.IsType<string>(((OkObjectResult)actionResult.Result).Value);
             Assert.Equal("Order has been updated!", msg);
             Assert.Equal(Utils.OrderStatus.Canceled, orderList[0].OrderStatus);
-            }
+        }
             
         [Fact]
         public async Task UpdateOrder_onNotFound(){
@@ -162,7 +162,7 @@ namespace ShopBackend.Test.ControllersTest
             Assert.IsType<NotFoundObjectResult>(actionResult.Result);
             string msg = Assert.IsType<string>(((NotFoundObjectResult)actionResult.Result).Value);
             Assert.Equal("Order does not exsist!", msg);
-            }
+        }
             
         [Theory]
         [InlineData("1a1b1c1d-d9cb-469f-a165-70867728555e")]
@@ -176,7 +176,7 @@ namespace ShopBackend.Test.ControllersTest
             string msg = Assert.IsType<string>(((OkObjectResult)actionResult.Result).Value);
             Assert.Equal("Order has been deleted!", msg);
             Assert.Single(orderList);
-            }
+        }
             
         [Theory]
         [InlineData("5a1b1c1d-d9cb-469f-a165-70867728555e")]
@@ -190,6 +190,6 @@ namespace ShopBackend.Test.ControllersTest
             string msg = Assert.IsType<string>(((NotFoundObjectResult)actionResult.Result).Value);
             Assert.Equal("Order could not be deleted!", msg);
             Assert.Equal(2, orderList.Count);
-            }
         }
     }
+}
