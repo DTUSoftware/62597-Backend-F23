@@ -20,11 +20,6 @@ namespace ShopBackend.Dtos
 
         public string? UpsellProductId { get; set; }
 
-<<<<<<< HEAD
-
-
-=======
         public string ImageUrl { get; set; } = null!;
->>>>>>> dev
     }
 }
