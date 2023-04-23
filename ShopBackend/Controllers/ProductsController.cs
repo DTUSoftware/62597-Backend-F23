@@ -3,6 +3,10 @@ using ShopBackend.Repositories;
 using ShopBackend.Dtos;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Routing;
+using ShopBackend.Discoverabillity;
 
 namespace ShopBackend.Controllers
 {
@@ -11,10 +15,12 @@ namespace ShopBackend.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
+        private readonly LinkGenerator _linkGenerator;
 
-        public ProductsController(IProductRepository productRepository)
+        public ProductsController(IProductRepository productRepository, LinkGenerator linkGenerator)
         {
             _productRepository = productRepository;
+            _linkGenerator = linkGenerator;
         }
 
 
@@ -27,7 +33,13 @@ namespace ShopBackend.Controllers
             var products = (await _productRepository.GetAll()).Select(product => product.AsProductDto());
             if (products.Any())
             {
-                return Ok(products);
+                var productList = products.ToList();
+                foreach (ProductDto prod in productList)
+                {
+                    prod.Links = (List<Link>)CreateLinksForProduct(prod.Id,"GET");
+                }
+
+                return Ok(productList);
             }
 
             return NotFound("The specified products does not exist!");
@@ -41,9 +53,11 @@ namespace ShopBackend.Controllers
         public async Task<ActionResult<ProductDto>> Get(string productId)
         {
             var product = await _productRepository.Get(productId);
-            if(product != default)
+            if (product != default)
             {
-                return Ok(product.AsProductDto()); 
+                ProductDto prod = product.AsProductDto();
+                prod.Links = (List<Link>)CreateLinksForProduct(productId, "GET");
+                return Ok(prod);
             }
 
             return NotFound("The specified product does not exist!");
@@ -68,9 +82,9 @@ namespace ShopBackend.Controllers
             }
 
             var result = await _productRepository.Insert(product.AsProductModel());
-            if(result != default && result > 0) 
-            { 
-                return Ok("Product is inserted successfully!"); 
+            if (result != default && result > 0)
+            {
+                return Ok(CreateLinksForProduct(product.Id,"POST"));
             }
 
             return NotFound("Product could not be inserted!");
@@ -113,9 +127,9 @@ namespace ShopBackend.Controllers
             productToUpdate.UpsellProductId = product.UpsellProductId;
 
             var result = await _productRepository.Update(productToUpdate);
-            if(result != default && result > 0)
-            { 
-                return Ok("Product updated successfully!"); 
+            if (result != default && result > 0)
+            {
+                return Ok(CreateLinksForProduct(product.Id, "PUT"));
             }
 
             return NotFound("Product could not be updated!");
@@ -127,13 +141,57 @@ namespace ShopBackend.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<string>> Delete(string productId)
         {
-            var result=await _productRepository.Delete(productId);
-            if(result !=default)
+            var result = await _productRepository.Delete(productId);
+            if (result != default)
             {
-                return Ok("Product has been deleted!"); 
+                return Ok("Product has been deleted!");
             }
 
             return NotFound("Product could not be deleted!");
+        }
+
+        //Based on https://code-maze.com/hateoas-aspnet-core-web-api/
+        private IEnumerable<Link> CreateLinksForProduct(String productId, String requestType)
+        {
+            switch (requestType)
+            {
+                case "GET":
+                    var linksGet = new List<Link> {
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId }),
+            "delete_product",
+            "DELETE"),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update), values: new { productId }),
+        "update_product",
+        "PUT")
+            };
+            return linksGet;
+                case "PUT":
+                    var linksPut = new List<Link>
+                        {
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { productId}),
+            "self",
+            "GET"),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId }),
+            "delete_product",
+            "DELETE")
+            };
+                    return linksPut;
+                case "POST":
+                    var linksPost = new List<Link> {
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { productId}),
+            "self",
+            "GET"),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId }),
+            "delete_product",
+            "DELETE"),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update), values: new { productId }),
+        "update_product",
+        "PUT")
+            };
+                    return linksPost;
+                default:
+                    throw new Exception("Invalid requestType");
+            }
         }
     }
 }

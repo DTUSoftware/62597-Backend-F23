@@ -1,7 +1,10 @@
 ﻿
+using ShopBackend.Discoverabillity;
+
 namespace ShopBackend.Dtos
+//Based on https://code-maze.com/hateoas-aspnet-core-web-api/
 {
-    public class ProductDto
+    public class ProductDto: LinkResourceBase
     {
         public required string Id { get; set; }
 
