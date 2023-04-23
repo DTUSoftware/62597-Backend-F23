@@ -98,10 +98,10 @@ namespace ShopBackend.Test.ControllersTest
         }
 
         [Fact]
-        public async Task CreateCustomer_onBadRequest_NullEmail() 
+        public async Task CreateCustomer_onBadRequest_EmptyEmail() 
         {
             //Arrange
-            var newCustomer = new CreateCustomerDto { Email = null, Password = "5678" };
+            var newCustomer = new CreateCustomerDto { Email ="", Password = "5678" };
 
             //Act
             var actionResult = await customersController.Create(newCustomer);
@@ -147,10 +147,10 @@ namespace ShopBackend.Test.ControllersTest
         }
 
         [Fact]
-        public async Task UpdateCustomer_onBadRequest_NullEmail()
+        public async Task UpdateCustomer_onBadRequest_EmptyEmail()
         {
             //Arrange
-            var targetCustomer = new CustomerDto { Email = null };
+            var targetCustomer = new CustomerDto { Email = "" };
 
             //Act
             var actionResult = await customersController.Update(targetCustomer);
@@ -194,8 +194,8 @@ namespace ShopBackend.Test.ControllersTest
         }
 
         [Theory]
-        [InlineData(null)]
-        public async Task DeleteCustomer_onBadRequest_NullEmail(string customerEmail)
+        [InlineData("")]
+        public async Task DeleteCustomer_onBadRequest_EmptyEmail(string customerEmail)
         {
             //Act
             var actionResult = await customersController.Delete(customerEmail);

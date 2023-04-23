@@ -1,5 +1,6 @@
 ﻿using Moq;
 using ShopBackend.Models;
+using ShopBackend.Dtos;
 using ShopBackend.Repositories;
 
 namespace ShopBackend.Test
@@ -145,6 +146,49 @@ namespace ShopBackend.Test
                 else
                 {
                     productList.Remove(productToRemove);
+                    return Task.FromResult(1);
+                }
+            });
+
+            return mock;
+        }
+
+        public static Mock<IOrderRepository> GetOrderRepository(List<Order> orderList)
+        {
+            var mock = new Mock<IOrderRepository>();
+
+            mock.Setup(orm => orm.GetAll()).ReturnsAsync(() => orderList);
+
+            mock.Setup(orm => orm.Get(It.IsAny<Guid>())).Returns((Guid Id) =>
+            {
+                Order? order = orderList.FirstOrDefault(o => o.Id ==Id);
+                return Task.FromResult(order);
+            });
+
+            mock.Setup(orm => orm.Insert(It.IsAny<Order>())).Returns((Order newOrder) =>
+            {
+                if (orderList.Exists(o => o.Id == newOrder.Id)) { return Task.FromResult(0); }
+
+                else { orderList.Add(newOrder); return Task.FromResult(1); }
+            });
+
+            mock.Setup(orm => orm.Update(It.IsAny<Order>())).Returns((Order targetOrder) =>
+            {
+                if (!orderList.Exists(o => o.Id == targetOrder.Id)) { return Task.FromResult(0); }
+                else
+                {
+                    var orginal = orderList.Where(o => o.Id == targetOrder.Id).Single().OrderStatus = targetOrder.OrderStatus;
+
+                    return Task.FromResult(1);
+                }
+            });
+
+            mock.Setup(orm => orm.Delete(It.IsAny<Guid>())).Returns((Guid orderId) =>
+            {
+                if (!orderList.Exists(o => o.Id == orderId)) { return Task.FromResult(0); }
+                else
+                {
+                    orderList.RemoveAll(o => o.Id == orderId);
                     return Task.FromResult(1);
                 }
             });
