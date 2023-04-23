@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using ShopBackend.Discoverabillity;
 using ShopBackend.Dtos;
-using ShopBackend.Models;
 using ShopBackend.Repositories;
 
 namespace ShopBackend.Controllers

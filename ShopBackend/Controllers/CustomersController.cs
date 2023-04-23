@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
+using ShopBackend.Discoverabillity;
 using ShopBackend.Dtos;
 using ShopBackend.Models;
 using ShopBackend.Repositories;

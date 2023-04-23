@@ -1,7 +1,8 @@
 ﻿
-using ShopBackend.Models;
+using ShopBackend.Discoverabillity;
 
 namespace ShopBackend.Dtos
+//Based on https://code-maze.com/hateoas-aspnet-core-web-api/
 {
     public class ProductDto: LinkResourceBase
     {
@@ -19,6 +20,11 @@ namespace ShopBackend.Dtos
 
         public string? UpsellProductId { get; set; }
 
+<<<<<<< HEAD
+
+
+=======
         public string ImageUrl { get; set; } = null!;
+>>>>>>> dev
     }
 }

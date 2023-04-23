@@ -4,9 +4,9 @@ using ShopBackend.Dtos;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Routing;
-using ShopBackend.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Routing;
+using ShopBackend.Discoverabillity;
 
 namespace ShopBackend.Controllers
 {

@@ -1,4 +1,4 @@
-﻿namespace ShopBackend.Models
+﻿namespace ShopBackend.Discoverabillity
 {
     public class LinkResourceBase
     {

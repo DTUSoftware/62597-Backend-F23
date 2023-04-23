@@ -1,5 +1,5 @@
 ﻿
-using ShopBackend.Models;
+using ShopBackend.Discoverabillity;
 using ShopBackend.Utils;
 
 namespace ShopBackend.Dtos
