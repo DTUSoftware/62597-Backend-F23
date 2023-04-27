@@ -7,10 +7,10 @@ using ShopBackend.Repositories;
 using ShopBackend.Security;
 using System.Text;
 using System.Text.Json.Serialization;
-using System.Diagnostics.Metrics;
-using System.Threading;
-using OpenTelemetry;
 using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using OpenTelemetry.Logs;
 
 internal class Program
 {
@@ -18,6 +18,7 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        /*
         // https://learn.microsoft.com/en-us/dotnet/core/diagnostics/metrics-collection
         using MeterProvider meterProvider = Sdk.CreateMeterProviderBuilder()
                 .AddPrometheusExporter(opt =>
@@ -26,6 +27,52 @@ internal class Program
                     opt.HttpListenerPrefixes = new string[] { $"http://localhost:9184/" };
                 })
                 .Build();
+        */
+
+        // Support for Tracing
+        builder.Services.AddOpenTelemetry()
+            .WithTracing(builder => builder
+            .SetResourceBuilder(ResourceBuilder
+            .CreateDefault().AddService("MyDemoService"))
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            //.AddConsoleExporter()
+            //.AddJaegerExporter()
+            .AddOtlpExporter(o =>
+            {
+                o.Endpoint = new Uri("http://otel-collector:4317"); // Trace calls gRPC (can be used for Jaeger)
+            })
+          );
+
+        // Support for Metrics
+        builder.Services.AddOpenTelemetry()
+            .WithMetrics(builder => builder
+            .SetResourceBuilder(ResourceBuilder
+            .CreateDefault().AddService("MyDemoService"))
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            //.AddConsoleExporter()
+            //.AddPrometheusExporter()
+            .AddOtlpExporter(o =>
+            {
+                o.Endpoint = new Uri("http://otel-collector:8889"); // Prometheus metrics
+            })
+        );
+
+        // Support for logging
+        builder.Logging.ClearProviders();
+        builder.Logging.AddOpenTelemetry(options =>
+        {
+            options.IncludeFormattedMessage = true;
+            options.SetResourceBuilder(ResourceBuilder
+            .CreateDefault().AddService("MyDemoService"));
+            //options.AddConsoleExporter();
+            options.AddOtlpExporter(o =>
+            {
+                o.Endpoint = new Uri("http://otel-collector:4317"); // Prometheus metrics
+            });
+        }
+        );
 
         // Add services to the container.
         builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
