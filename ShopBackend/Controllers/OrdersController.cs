@@ -80,7 +80,7 @@ namespace ShopBackend.Controllers
         // PUT api/orders
         [HttpPut]
         [Authorize(Roles = "Customer,Admin")]
-        public async Task<ActionResult<string>> Update([FromBody] OrderDto order)   
+        public async Task<ActionResult<string>> Update([FromBody] UpdateOrderDto order)   
         {
             var orderToUpdate = await _orderRepository.Get(order.Id);
             if (orderToUpdate == default)
@@ -88,7 +88,7 @@ namespace ShopBackend.Controllers
                 return NotFound("Order does not exsist!");
             }
 
-            orderToUpdate.OrderDate = order.OrderDate;
+            orderToUpdate.OrderDate = DateTime.Now;
             orderToUpdate.OrderStatus = order.OrderStatus;
             orderToUpdate.CheckMarketing = order.CheckMarketing;
             orderToUpdate.SubmitComment = order.SubmitComment;

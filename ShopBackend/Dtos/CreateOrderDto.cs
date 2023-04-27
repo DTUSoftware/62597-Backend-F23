@@ -6,6 +6,7 @@ namespace ShopBackend.Dtos
 {
     public class CreateOrderDto
     {
+        public Guid Id { get; set; }
         public bool CheckMarketing { get; set; }
 
         public string SubmitComment { get; set; } = null!;

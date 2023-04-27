@@ -67,7 +67,7 @@ namespace ShopBackend.Controllers
         // Post: api/products
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<string>> Create([FromBody] ProductDto product)
+        public async Task<ActionResult<string>> Create([FromBody] CreateProductDto product)
         {
             //ProductDto has Id as a required field parameter, meaning that Id it cannot be instantiated as null.
             if (product.Id == null)
@@ -81,7 +81,7 @@ namespace ShopBackend.Controllers
                 return BadRequest("This product id is already in use!");
             }
 
-            var result = await _productRepository.Insert(product.AsProductModel());
+            var result = await _productRepository.Insert(product.CreateAsProductModel());
             if (result != default && result > 0)
             {
                 return Ok(CreateLinksForProduct(product.Id,"POST"));
@@ -93,25 +93,25 @@ namespace ShopBackend.Controllers
         // Post: api/products/multiple
         [HttpPost("multiple")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<string>> CreateMultiple(IEnumerable<ProductDto> products)
+        public async Task<ActionResult<string>> CreateMultiple(IEnumerable<CreateProductDto> products)
         {
-            foreach (ProductDto product in products)
+            foreach (CreateProductDto product in products)
             {
-                var result = await _productRepository.Insert(product.AsProductModel());
+                var result = await _productRepository.Insert(product.CreateAsProductModel());
                 if (result == default || result == 0)
                 {
                     return NotFound($"Product {product.Name} could not be inserted!");
                 }
             }
 
-            return Ok("Products is inserted successfully!");
+            return Ok("Products were inserted successfully!");
         }
 
 
         // Put: api/products
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<string>> Update([FromBody] ProductDto product)
+        public async Task<ActionResult<string>> Update([FromBody] CreateProductDto product)
         {
             var productToUpdate = await _productRepository.Get(product.Id);
             if (productToUpdate == default)
@@ -160,7 +160,7 @@ namespace ShopBackend.Controllers
         new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId }),
             "delete_product",
             "DELETE"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update), values: new { productId }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update)),
         "update_product",
         "PUT")
             };
@@ -184,7 +184,7 @@ namespace ShopBackend.Controllers
         new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId }),
             "delete_product",
             "DELETE"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update), values: new { productId }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update)),
         "update_product",
         "PUT")
             };
