@@ -59,6 +59,7 @@ internal class Program
             })
         );
 
+        /*
         // Support for logging
         builder.Logging.ClearProviders();
         builder.Logging.AddOpenTelemetry(options =>
@@ -73,6 +74,7 @@ internal class Program
             });
         }
         );
+        */
 
         // Add services to the container.
         builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
