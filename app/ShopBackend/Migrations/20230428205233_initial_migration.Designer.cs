@@ -11,7 +11,7 @@ using ShopBackend.Contexts;
 namespace ShopBackend.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20230428081145_initial_migration")]
+    [Migration("20230428205233_initial_migration")]
     partial class initial_migration
     {
         /// <inheritdoc />
