@@ -2,7 +2,9 @@ receivers:
   otlp:
     protocols:
       grpc:
+        endpoint: http://localhost:4317
       http:
+        endpoint: http://localhost:4318
   prometheus:
     config:
       scrape_configs:
@@ -16,11 +18,11 @@ processors:
 
 exporters:
   otlp:
-    endpoint: localhost:4317
+    endpoint: http://localhost:4317
     tls:
       insecure: true
   prometheus:
-    endpoint: "localhost:55681"
+    endpoint: http://localhost:55681
 
 extensions:
   health_check:
