@@ -3,6 +3,7 @@ receivers:
     protocols:
       grpc:
         endpoint: http://localhost:4317
+        max_recv_msg_size_mib: 1234123412341234123
       http:
         endpoint: http://localhost:4318
   prometheus:
