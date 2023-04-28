@@ -17,6 +17,8 @@ processors:
 exporters:
   otlp:
     endpoint: localhost:4317
+    tls:
+      insecure: true
   prometheus:
     endpoint: "localhost:55681"
 
