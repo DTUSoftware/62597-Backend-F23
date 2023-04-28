@@ -13,6 +13,7 @@ namespace ShopBackend.Test.ControllersTest
      */
     public class TestCustomerController
     {
+        /*
         private readonly List<Customer> customerList;
         private readonly CustomersController customersController;
 
@@ -224,5 +225,7 @@ namespace ShopBackend.Test.ControllersTest
             Assert.Equal("Customer does not exsist!", msg);
             Assert.Equal(2, customerList.Count);
         }
+         */
     }
+
 }

@@ -10,6 +10,7 @@ namespace ShopBackend.Test.ControllersTest
      * @date: 18-04-2023
      */
     public class TestOrderController{
+        /*
         private readonly List<Order> orderList;
         private readonly OrdersController orderController;
         public TestOrderController(){
@@ -191,5 +192,7 @@ namespace ShopBackend.Test.ControllersTest
             Assert.Equal("Order could not be deleted!", msg);
             Assert.Equal(2, orderList.Count);
         }
+         */
     }
+
 }

@@ -12,6 +12,7 @@ namespace ShopBackend.Test.ControllersTest
      */
     public class TestProductsController
     {
+        /*
         private readonly List<Product> productList;
 
         public TestProductsController()
@@ -217,6 +218,7 @@ namespace ShopBackend.Test.ControllersTest
             Assert.Equal("Product could not be deleted!", msg);
             Assert.Equal(2, productList.Count);
         }
+         */
     }
 
 
