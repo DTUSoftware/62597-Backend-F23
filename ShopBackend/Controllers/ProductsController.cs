@@ -1,95 +1,115 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShopBackend.Repositories;
 using ShopBackend.Dtos;
-using ShopBackend.Models;
+using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Authorization;
+using ShopBackend.Discoverabillity;
 
 namespace ShopBackend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class ProductsController : Controller
+    public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
+        private readonly LinkGenerator _linkGenerator;
 
-        public ProductsController(IProductRepository productRepository)
+        public ProductsController(IProductRepository productRepository, LinkGenerator linkGenerator)
         {
             _productRepository = productRepository;
+            _linkGenerator = linkGenerator;
         }
 
 
-        // GET: api/Products
+        // GET: api/products
         [HttpGet]
+        [AllowAnonymous]
+        [EnableCors("FrontendPolicy")]
         public async Task<ActionResult<IEnumerable<ProductDto>>> Get()
         {
             var products = (await _productRepository.GetAll()).Select(product => product.AsProductDto());
             if (products.Any())
             {
-                return Ok(products);
+                var productList = products.ToList();
+                foreach (ProductDto prod in productList)
+                {
+                    prod.Links = (List<Link>)CreateLinksForProduct(prod.Id,"GET");
+                }
+
+                return Ok(productList);
             }
 
             return NotFound("The specified products does not exist!");
         }
 
 
-        // GET: api/Products/{5}
-        [HttpGet("{productId}", Name = "GetProductById")]
+        // GET: api/products/{productId}
+        [HttpGet("{productId}")]
+        [AllowAnonymous]
+        [EnableCors("FrontendPolicy")]
         public async Task<ActionResult<ProductDto>> Get(string productId)
         {
             var product = await _productRepository.Get(productId);
             if (product != default)
             {
-                return Ok(product.AsProductDto());
+                ProductDto prod = product.AsProductDto();
+                prod.Links = (List<Link>)CreateLinksForProduct(productId, "GET");
+                return Ok(prod);
             }
 
             return NotFound("The specified product does not exist!");
         }
 
 
-        // Post: api/Products
+        // Post: api/products
         [HttpPost]
-        public async Task<ActionResult<string>> Create([FromBody] ProductDto product)
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<string>> Create([FromBody] CreateProductDto product)
         {
-            if (product.Id == null)
+            if (string.IsNullOrEmpty(product.Id))
             {
-                return BadRequest("Product ID is required to register the product!");
+                return BadRequest("Product ID is required to create the product!");
             }
+
             var isIdTaken = await _productRepository.Get(product.Id);
             if (isIdTaken != default)
             {
                 return BadRequest("This product id is already in use!");
             }
 
-            var result = await _productRepository.Insert(product.AsProductModel());
+            var result = await _productRepository.Insert(product.CreateAsProductModel());
             if (result != default && result > 0)
             {
-                return Ok("Product is inserted successfully!");
+                return Ok(CreateLinksForProduct(product.Id,"POST"));
             }
 
             return NotFound("Product could not be inserted!");
         }
 
-        // Post: api/Products/Multiple Primarily used for populating the server database
-        [HttpPost("Multiple")]
-        public async Task<ActionResult<string>> CreateMultiple(IEnumerable<ProductDto> products)
+        // Post: api/products/multiple
+        [HttpPost("multiple")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<string>> CreateMultiple(IEnumerable<CreateProductDto> products)
         {
-            foreach (ProductDto product in products)
+            foreach (CreateProductDto product in products)
             {
-                var result = await _productRepository.Insert(product.AsProductModel());
+                var result = await _productRepository.Insert(product.CreateAsProductModel());
                 if (result == default || result == 0)
                 {
                     return NotFound($"Product {product.Name} could not be inserted!");
                 }
             }
 
-            return Ok("Product is inserted successfully!");
+            return Ok("Products were inserted successfully!");
         }
 
 
-        // Put: api/Products/5
+        // Put: api/products
         [HttpPut]
-        public async Task<ActionResult<string>> Update([FromBody] ProductDto product)
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<string>> Update([FromBody] CreateProductDto product)
         {
-            if (product.Id == null)
+            if (string.IsNullOrEmpty(product.Id))
             {
                 return BadRequest("Product ID is required to update the product!");
             }
@@ -110,18 +130,19 @@ namespace ShopBackend.Controllers
             var result = await _productRepository.Update(productToUpdate);
             if (result != default && result > 0)
             {
-                return Ok("Product updated successfully!");
+                return Ok(CreateLinksForProduct(product.Id, "PUT"));
             }
 
             return BadRequest("Product could not be updated!");
         }
 
 
-        // Delete: api/Products/5
+        // Delete: api/products/{productId}
         [HttpDelete("{productId}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<string>> Delete(string productId)
         {
-            if (productId == null)
+            if (string.IsNullOrEmpty(productId))
             {
                 return BadRequest("Product ID is required to delete the product!");
             }
@@ -132,6 +153,50 @@ namespace ShopBackend.Controllers
             }
 
             return NotFound("Product could not be deleted!");
+        }
+
+        //Based on https://code-maze.com/hateoas-aspnet-core-web-api/
+        private IEnumerable<Link> CreateLinksForProduct(String productId, String requestType)
+        {
+            switch (requestType)
+            {
+                case "GET":
+                    var linksGet = new List<Link> {
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId }),
+            "delete_product",
+            "DELETE"),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update)),
+        "update_product",
+        "PUT")
+            };
+            return linksGet;
+                case "PUT":
+                    var linksPut = new List<Link>
+                        {
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { productId}),
+            "self",
+            "GET"),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId }),
+            "delete_product",
+            "DELETE")
+            };
+                    return linksPut;
+                case "POST":
+                    var linksPost = new List<Link> {
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { productId}),
+            "self",
+            "GET"),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId }),
+            "delete_product",
+            "DELETE"),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update)),
+        "update_product",
+        "PUT")
+            };
+                    return linksPost;
+                default:
+                    throw new Exception("Invalid requestType");
+            }
         }
     }
 }

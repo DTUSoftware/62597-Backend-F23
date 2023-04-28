@@ -11,6 +11,7 @@ namespace ShopBackend
             return new CustomerDto
             {
                 Email = customer.Email,
+                Role = customer.Role,
                 Orders = customer.Orders != null ? new List<OrderDto>(customer.Orders.Select(x => x.AsOrderDto())) : new List<OrderDto>(),
             };
         }
@@ -85,6 +86,7 @@ namespace ShopBackend
             return new Customer
             {
                 Email = customerDto.Email,
+                Role = customerDto.Role,
                 Orders = customerDto.Orders != null ? new List<Order>(customerDto.Orders.Select(x => x.AsOrderModel())) : new List<Order>(),
             };
         }
@@ -160,12 +162,14 @@ namespace ShopBackend
 
             return new Order
             {
+                Id = orderDto.Id,
                 OrderDate = DateTime.Now,
                 OrderStatus = OrderStatus.Pending,
                 CheckMarketing = orderDto.CheckMarketing,
                 SubmitComment = orderDto.SubmitComment,
-                ShippingAddress = orderDto.ShippingAddress.AsAddressModel(),
-                BillingAddress = orderDto.BillingAddress.AsAddressModel(),
+                CustomerEmail = orderDto.CustomerEmail,
+                ShippingAddress = orderDto.ShippingAddress.CreateAsAddressModel(),
+                BillingAddress = orderDto.BillingAddress.CreateAsAddressModel(),
                 OrderDetails = new List<OrderDetail>(orderDto.OrderDetails.Select(x => x.CreateAsOrderDetailModel()))
             };
         }
@@ -179,15 +183,6 @@ namespace ShopBackend
                 RecurringOrder = orderDetailDto.RecurringOrder,
                 OrderId = orderDetailDto.OrderId,
                 ProductId = orderDetailDto.ProductId,
-            };
-        }
-
-        public static Customer CreateAsCustomerModel(this CreateCustomerDto customerDto)
-        {
-            return new Customer
-            {
-                Email = customerDto.Email,
-                Password= customerDto.Password,
             };
         }
 
@@ -206,6 +201,21 @@ namespace ShopBackend
                 City = addressDto.City,
                 Address1 = addressDto.Address1,
                 Address2 = addressDto.Address2
+            };
+        }
+
+        public static Product CreateAsProductModel(this CreateProductDto productDto)
+        {
+            return new Product
+            {
+                Id = productDto.Id,
+                Name = productDto.Name,
+                Price = productDto.Price,
+                Currency = productDto.Currency,
+                RebateQuantity = productDto.RebateQuantity,
+                RebatePercent = productDto.RebatePercent,
+                UpsellProductId = productDto.UpsellProductId,
+                ImageUrl = productDto.ImageUrl,
             };
         }
     }
