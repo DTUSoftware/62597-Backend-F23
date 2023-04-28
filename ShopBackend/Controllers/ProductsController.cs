@@ -3,9 +3,6 @@ using ShopBackend.Repositories;
 using ShopBackend.Dtos;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.Routing;
 using ShopBackend.Discoverabillity;
 
 namespace ShopBackend.Controllers
@@ -69,10 +66,9 @@ namespace ShopBackend.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<string>> Create([FromBody] CreateProductDto product)
         {
-            //ProductDto has Id as a required field parameter, meaning that Id it cannot be instantiated as null.
-            if (product.Id == null)
+            if (string.IsNullOrEmpty(product.Id))
             {
-                return BadRequest("Product id is required to register the product!");
+                return BadRequest("Product ID is required to create the product!");
             }
 
             var isIdTaken = await _productRepository.Get(product.Id);
@@ -113,12 +109,17 @@ namespace ShopBackend.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<string>> Update([FromBody] CreateProductDto product)
         {
+            if (string.IsNullOrEmpty(product.Id))
+            {
+                return BadRequest("Product ID is required to update the product!");
+            }
             var productToUpdate = await _productRepository.Get(product.Id);
             if (productToUpdate == default)
             {
-                return BadRequest("Product does not exsist!");
+                return NotFound("Product does not exist!");
             }
 
+            productToUpdate.Id = product.Id;
             productToUpdate.Name = product.Name;
             productToUpdate.Price = product.Price;
             productToUpdate.Currency = product.Currency;
@@ -132,7 +133,7 @@ namespace ShopBackend.Controllers
                 return Ok(CreateLinksForProduct(product.Id, "PUT"));
             }
 
-            return NotFound("Product could not be updated!");
+            return BadRequest("Product could not be updated!");
         }
 
 
@@ -141,6 +142,10 @@ namespace ShopBackend.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<string>> Delete(string productId)
         {
+            if (string.IsNullOrEmpty(productId))
+            {
+                return BadRequest("Product ID is required to delete the product!");
+            }
             var result = await _productRepository.Delete(productId);
             if (result != default)
             {

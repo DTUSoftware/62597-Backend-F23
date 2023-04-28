@@ -9,18 +9,16 @@ namespace ShopBackend.Test.ControllersTest
 {
     /**
      * @author: Golbas Haidari
-     * @date: 01-04-203
+     * @date: 01-04-2023
      */
     public class TestCustomerController
     {
-        /*
         private readonly List<Customer> customerList;
         private readonly CustomersController customersController;
 
-        public TestCustomerController()
-        {
+        public TestCustomerController() {
             //Mutual Arrange
-            customerList = DataHelper.GetFakeCustomerList();
+            customerList = DataHelper.GetFakeCustomerList();            
             var mock = MockIRepositories.GetCustomerRepository(customerList);
             customersController = new CustomersController(mock.Object);
         }
@@ -29,7 +27,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task GetAllCustomers_onOk()
         {
             //Act
-            var actionResult = await customersController.Get();
+            var actionResult=  await customersController.Get();
 
             //Assert
             Assert.NotNull(actionResult);
@@ -62,7 +60,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task GetCustomerByEmail_onOk(string customerEmail)
         {
             //Act
-            var actionResult = await customersController.Get(customerEmail);
+            var actionResult= await customersController.Get(customerEmail);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -102,10 +100,10 @@ namespace ShopBackend.Test.ControllersTest
         }
 
         [Fact]
-        public async Task CreateCustomer_onBadRequest_NullEmail()
+        public async Task CreateCustomer_onBadRequest_EmptyEmail() 
         {
             //Arrange
-            var newCustomer = new CreateCustomerDto { Email = null, Password = "5678" };
+            var newCustomer = new CreateCustomerDto { Email ="", Password = "5678" };
 
             //Act
             var actionResult = await customersController.Create(newCustomer);
@@ -151,10 +149,10 @@ namespace ShopBackend.Test.ControllersTest
         }
 
         [Fact]
-        public async Task UpdateCustomer_onBadRequest_NullEmail()
+        public async Task UpdateCustomer_onBadRequest_EmptyEmail()
         {
             //Arrange
-            var targetCustomer = new CustomerDto { Email = null };
+            var targetCustomer = new CustomerDto { Email = "" };
 
             //Act
             var actionResult = await customersController.Update(targetCustomer);
@@ -198,8 +196,8 @@ namespace ShopBackend.Test.ControllersTest
         }
 
         [Theory]
-        [InlineData(null)]
-        public async Task DeleteCustomer_onBadRequest_NullEmail(string customerEmail)
+        [InlineData("")]
+        public async Task DeleteCustomer_onBadRequest_EmptyEmail(string customerEmail)
         {
             //Act
             var actionResult = await customersController.Delete(customerEmail);
@@ -226,6 +224,5 @@ namespace ShopBackend.Test.ControllersTest
             Assert.Equal("Customer does not exsist!", msg);
             Assert.Equal(2, customerList.Count);
         }
-        */
     }
 }

@@ -66,11 +66,15 @@ namespace ShopBackend.Controllers
         [EnableCors("FrontendPolicy")]
         public async Task<ActionResult<string>> Create([FromBody] CreateOrderDto order)
         {
+            if (order.OrderDetails.Count == 0)
+            {
+                return BadRequest("ProductDetails is required to register the order!");
+            }
+
             var result = await _orderRepository.Insert(order.CreateAsOrderModel());
             if (result != default && result > 0)
             {
-            
-                return Ok("Order is inserted successfully!");
+                return Created("CreateOrder","Order is inserted successfully!");
             }
 
             return NotFound("Order could not be registered!");
@@ -108,7 +112,6 @@ namespace ShopBackend.Controllers
         [Authorize(Roles = "Customer,Admin")]
         public async Task<ActionResult<string>> Delete(Guid orderId)
         {
-
             var result = await _orderRepository.Delete(orderId);
 
             if (result != default && result > 0)

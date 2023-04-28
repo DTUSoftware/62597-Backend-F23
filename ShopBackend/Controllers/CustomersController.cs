@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using ShopBackend.Discoverabillity;
 using ShopBackend.Dtos;
 using ShopBackend.Models;
@@ -65,7 +64,6 @@ namespace ShopBackend.Controllers
                     CustomerDto custDto = result.AsCustomerDto();
                     custDto.Links = (List<Link>)CreateLinksForCustomer(custDto.Email, "GET");
                     return Ok(custDto);
-                    //return Ok(result.AsCustomerDto());
                 }
 
                 return NotFound("The specified customer does not exist!");
@@ -83,8 +81,7 @@ namespace ShopBackend.Controllers
                     return BadRequest("The password must have at least 8 letters and contain at least one upper case letter, one lower case letter, one number, and one special character!");
                 }
 
-                //CreateCustomerDto has Email as a required field parameter, meaning that Email it cannot be instantiated as null.
-                if (customerDto.Email == null)
+                if (string.IsNullOrEmpty(customerDto.Email))
                 {
                     return BadRequest("Customer email is required to register the customer!");
                 }
@@ -132,10 +129,9 @@ namespace ShopBackend.Controllers
                     return BadRequest("The password must have at least 8 letters and contain at least one upper case letter, one lower case letter, one number, and one special character!");
                 }
 
-                //UpdateCustomerDto has Email as a required field parameter, meaning that Email it cannot be instantiated as null.
-                if (customerDto.Email == null)
+                if (string.IsNullOrEmpty(customerDto.Email))
                 {
-                    return BadRequest("Customer email is required to register the customer!");
+                    return BadRequest("Customer email is required to update the customer!");
                 }
 
                 var isEmailValid = _passwordAuth.IsEmailValid(customerDto.Email);
@@ -176,8 +172,7 @@ namespace ShopBackend.Controllers
             [Authorize(Roles = "Customer,Admin")]
             public async Task<ActionResult<string>> Delete(string email)
             {
-                //This null check is not needed as it is against the scheme of the API endpoint. (http parameter email can never be null)
-                if (email == null)
+                if (string.IsNullOrEmpty(email))
                 {
                     return BadRequest("Customer email is required to delete the customer!");
                 }
@@ -189,7 +184,6 @@ namespace ShopBackend.Controllers
                     return BadRequest("Access denied!");
                 }
 
-                //Does this one make sense to if we are going to try and delete the customer anyway? (it would go to NotFound anyway in case result == default)
                 var customerToDelete = await _customerRepository.Get(email);
                 if (customerToDelete == default)
                 {
