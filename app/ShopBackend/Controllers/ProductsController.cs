@@ -22,12 +22,12 @@ namespace ShopBackend.Controllers
 
 
         // GET: api/products
-        [HttpGet]
+        [HttpGet("{productId}")]
         [AllowAnonymous]
         [EnableCors("FrontendPolicy")]
-        public async Task<ActionResult<IEnumerable<ProductDto>>> Get()
+        public async Task<ActionResult<IEnumerable<ProductDto>>> Get(int position)
         {
-            var products = (await _productRepository.GetAll()).Select(product => product.AsProductDto());
+            var products = (await _productRepository.GetAll(position)).Select(product => product.AsProductDto());
             if (products.Any())
             {
                 var productList = products.ToList();

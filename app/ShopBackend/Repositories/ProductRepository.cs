@@ -13,9 +13,9 @@ namespace ShopBackend.Repositories
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<Product>> GetAll()
+        public async Task<IEnumerable<Product>> GetAll(int position)
         {
-            return await _dbContext.Products.ToListAsync();
+            return await _dbContext.Products.OrderBy(product => product.Id).Skip(position).Take(20).ToListAsync();
         }
 
         public async Task<Product?> Get(string productId)
