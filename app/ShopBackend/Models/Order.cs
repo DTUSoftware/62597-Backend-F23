@@ -21,24 +21,25 @@ namespace ShopBackend.Models
 
         // Nullable for now, so that frontend can create an order without a Customer
         // [Required(ErrorMessage = "CustomerEmail cannot be empty")]
-        [ForeignKey("Customer")]
         public string? CustomerEmail { get; set; }
 
-        [ForeignKey("Address")]
         [Required(ErrorMessage = "ShippingAddress cannot be empty")]        
-        public int  ShippingAddressId { get; set; }
+        public Guid ShippingAddressId { get; set; }
 
-        [ForeignKey("Address")]
         [Required(ErrorMessage = "BillingAddress cannot be empty")]
-        public int BillingAddressId { get; set;}
+        public Guid BillingAddressId { get; set;}
 
         // Nullable for now, so that frontend can create an order without a Customer
+        [ForeignKey("CustomerEmail")]
         public virtual Customer? Customer { get; set; }
 
+        [ForeignKey("ShippingAddressId")]
         public virtual Address ShippingAddress { get; set; } = null!;
 
+        [ForeignKey("BillingAddressId")]
         public virtual Address BillingAddress { get; set; } = null!;
 
+        [ForeignKey("OrderId")]
         public virtual ICollection<OrderDetail> OrderDetails { get; set; } = null!;
 
         [Timestamp]

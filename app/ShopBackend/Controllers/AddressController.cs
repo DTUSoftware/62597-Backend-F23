@@ -54,7 +54,7 @@ namespace ShopBackend.Controllers
             var result = await _addressRepository.Insert(address.CreateAsAddressModel());
             if (result != default && result > 0)
             {
-                return Created("shoppingApiServer", address.Email + " address was registered successfully!");
+                return Created("shoppingApiServer", "Address is registered successfully.");
             }
 
             return NotFound("Address could not be registered!");

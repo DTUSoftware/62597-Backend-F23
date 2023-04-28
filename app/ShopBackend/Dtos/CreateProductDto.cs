@@ -1,9 +1,8 @@
 ﻿
-using ShopBackend.Discoverabillity;
 
 namespace ShopBackend.Dtos
 {
-    public class ProductDto: LinkResourceBase
+    public class CreateProductDto
     {
         public required string Id { get; set; }
 

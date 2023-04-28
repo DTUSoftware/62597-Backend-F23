@@ -5,6 +5,7 @@ namespace ShopBackend.Contexts
 {
     public class DBContext : DbContext
     {
+        public DBContext() { }
         public DBContext(DbContextOptions<DBContext> options) : base(options)
         {
     
@@ -22,19 +23,11 @@ namespace ShopBackend.Contexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Customer>().HasMany(x => x.Orders).WithOne(x => x.Customer)
-            .HasForeignKey(x => x.CustomerEmail)
-            .OnDelete(DeleteBehavior.Cascade);
-
             modelBuilder.Entity<Order>().Property(x => x.OrderStatus)
             .HasConversion<string>();
 
             modelBuilder.Entity<Customer>().Property(x => x.Role)
             .HasConversion<string>();
-
-            modelBuilder.Entity<Order>().HasMany(x => x.OrderDetails).WithOne(x => x.Order)
-            .HasForeignKey(x => x.OrderId)
-            .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
