@@ -15,8 +15,6 @@ processors:
   batch:
 
 exporters:
-  otlp:
-    endpoint: otelcol:4317
   prometheus:
     endpoint: "localhost:55681"
 
