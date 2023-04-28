@@ -33,7 +33,7 @@ internal class Program
         builder.Services.AddOpenTelemetry()
             .WithTracing(builder => builder
             .SetResourceBuilder(ResourceBuilder
-            .CreateDefault().AddService("MyDemoService"))
+            .CreateDefault().AddService("ShopServiceTracing"))
             .AddAspNetCoreInstrumentation()
             .AddHttpClientInstrumentation()
             //.AddConsoleExporter()
@@ -48,14 +48,14 @@ internal class Program
         builder.Services.AddOpenTelemetry()
             .WithMetrics(builder => builder
             .SetResourceBuilder(ResourceBuilder
-            .CreateDefault().AddService("MyDemoService"))
+            .CreateDefault().AddService("ShopServiceMetrics"))
             .AddAspNetCoreInstrumentation()
             .AddHttpClientInstrumentation()
             //.AddConsoleExporter()
             //.AddPrometheusExporter()
             .AddOtlpExporter(o =>
             {
-                o.Endpoint = new Uri("http://otel-collector:8889"); // Prometheus metrics
+                o.Endpoint = new Uri("http://otel-collector:4317"); // OTLP metrics
             })
         );
 
@@ -65,11 +65,11 @@ internal class Program
         {
             options.IncludeFormattedMessage = true;
             options.SetResourceBuilder(ResourceBuilder
-            .CreateDefault().AddService("MyDemoService"));
+            .CreateDefault().AddService("ShopServiceLogging"));
             //options.AddConsoleExporter();
             options.AddOtlpExporter(o =>
             {
-                o.Endpoint = new Uri("http://otel-collector:4317"); // Prometheus metrics
+                o.Endpoint = new Uri("http://otel-collector:4317"); // OTLP logging
             });
         }
         );
