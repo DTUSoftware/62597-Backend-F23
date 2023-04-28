@@ -205,10 +205,10 @@ namespace ShopBackend.Controllers
                 {
                     case "GET":
                         var linksGet = new List<Link> {
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { email }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { email })!,
             "delete_customer",
                         "DELETE"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update), values: new { email }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update), values: new { email })!,
         "update_customer",
         "PUT")
             };
@@ -216,23 +216,23 @@ namespace ShopBackend.Controllers
                     case "PUT":
                         var linksPut = new List<Link>
                     {
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { email}),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { email})!,
                         "self",
                         "GET"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { email }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { email })!,
             "delete_customer",
             "DELETE")
             };
                         return linksPut;
                     case "POST":
                         var linksPost = new List<Link> {
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { email}),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { email})!,
                         "self",
                         "GET"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { email }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { email })!,
                         "delete_customer",
                         "DELETE"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update), values: new { email }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update), values: new { email })!,
         "update_customer",
         "PUT")
             };

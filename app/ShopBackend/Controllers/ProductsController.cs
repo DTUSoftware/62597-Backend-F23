@@ -162,10 +162,10 @@ namespace ShopBackend.Controllers
             {
                 case "GET":
                     var linksGet = new List<Link> {
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId })!,
             "delete_product",
             "DELETE"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update)),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update))!,
         "update_product",
         "PUT")
             };
@@ -173,23 +173,23 @@ namespace ShopBackend.Controllers
                 case "PUT":
                     var linksPut = new List<Link>
                         {
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { productId}),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { productId})!,
             "self",
             "GET"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId })!,
             "delete_product",
             "DELETE")
             };
                     return linksPut;
                 case "POST":
                     var linksPost = new List<Link> {
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { productId}),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { productId})!,
             "self",
             "GET"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId }),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId })!,
             "delete_product",
             "DELETE"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update)),
+        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update))!,
         "update_product",
         "PUT")
             };
