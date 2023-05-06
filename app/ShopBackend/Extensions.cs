@@ -35,6 +35,24 @@ namespace ShopBackend
             };
         }
 
+        public static CreateAddressDto AsCreateAddressDto(this Address address)
+        {
+            return new CreateAddressDto
+            {
+                FirstName = address.FirstName,
+                LastName = address.LastName,
+                Email = address.Email,
+                MobileNr = address.MobileNr,
+                Company = address.Company,
+                VatNr = address.VatNr,
+                Country = address.Country,
+                ZipCode = address.ZipCode,
+                City = address.City,
+                Address1 = address.Address1,
+                Address2 = address.Address2,
+            };
+        }
+
         public static OrderDto AsOrderDto(this Order order)
         {
             return new OrderDto

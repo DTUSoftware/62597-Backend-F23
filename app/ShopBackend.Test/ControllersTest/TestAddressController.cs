@@ -11,18 +11,18 @@ namespace ShopBackend.Test.ControllersTest
      */
     public class TestAddressController
     {
-        /*
+
         private readonly List<Address> addressList;
         private readonly AddressController addressController;
 
         public TestAddressController()
         {
             //Mutual Arrange
-            addressList = DataHelper.GetFakeAddressList(); 
+            addressList = DataHelper.GetFakeAddressList();
             var mock = MockIRepositories.GetAddressRepository(addressList);
-            addressController = new AddressController(mock.Object);            
+            addressController = new AddressController(mock.Object);
         }
-        
+
         [Fact]
         public async Task GetAllAddresses_onOk()
         {
@@ -32,8 +32,8 @@ namespace ShopBackend.Test.ControllersTest
             //Assert
             Assert.NotNull(actionResult);
             Assert.IsType<OkObjectResult>(actionResult.Result);
-            List<Address> list = Assert.IsAssignableFrom<List<Address>>(((OkObjectResult)actionResult.Result).Value);
-            Assert.Equal(2, list.Count);
+            IEnumerable<AddressDto> list = Assert.IsAssignableFrom<IEnumerable<AddressDto>>(((OkObjectResult)actionResult.Result).Value);
+            Assert.Equal(2, list.Count());
         }
 
         [Fact]
@@ -152,7 +152,7 @@ namespace ShopBackend.Test.ControllersTest
         {
             //Arrange 
             var addressId = Guid.Parse("1a1b1c1d-d9cb-469f-a165-70867728950e");
-            var targetAddres = new Address { Id = addressId, Email = "goli@student.dtu.dk" };
+            var targetAddres = new AddressDto { Id = addressId, Email = "goli@student.dtu.dk" };
 
             //Act
             var actionResult = await addressController.Update(targetAddres);
@@ -169,7 +169,7 @@ namespace ShopBackend.Test.ControllersTest
         {
             //Arrange
             var addressId = Guid.Parse("4a4b4c4d-d9cb-469f-a165-70867728950e");
-            var targetAddres = new Address { Id = addressId, Email = "goli@student.dtu.dk" };
+            var targetAddres = new AddressDto { Id = addressId, Email = "goli@student.dtu.dk" };
 
             //Act
             var actionResult = await addressController.Update(targetAddres);
@@ -216,7 +216,7 @@ namespace ShopBackend.Test.ControllersTest
             Assert.Equal("The specified address could not be found!", msg);
             Assert.Equal(2, addressList.Count);
         }
-         */
+
     }
 
 }

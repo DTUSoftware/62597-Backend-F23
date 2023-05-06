@@ -2,11 +2,31 @@
 using ShopBackend.Models;
 using ShopBackend.Dtos;
 using ShopBackend.Repositories;
+using ShopBackend.Security;
+using System.Security.Claims;
 
 namespace ShopBackend.Test
 {
     public class MockIRepositories
     {
+        public static Mock<IAuthService> GetAuthService(List<Customer> customerList)
+        {
+            var mock = new Mock<IAuthService>();
+
+            mock.Setup(ar => ar.AuthenticateUser(It.IsAny<LoginDto>())).Returns((LoginDto user) =>
+            {
+                if (customerList.Exists(c => c.Email == user.Email)) { return Task.FromResult(true); }
+
+                else { return Task.FromResult(false); }
+            });
+
+            mock.Setup(ar => ar.CreateToken()).Returns("123456789");
+            mock.Setup(ar => ar.GetRoleFromToken(It.IsAny<ClaimsPrincipal>())).Returns("Admin");
+            mock.Setup(ar => ar.GetEmailFromToken(It.IsAny<ClaimsPrincipal>())).Returns("goli@gmail.com");
+
+            return mock;
+        }
+
         public static Mock<ICustomerRepository> GetCustomerRepository(List<Customer> customerList)
         {
             var mock = new Mock<ICustomerRepository>();
@@ -161,7 +181,7 @@ namespace ShopBackend.Test
 
             mock.Setup(orm => orm.Get(It.IsAny<Guid>())).Returns((Guid Id) =>
             {
-                Order? order = orderList.FirstOrDefault(o => o.Id ==Id);
+                Order? order = orderList.FirstOrDefault(o => o.Id == Id);
                 return Task.FromResult(order);
             });
 
@@ -195,7 +215,6 @@ namespace ShopBackend.Test
 
             return mock;
         }
-
 
     }
 }
