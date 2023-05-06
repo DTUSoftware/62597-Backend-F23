@@ -14,6 +14,12 @@ namespace ShopBackend.Models
 
         public UserRoles Role { get; set; }
 
+        public Guid? PhysicalAddressId { get; set; }
+
+
+        [ForeignKey("PhysicalAddressId")]
+        public virtual Address? PhysicalAddress { get; set; }
+
         public virtual ICollection<Order>? Orders { get; set; }
 
         [Timestamp]
