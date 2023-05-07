@@ -97,7 +97,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task CreateUser_onOk()
         {
             //Arrange
-            var newUser = new CreateUserDto { Email = "dg@gmail.com", Password = "Dtu1234#" };
+            var newUser = new CreateUserDto { Email = "dg@gmail.com", Password = "Dtu12345678#" };
 
             //Act
             var actionResult = await usersController.Register(newUser);
@@ -131,7 +131,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task CreateUser_onBadRequest_InvalidEmail()
         {
             //Arrange
-            var newUser = new CreateUserDto { Email = "dggmail.com", Password = "Dtu5678#" };
+            var newUser = new CreateUserDto { Email = "dggmail.com", Password = "Dtu12345678#" };
 
             //Act
             var actionResult = await usersController.Register(newUser);
@@ -147,7 +147,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task CreateUser_onBadRequest_EmptyEmail()
         {
             //Arrange
-            var newUser = new CreateUserDto { Email = "", Password = "Dtu5678#" };
+            var newUser = new CreateUserDto { Email = "", Password = "Dtu12345678#" };
 
             //Act
             var actionResult = await usersController.Register(newUser);
@@ -163,7 +163,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task CreateUser_onBadRequest_EmailExist()
         {
             //Arrange 
-            var newUser = new CreateUserDto { Email = "goli@gmail.com", Password = "Dtu56789#"};
+            var newUser = new CreateUserDto { Email = "goli@gmail.com", Password = "Dtu12345678#"};
 
             //Act
             var actionResult = await usersController.Register(newUser);
@@ -180,7 +180,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task UpdateUser_onOk()
         {
             //Arrange 
-            var targetUser = new UpdateUserDto { Email = "goli@gmail.com", Password = "Dtu1234#" };
+            var targetUser = new UpdateUserDto { Email = "goli@gmail.com", Password = "Dtu12345678#" };
 
             //Act
             var actionResult = await usersController.Update(targetUser);
@@ -212,7 +212,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task UpdateUser_onBadRequest_InvalidEmail()
         {
             //Arrange
-            var targetUser = new UpdateUserDto { Email = "dggmail.com", Password = "Dtu1234#" };
+            var targetUser = new UpdateUserDto { Email = "dggmail.com", Password = "Dtu12345678#" };
 
             //Act
             var actionResult = await usersController.Update(targetUser);
@@ -228,7 +228,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task UpdateUser_onBadRequest_EmptyEmail()
         {
             //Arrange
-            var targetUser = new UpdateUserDto { Email = "", Password = "Dtu1234#" };
+            var targetUser = new UpdateUserDto { Email = "", Password = "Dtu12345678#" };
 
             //Act
             var actionResult = await usersController.Update(targetUser);
@@ -244,7 +244,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task UpdateUser_onNotFound()
         {
             //Arrange
-            var targetUser = new UpdateUserDto { Email = "David@gmail.com", Password = "Dtu1234#" };
+            var targetUser = new UpdateUserDto { Email = "David@gmail.com", Password = "Dtu12345678#" };
 
             //Act
             var actionResult = await usersController.Update(targetUser);

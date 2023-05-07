@@ -30,7 +30,7 @@ namespace ShopBackend.Test.ControllersTest
         }
 
         [Theory]
-        [InlineData(1)]
+        [InlineData(0)]
         public async Task GetAllProducts_onOk(int page)
         {
             //Act
@@ -45,7 +45,7 @@ namespace ShopBackend.Test.ControllersTest
 
 
         [Theory]
-        [InlineData(1)]
+        [InlineData(0)]
         public async Task GetAllProducts_onNotFound(int page)
         {
             //Arrange
