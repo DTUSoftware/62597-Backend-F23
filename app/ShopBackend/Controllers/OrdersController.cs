@@ -43,7 +43,7 @@ namespace ShopBackend.Controllers
 
         // GET api/orders/{orderId}
         [HttpGet("{orderId}")]
-        [Authorize(Roles = "Customer,Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<OrderDto>> Get(Guid orderId)
         {
             var order = await _orderRepository.Get(orderId);
@@ -81,7 +81,7 @@ namespace ShopBackend.Controllers
 
         // PUT api/orders
         [HttpPut]
-        [Authorize(Roles = "Customer,Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<string>> Update([FromBody] UpdateOrderDto order)   
         {
             var orderToUpdate = await _orderRepository.Get(order.Id);
@@ -107,7 +107,7 @@ namespace ShopBackend.Controllers
 
         // DELETE api/orders/{orderId}
         [HttpDelete("{orderId}")]
-        [Authorize(Roles = "Customer,Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<string>> Delete(Guid orderId)
         {
             var result = await _orderRepository.Delete(orderId);
