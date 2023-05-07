@@ -6,13 +6,13 @@ namespace ShopBackend
 {
     public static class Extensions
     {
-        public static CustomerDto AsCustomerDto(this Customer customer)
+        public static UserDto AsUserDto(this User user)
         {
-            return new CustomerDto
+            return new UserDto
             {
-                Email = customer.Email,
-                Role = customer.Role,
-                Orders = customer.Orders != null ? new List<OrderDto>(customer.Orders.Select(x => x.AsOrderDto())) : new List<OrderDto>(),
+                Email = user.Email,
+                Role = user.Role,
+                Orders = user.Orders != null ? new List<OrderDto>(user.Orders.Select(x => x.AsOrderDto())) : new List<OrderDto>(),
             };
         }
 
@@ -99,9 +99,9 @@ namespace ShopBackend
 
 
 
-        public static Customer AsCustomerModel(this CustomerDto customerDto)
+        public static User AsCustomerModel(this UserDto customerDto)
         {
-            return new Customer
+            return new User
             {
                 Email = customerDto.Email,
                 Role = customerDto.Role,

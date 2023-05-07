@@ -41,11 +41,11 @@ namespace ShopBackend.Test
             };
         }
 
-        public static List<Customer> GetFakeCustomerList() {
-            return new List<Customer>
+        public static List<User> GetFakeUserList() {
+            return new List<User>
             {
-                new Customer{Email="goli@gmail.com", Password="1234", Role= Utils.UserRoles.Admin},
-                new Customer{Email="Karen@gmail.com", Password="1234", Role= Utils.UserRoles.Customer}
+                new User{Email="goli@gmail.com", Password="1234", Role= Utils.UserRoles.Admin},
+                new User{Email="Karen@gmail.com", Password="1234", Role= Utils.UserRoles.Customer}
             };
         }
 

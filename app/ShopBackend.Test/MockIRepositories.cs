@@ -9,13 +9,13 @@ namespace ShopBackend.Test
 {
     public class MockIRepositories
     {
-        public static Mock<IAuthService> GetAuthService(List<Customer> customerList)
+        public static Mock<IAuthService> GetAuthService(List<User> userList)
         {
             var mock = new Mock<IAuthService>();
 
             mock.Setup(ar => ar.AuthenticateUser(It.IsAny<LoginDto>())).Returns((LoginDto user) =>
             {
-                if (customerList.Exists(c => c.Email == user.Email)) { return Task.FromResult(true); }
+                if (userList.Exists(u => u.Email == user.Email)) { return Task.FromResult(true); }
 
                 else { return Task.FromResult(false); }
             });
@@ -27,42 +27,42 @@ namespace ShopBackend.Test
             return mock;
         }
 
-        public static Mock<ICustomerRepository> GetCustomerRepository(List<Customer> customerList)
+        public static Mock<IUserRepository> GetUserRepository(List<User> userList)
         {
-            var mock = new Mock<ICustomerRepository>();
+            var mock = new Mock<IUserRepository>();
 
-            mock.Setup(crm => crm.GetAll()).ReturnsAsync(() => customerList);
+            mock.Setup(urm => urm.GetAll()).ReturnsAsync(() => userList);
 
-            mock.Setup(crm => crm.Get(It.IsAny<string>())).Returns((string email) =>
+            mock.Setup(urm => urm.Get(It.IsAny<string>())).Returns((string email) =>
             {
-                Customer? customer = customerList.FirstOrDefault(c => c.Email == email);
-                return Task.FromResult(customer);
+                User? user = userList.FirstOrDefault(u => u.Email == email);
+                return Task.FromResult(user);
             });
 
-            mock.Setup(crm => crm.Insert(It.IsAny<Customer>())).Returns((Customer newCustomer) =>
+            mock.Setup(urm => urm.Insert(It.IsAny<User>())).Returns((User newUser) =>
             {
-                if (newCustomer.Email == null || customerList.Exists(c => c.Email == newCustomer.Email)) { return Task.FromResult(0); }
+                if (newUser.Email == null || userList.Exists(u => u.Email == newUser.Email)) { return Task.FromResult(0); }
 
-                else { customerList.Add(newCustomer); return Task.FromResult(1); }
+                else { userList.Add(newUser); return Task.FromResult(1); }
             });
 
-            mock.Setup(crm => crm.Update(It.IsAny<Customer>())).Returns((Customer targetCustomer) =>
+            mock.Setup(crm => crm.Update(It.IsAny<User>())).Returns((User targetUser) =>
             {
-                if (targetCustomer.Email == null || !customerList.Exists(c => c.Email == targetCustomer.Email)) { return Task.FromResult(0); }
+                if (targetUser.Email == null || !userList.Exists(u => u.Email == targetUser.Email)) { return Task.FromResult(0); }
                 else
                 {
-                    var orginal = customerList.Where(c => c.Email == targetCustomer.Email).Single().Email = targetCustomer.Email;
+                    var orginal = userList.Where(u => u.Email == targetUser.Email).Single().Email = targetUser.Email;
 
                     return Task.FromResult(1);
                 }
             });
 
-            mock.Setup(crm => crm.Delete(It.IsAny<string>())).Returns((string customerEmail) =>
+            mock.Setup(urm => urm.Delete(It.IsAny<string>())).Returns((string userEmail) =>
             {
-                if (customerEmail == null || !customerList.Exists(c => c.Email == customerEmail)) { return Task.FromResult(0); }
+                if (userEmail == null || !userList.Exists(c => c.Email == userEmail)) { return Task.FromResult(0); }
                 else
                 {
-                    customerList.RemoveAll(x => x.Email == customerEmail);
+                    userList.RemoveAll(x => x.Email == userEmail);
                     return Task.FromResult(1);
                 }
             });

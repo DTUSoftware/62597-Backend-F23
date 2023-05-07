@@ -11,47 +11,47 @@ namespace ShopBackend.Test.ControllersTest
      * @author: Golbas Haidari
      * @date: 01-04-2023
      */
-    public class TestCustomerController
+    public class TestUserController
     {
 
-        private readonly List<Customer> customerList;
-        private readonly CustomersController customersController;
+        private readonly List<User> userList;
+        private readonly UsersController usersController;
         IPasswordAuth passwordAuth;
 
-        public TestCustomerController()
+        public TestUserController()
         {
             //Mutual Arrange
-            customerList = DataHelper.GetFakeCustomerList();
+            userList = DataHelper.GetFakeUserList();
             passwordAuth = new PasswordAuth();
-            var crmock = MockIRepositories.GetCustomerRepository(customerList);
-            var arMock = MockIRepositories.GetAuthService(customerList);
+            var urMock = MockIRepositories.GetUserRepository(userList);
+            var arMock = MockIRepositories.GetAuthService(userList);
 
-            customersController = new CustomersController(crmock.Object, arMock.Object, passwordAuth);
+            usersController = new UsersController(urMock.Object, arMock.Object, passwordAuth);
         }
 
 
         [Fact]
-        public async Task GetAllCustomers_onOk()
+        public async Task GetAllUsers_OnOk()
         {
             //Act
-            var actionResult = await customersController.Get();
+            var actionResult = await usersController.Get();
 
             //Assert
             Assert.NotNull(actionResult);
             Assert.IsType<OkObjectResult>(actionResult.Result);
-            List<CustomerDto> list = Assert.IsAssignableFrom<List<CustomerDto>>(((OkObjectResult)actionResult.Result).Value);
+            List<UserDto> list = Assert.IsAssignableFrom<List<UserDto>>(((OkObjectResult)actionResult.Result).Value);
             Assert.Equal(2, list.Count);
             Assert.Equal(2, list[0].Links.Count);
         }
 
         [Fact]
-        public async Task GetAllCustomers_onNotFound()
+        public async Task GetAllUsers_onNotFound()
         {
             //Arrange
-            var emptyCustomerList = new List<Customer>();
-            var mock = MockIRepositories.GetCustomerRepository(emptyCustomerList);
+            var emptyCustomerList = new List<User>();
+            var mock = MockIRepositories.GetUserRepository(emptyCustomerList);
             var arMock = MockIRepositories.GetAuthService(emptyCustomerList);
-            var Controller = new CustomersController(mock.Object, arMock.Object, passwordAuth);
+            var Controller = new UsersController(mock.Object, arMock.Object, passwordAuth);
 
 
             //Act
@@ -61,63 +61,63 @@ namespace ShopBackend.Test.ControllersTest
             Assert.NotNull(actionResult);
             Assert.IsType<NotFoundObjectResult>(actionResult.Result);
             string msg = Assert.IsType<string>(((NotFoundObjectResult)actionResult.Result).Value);
-            Assert.Equal("The specified customers does not exist!", msg);
+            Assert.Equal("The specified users does not exist!", msg);
         }
 
         [Theory]
         [InlineData("goli@gmail.com")]
-        public async Task GetCustomerByEmail_onOk(string customerEmail)
+        public async Task GetUserByEmail_onOk(string userEmail)
         {
             //Act
-            var actionResult = await customersController.Get(customerEmail);
+            var actionResult = await usersController.Get(userEmail);
 
             //Assert
             Assert.NotNull(actionResult);
             Assert.IsType<OkObjectResult>(actionResult.Result);
-            var customer = Assert.IsType<CustomerDto>(((OkObjectResult)actionResult.Result).Value);
-            Assert.Equal(customerList[0].Email, customer.Email);
-            Assert.Equal(2, customer.Links.Count);
+            var user = Assert.IsType<UserDto>(((OkObjectResult)actionResult.Result).Value);
+            Assert.Equal(userList[0].Email, user.Email);
+            Assert.Equal(2, user.Links.Count);
         }
 
         [Theory]
         [InlineData("Jeppe@gmail.com")]
-        public async Task GetCustomerByEmail_onNotFound(string customerEmail)
+        public async Task GetUserByEmail_onNotFound(string userEmail)
         {
             //Act
-            var actionResult = await customersController.Get(customerEmail);
+            var actionResult = await usersController.Get(userEmail);
 
             //Assert
             Assert.NotNull(actionResult);
             Assert.IsType<NotFoundObjectResult>(actionResult.Result);
             string msg = Assert.IsType<string>(((NotFoundObjectResult)actionResult.Result).Value);
-            Assert.Equal("The specified customer does not exist!", msg);
+            Assert.Equal("The specified user does not exist!", msg);
         }
 
         [Fact]
-        public async Task CreateCustomer_onOk()
+        public async Task CreateUser_onOk()
         {
             //Arrange
-            var newCustomer = new CreateCustomerDto { Email = "dg@gmail.com", Password = "Dtu1234#" };
+            var newUser = new CreateUserDto { Email = "dg@gmail.com", Password = "Dtu1234#" };
 
             //Act
-            var actionResult = await customersController.Register(newCustomer);
+            var actionResult = await usersController.Register(newUser);
 
             //Assert
             Assert.NotNull(actionResult);
             Assert.IsType<OkObjectResult>(actionResult.Result);
             var res = ((OkObjectResult)actionResult.Result).Value;
             string msg = Assert.IsType<string>(res.GetType().GetProperty("Msg").GetValue(res));
-            Assert.Equal("Customer is inserted successfully!", msg);
+            Assert.Equal("User is inserted successfully!", msg);
         }
 
         [Fact]
-        public async Task CreateCustomer_onBadRequest_WeakPassword()
+        public async Task CreateUser_onBadRequest_WeakPassword()
         {
             //Arrange
-            var newCustomer = new CreateCustomerDto { Email = "dg@gmail.com", Password = "1234" };
+            var newUser = new CreateUserDto { Email = "dg@gmail.com", Password = "1234" };
 
             //Act
-            var actionResult = await customersController.Register(newCustomer);
+            var actionResult = await usersController.Register(newUser);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -128,13 +128,13 @@ namespace ShopBackend.Test.ControllersTest
         }
 
         [Fact]
-        public async Task CreateCustomer_onBadRequest_InvalidEmail()
+        public async Task CreateUser_onBadRequest_InvalidEmail()
         {
             //Arrange
-            var newCustomer = new CreateCustomerDto { Email = "dggmail.com", Password = "Dtu5678#" };
+            var newUser = new CreateUserDto { Email = "dggmail.com", Password = "Dtu5678#" };
 
             //Act
-            var actionResult = await customersController.Register(newCustomer);
+            var actionResult = await usersController.Register(newUser);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -144,29 +144,29 @@ namespace ShopBackend.Test.ControllersTest
         }
 
         [Fact]
-        public async Task CreateCustomer_onBadRequest_EmptyEmail()
+        public async Task CreateUser_onBadRequest_EmptyEmail()
         {
             //Arrange
-            var newCustomer = new CreateCustomerDto { Email = "", Password = "Dtu5678#" };
+            var newUser = new CreateUserDto { Email = "", Password = "Dtu5678#" };
 
             //Act
-            var actionResult = await customersController.Register(newCustomer);
+            var actionResult = await usersController.Register(newUser);
 
             //Assert
             Assert.NotNull(actionResult);
             Assert.IsType<BadRequestObjectResult>(actionResult.Result);
             string msg = Assert.IsType<string>(((BadRequestObjectResult)actionResult.Result).Value);
-            Assert.Equal("Customer email is required to register the customer!", msg);
+            Assert.Equal("User email is required to register the user!", msg);
         }
 
         [Fact]
-        public async Task CreateCustomer_onBadRequest_EmailExist()
+        public async Task CreateUser_onBadRequest_EmailExist()
         {
             //Arrange 
-            var newCustomer = new CreateCustomerDto { Email = "goli@gmail.com", Password = "Dtu5678#" };
+            var newUser = new CreateUserDto { Email = "goli@gmail.com", Password = "Dtu5678#" };
 
             //Act
-            var actionResult = await customersController.Register(newCustomer);
+            var actionResult = await usersController.Register(newUser);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -177,13 +177,13 @@ namespace ShopBackend.Test.ControllersTest
 
 
         [Fact]
-        public async Task UpdateCustomer_onOk()
+        public async Task UpdateUser_onOk()
         {
             //Arrange 
-            var targetCustomer = new UpdateCustomerDto { Email = "goli@gmail.com", Password = "Dtu1234#" };
+            var targetUser = new UpdateUserDto { Email = "goli@gmail.com", Password = "Dtu1234#" };
 
             //Act
-            var actionResult = await customersController.Update(targetCustomer);
+            var actionResult = await usersController.Update(targetUser);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -193,13 +193,13 @@ namespace ShopBackend.Test.ControllersTest
         }
 
         [Fact]
-        public async Task UpdateCustomer_onBadRequest_WeakPassword()
+        public async Task UpdateUser_onBadRequest_WeakPassword()
         {
             //Arrange
-            var targetCustomer = new UpdateCustomerDto { Email = "dg@gmail.com", Password = "1234" };
+            var targetUser = new UpdateUserDto { Email = "dg@gmail.com", Password = "1234" };
 
             //Act
-            var actionResult = await customersController.Update(targetCustomer);
+            var actionResult = await usersController.Update(targetUser);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -209,13 +209,13 @@ namespace ShopBackend.Test.ControllersTest
         }
 
         [Fact]
-        public async Task UpdateCustomer_onBadRequest_InvalidEmail()
+        public async Task UpdateUser_onBadRequest_InvalidEmail()
         {
             //Arrange
-            var targetCustomer = new UpdateCustomerDto { Email = "dggmail.com", Password = "Dtu1234#" };
+            var targetUser = new UpdateUserDto { Email = "dggmail.com", Password = "Dtu1234#" };
 
             //Act
-            var actionResult = await customersController.Update(targetCustomer);
+            var actionResult = await usersController.Update(targetUser);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -225,80 +225,80 @@ namespace ShopBackend.Test.ControllersTest
         }
 
         [Fact]
-        public async Task UpdateCustomer_onBadRequest_EmptyEmail()
+        public async Task UpdateUser_onBadRequest_EmptyEmail()
         {
             //Arrange
-            var targetCustomer = new UpdateCustomerDto { Email = "", Password = "Dtu1234#" };
+            var targetUser = new UpdateUserDto { Email = "", Password = "Dtu1234#" };
 
             //Act
-            var actionResult = await customersController.Update(targetCustomer);
+            var actionResult = await usersController.Update(targetUser);
 
             //Assert
             Assert.NotNull(actionResult);
             Assert.IsType<BadRequestObjectResult>(actionResult.Result);
             string msg = Assert.IsType<string>(((BadRequestObjectResult)actionResult.Result).Value);
-            Assert.Equal("Customer email is required to update the customer!", msg);
+            Assert.Equal("User email is required to update the user!", msg);
         }
 
         [Fact]
-        public async Task UpdateCustomer_onNotFound()
+        public async Task UpdateUser_onNotFound()
         {
             //Arrange
-            var targetCustomer = new UpdateCustomerDto { Email = "David@gmail.com", Password = "Dtu1234#" };
+            var targetUser = new UpdateUserDto { Email = "David@gmail.com", Password = "Dtu1234#" };
 
             //Act
-            var actionResult = await customersController.Update(targetCustomer);
+            var actionResult = await usersController.Update(targetUser);
 
             //Assert
             Assert.NotNull(actionResult);
             Assert.IsType<NotFoundObjectResult>(actionResult.Result);
             string msg = Assert.IsType<string>(((NotFoundObjectResult)actionResult.Result).Value);
-            Assert.Equal("Customer does not exsist!", msg);
+            Assert.Equal("User does not exsist!", msg);
         }
 
         [Theory]
         [InlineData("goli@gmail.com")]
-        public async Task DeleteCustomer_onOk(string customerEmail)
+        public async Task DeleteUser_onOk(string userEmail)
         {
             //Act
-            var actionResult = await customersController.Delete(customerEmail);
+            var actionResult = await usersController.Delete(userEmail);
 
             //Assert
             Assert.NotNull(actionResult);
             Assert.IsType<OkObjectResult>(actionResult.Result);
             var msg = Assert.IsType<string>(((OkObjectResult)actionResult.Result).Value);
-            Assert.Equal("Customer has been deleted!", msg);
-            Assert.Single(customerList);
+            Assert.Equal("User has been deleted!", msg);
+            Assert.Single(userList);
         }
 
         [Theory]
         [InlineData("")]
-        public async Task DeleteCustomer_onBadRequest_EmptyEmail(string customerEmail)
+        public async Task DeleteUser_onBadRequest_EmptyEmail(string userEmail)
         {
             //Act
-            var actionResult = await customersController.Delete(customerEmail);
+            var actionResult = await usersController.Delete(userEmail);
 
             //Assert
             Assert.NotNull(actionResult);
             Assert.IsType<BadRequestObjectResult>(actionResult.Result);
             string msg = Assert.IsType<string>(((BadRequestObjectResult)actionResult.Result).Value);
-            Assert.Equal("Customer email is required to delete the customer!", msg);
-            Assert.Equal(2, customerList.Count);
+            Assert.Equal("User email is required to delete the user!", msg);
+            Assert.Equal(2, userList.Count);
         }
 
         [Theory]
         [InlineData("david@gmail.com")]
-        public async Task DeleteCustomer_onNotFound(string customerEmail)
+        public async Task DeleteUser_onNotFound(string userEmail)
         {
             //Act
-            var actionResult = await customersController.Delete(customerEmail);
+            var actionResult = await usersController.Delete(userEmail);
 
             //Assert
             Assert.NotNull(actionResult);
             Assert.IsType<NotFoundObjectResult>(actionResult.Result);
             string msg = Assert.IsType<string>(((NotFoundObjectResult)actionResult.Result).Value);
-            Assert.Equal("Customer does not exsist!", msg);
-            Assert.Equal(2, customerList.Count);
+            Assert.Equal("User does not exsist!", msg);
+            Assert.Equal(2, userList.Count);
         }
 
     }

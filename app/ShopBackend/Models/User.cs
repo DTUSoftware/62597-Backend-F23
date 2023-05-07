@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShopBackend.Models
 {
-    public class Customer
+    public class User
     {
         [Key]
         public required string Email { get; set; }
@@ -13,12 +13,6 @@ namespace ShopBackend.Models
         public string Password { get; set; } = null!;
 
         public UserRoles Role { get; set; }
-
-        public Guid? PhysicalAddressId { get; set; }
-
-
-        [ForeignKey("PhysicalAddressId")]
-        public virtual Address? PhysicalAddress { get; set; }
 
         public virtual ICollection<Order>? Orders { get; set; }
 

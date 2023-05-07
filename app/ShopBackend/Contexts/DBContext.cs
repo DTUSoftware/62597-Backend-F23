@@ -15,7 +15,7 @@ namespace ShopBackend.Contexts
 
         public virtual DbSet<Product> Products { get; set; }
 
-        public virtual DbSet<Customer> Customers { get; set; }
+        public virtual DbSet<User> Users { get; set; }
 
         public virtual DbSet<Order> Orders { get; set; }
 
@@ -26,7 +26,7 @@ namespace ShopBackend.Contexts
             modelBuilder.Entity<Order>().Property(x => x.OrderStatus)
             .HasConversion<string>();
 
-            modelBuilder.Entity<Customer>().Property(x => x.Role)
+            modelBuilder.Entity<User>().Property(x => x.Role)
             .HasConversion<string>();
         }
     }
