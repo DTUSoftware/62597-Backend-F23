@@ -2,7 +2,8 @@ import http from "k6/http"
 import {sleep} from "k6"
 import { SharedArray } from 'k6/data';
 
-const apiUrl = "http://localhost:5114/api"
+//const apiUrl = "http://localhost:5114/api"
+const apiUrl = "https://dtu-api.herogamers.dev/api"
 
 
 const data = new SharedArray('products', function () {
@@ -25,7 +26,7 @@ export function generate_uuidv4() {
   }
 
 export let options = {
-    vus: 100,
+    vus: 6400,
     duration: "600s",
     thresholds: {
         http_req_duration: ["p(95)<1500"]
@@ -79,6 +80,7 @@ export default function() {
         ]
       })
 
+      sleep(getRandomInt(0,30));
       http.get(`${apiUrl}/products/all/${getRandomInt(0,1)}`);
       sleep(getRandomInt(5,30));
       http.get(`${apiUrl}/products/${data[getRandomInt(0,28)].id}`);

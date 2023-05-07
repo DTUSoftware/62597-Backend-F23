@@ -28,11 +28,18 @@ scrape_configs:
       - target_label: __address__
         # The mysqld_exporter host:port
         replacement: mysql-exporter:9104
+  
+  - job_name: 'otel-collector'
+    scrape_interval: 10s
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+      - targets: ['otel-collector:55681']
 
 #  - job_name: 'mariadb'
 #    static_configs:
 #      - targets: ['mysql-exporter:9104']
 
-  - job_name: 'webshop'
-    static_configs:
-      - targets: ['shop-backend:9184']
+#  - job_name: 'webshop'
+#    static_configs:
+#      - targets: ['shop-backend:9184']

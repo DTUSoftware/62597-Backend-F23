@@ -18,26 +18,13 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        /*
-        // https://learn.microsoft.com/en-us/dotnet/core/diagnostics/metrics-collection
-        using MeterProvider meterProvider = Sdk.CreateMeterProviderBuilder()
-                .AddPrometheusExporter(opt =>
-                {
-                    opt.StartHttpListener = true;
-                    opt.HttpListenerPrefixes = new string[] { $"http://localhost:9184/" };
-                })
-                .Build();
-        */
-
         // Support for Tracing
         builder.Services.AddOpenTelemetry()
             .WithTracing(builder => builder
             .SetResourceBuilder(ResourceBuilder
-            .CreateDefault().AddService("MyDemoService"))
+            .CreateDefault().AddService("ShopServiceTracing"))
             .AddAspNetCoreInstrumentation()
             .AddHttpClientInstrumentation()
-            //.AddConsoleExporter()
-            //.AddJaegerExporter()
             .AddOtlpExporter(o =>
             {
                 o.Endpoint = new Uri("http://otel-collector:4317"); // Trace calls gRPC (can be used for Jaeger)
@@ -48,33 +35,29 @@ internal class Program
         builder.Services.AddOpenTelemetry()
             .WithMetrics(builder => builder
             .SetResourceBuilder(ResourceBuilder
-            .CreateDefault().AddService("MyDemoService"))
+            .CreateDefault().AddService("ShopServiceMetrics"))
             .AddAspNetCoreInstrumentation()
             .AddHttpClientInstrumentation()
-            //.AddConsoleExporter()
-            //.AddPrometheusExporter()
             .AddOtlpExporter(o =>
             {
-                o.Endpoint = new Uri("http://otel-collector:8889"); // Prometheus metrics
+                o.Endpoint = new Uri("http://otel-collector:4317"); // OTLP metrics
             })
         );
 
-        /*
         // Support for logging
         builder.Logging.ClearProviders();
         builder.Logging.AddOpenTelemetry(options =>
         {
             options.IncludeFormattedMessage = true;
             options.SetResourceBuilder(ResourceBuilder
-            .CreateDefault().AddService("MyDemoService"));
+            .CreateDefault().AddService("ShopServiceLogging"));
             //options.AddConsoleExporter();
             options.AddOtlpExporter(o =>
             {
-                o.Endpoint = new Uri("http://otel-collector:4317"); // Prometheus metrics
+                o.Endpoint = new Uri("http://otel-collector:4317"); // OTLP logging
             });
         }
         );
-        */
 
         // Add services to the container.
         builder.Services.AddControllers().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
@@ -119,6 +102,7 @@ internal class Program
             });
         });
 
+        // Environment variables configurationBuilder
         var configBuilder =
             new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -126,6 +110,7 @@ internal class Program
                 .AddEnvironmentVariables();
         IConfigurationRoot configuration = configBuilder.Build();
 
+        // CORS configurations
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("FrontendPolicy",
@@ -137,6 +122,7 @@ internal class Program
                 });
         });
 
+        // Database connection string and DBContext service
         var connectionString = configuration.GetSection("ConnectionStrings").GetSection("DefaultConnection").Value;
         builder.Services.AddDbContext<DBContext>(options =>
         {
@@ -144,7 +130,7 @@ internal class Program
             options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
         });
 
-        //JWT authentication settings
+        // JWT authentication settings
         var jwtSettings = configuration.GetSection("Jwt");
         var key = jwtSettings.GetSection("Key");
         builder.Services.AddAuthentication(options => 
@@ -165,6 +151,7 @@ internal class Program
             };
         });
 
+        // Scoped repository services for dependency injection
         builder.Services.AddScoped<IProductRepository, ProductRepository>();
         builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
         builder.Services.AddScoped<IOrderRepository, OrderRepository>();

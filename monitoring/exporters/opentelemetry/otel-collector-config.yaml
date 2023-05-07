@@ -1,0 +1,48 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: http://localhost:4317
+        max_recv_msg_size_mib: 1234123412341234123
+      http:
+        endpoint: http://localhost:4318
+  prometheus:
+    config:
+      scrape_configs:
+        - job_name: 'otel-collector'
+          scrape_interval: 5s
+          static_configs:
+            - targets: [ 'localhost:55681' ]
+
+processors:
+  batch:
+    send_batch_max_size: 20
+
+exporters:
+  otlp:
+    endpoint: http://localhost:4317
+    tls:
+      insecure: true
+  prometheus:
+    endpoint: http://localhost:55681
+
+extensions:
+  health_check:
+  pprof:
+  zpages:
+
+service:
+  extensions: [health_check, pprof, zpages]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp]
+    metrics:
+      receivers: [otlp, prometheus]
+      processors: [batch]
+      exporters: [otlp, prometheus]
+    logs:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [otlp]
