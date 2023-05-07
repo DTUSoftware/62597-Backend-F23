@@ -42,14 +42,14 @@ services:
         networks:
             - monitoring
             - shop_db
-#    shop-exporter:
-#        image: otel/opentelemetry-collector
-#        container_name: shop-exporter
-#        restart: unless-stopped
-#        command:
-#            - --config=/etc/otel-collector-config.yaml
-#        volumes:
-#            - ./exporters/opentelemetry/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    otel-collector:
+        image: otel/opentelemetry-collector
+        container_name: otel-collector
+        restart: unless-stopped
+        command:
+            - --config=/etc/otel-collector-config.yaml
+        volumes:
+            - ./exporters/opentelemetry/otel-collector-config.yaml:/etc/otel-collector-config.yaml
 ##        ports:
 ##            - 1888:1888 # pprof extension
 ##            - 8888:8888 # Prometheus metrics exposed by the collector
@@ -58,6 +58,9 @@ services:
 ##            - 4317:4317 # OTLP gRPC receiver
 ##            - 4318:4318 # OTLP http receiver
 ##            - 55679:55679 # zpages extension
+        networks:
+            - monitoring
+            - shop_backend
     prometheus:
         image: prom/prometheus
         container_name: prometheus
@@ -75,7 +78,6 @@ services:
 #            - 9090:9090
         networks:
             - monitoring
-            - shop_backend
             - shop_db
     grafana:
         image: grafana/grafana

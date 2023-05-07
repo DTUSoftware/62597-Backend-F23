@@ -118,7 +118,7 @@ namespace ShopBackend.Test
         {
             var mock = new Mock<IProductRepository>();
 
-            mock.Setup(arm => arm.GetAll()).ReturnsAsync(() => productList);
+            mock.Setup(arm => arm.GetAll(It.IsAny<int>())).ReturnsAsync(() => productList);
 
             mock.Setup(crm => crm.Get(It.IsAny<string>())).Returns((string productId) =>
             {
