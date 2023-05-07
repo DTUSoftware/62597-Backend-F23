@@ -53,7 +53,7 @@ namespace ShopBackend.Controllers
         {
             var userEmail = _authService.GetEmailFromToken(User);
             var userRole = _authService.GetRoleFromToken(User);
-            if (userRole != UserRoles.Admin.ToString() && userEmail != email)// both admin and customer should be allowed!!!!!!!!
+            if (userRole != UserRoles.Admin.ToString() && userEmail != email)
             {
                 return BadRequest("Access denied!");
             }
@@ -198,6 +198,7 @@ namespace ShopBackend.Controllers
 
             return NotFound("User could not be deleted!");
         }
+
         //Based on https://code-maze.com/hateoas-aspnet-core-web-api/
         private IEnumerable<Link> CreateLinksForUser(string email, string requestType)
         {

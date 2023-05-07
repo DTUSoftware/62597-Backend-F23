@@ -79,29 +79,6 @@ namespace ShopBackend.Migrations
                     b.ToTable("Addresses");
                 });
 
-            modelBuilder.Entity("ShopBackend.Models.Customer", b =>
-                {
-                    b.Property<string>("Email")
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("Password")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<string>("Role")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime?>("Version")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("timestamp(6)");
-
-                    b.HasKey("Email");
-
-                    b.ToTable("Customers");
-                });
-
             modelBuilder.Entity("ShopBackend.Models.Order", b =>
                 {
                     b.Property<Guid>("Id")
@@ -222,6 +199,29 @@ namespace ShopBackend.Migrations
                     b.ToTable("Products");
                 });
 
+            modelBuilder.Entity("ShopBackend.Models.User", b =>
+                {
+                    b.Property<string>("Email")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("Version")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("timestamp(6)");
+
+                    b.HasKey("Email");
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("ShopBackend.Models.Order", b =>
                 {
                     b.HasOne("ShopBackend.Models.Address", "BillingAddress")
@@ -230,7 +230,7 @@ namespace ShopBackend.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ShopBackend.Models.Customer", "Customer")
+                    b.HasOne("ShopBackend.Models.User", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerEmail");
 
@@ -266,14 +266,14 @@ namespace ShopBackend.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("ShopBackend.Models.Customer", b =>
-                {
-                    b.Navigation("Orders");
-                });
-
             modelBuilder.Entity("ShopBackend.Models.Order", b =>
                 {
                     b.Navigation("OrderDetails");
+                });
+
+            modelBuilder.Entity("ShopBackend.Models.User", b =>
+                {
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }
