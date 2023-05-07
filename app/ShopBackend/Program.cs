@@ -153,7 +153,7 @@ internal class Program
 
         // Scoped repository services for dependency injection
         builder.Services.AddScoped<IProductRepository, ProductRepository>();
-        builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
+        builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IOrderRepository, OrderRepository>();
         builder.Services.AddScoped<IAddressRepository, AddressRepository>();
         builder.Services.AddScoped<IOrderDetailRepository, OrderDetailRepository>();

@@ -2,47 +2,67 @@
 using ShopBackend.Models;
 using ShopBackend.Dtos;
 using ShopBackend.Repositories;
+using ShopBackend.Security;
+using System.Security.Claims;
 
 namespace ShopBackend.Test
 {
     public class MockIRepositories
     {
-        public static Mock<ICustomerRepository> GetCustomerRepository(List<Customer> customerList)
+        public static Mock<IAuthService> GetAuthService(List<User> userList)
         {
-            var mock = new Mock<ICustomerRepository>();
+            var mock = new Mock<IAuthService>();
 
-            mock.Setup(crm => crm.GetAll()).ReturnsAsync(() => customerList);
-
-            mock.Setup(crm => crm.Get(It.IsAny<string>())).Returns((string email) =>
+            mock.Setup(ar => ar.AuthenticateUser(It.IsAny<LoginDto>())).Returns((LoginDto user) =>
             {
-                Customer? customer = customerList.FirstOrDefault(c => c.Email == email);
-                return Task.FromResult(customer);
+                if (userList.Exists(u => u.Email == user.Email)) { return Task.FromResult(true); }
+
+                else { return Task.FromResult(false); }
             });
 
-            mock.Setup(crm => crm.Insert(It.IsAny<Customer>())).Returns((Customer newCustomer) =>
-            {
-                if (newCustomer.Email == null || customerList.Exists(c => c.Email == newCustomer.Email)) { return Task.FromResult(0); }
+            mock.Setup(ar => ar.CreateToken()).Returns("123456789");
+            mock.Setup(ar => ar.GetRoleFromToken(It.IsAny<ClaimsPrincipal>())).Returns("Admin");
+            mock.Setup(ar => ar.GetEmailFromToken(It.IsAny<ClaimsPrincipal>())).Returns("goli@gmail.com");
 
-                else { customerList.Add(newCustomer); return Task.FromResult(1); }
+            return mock;
+        }
+
+        public static Mock<IUserRepository> GetUserRepository(List<User> userList)
+        {
+            var mock = new Mock<IUserRepository>();
+
+            mock.Setup(urm => urm.GetAll()).ReturnsAsync(() => userList);
+
+            mock.Setup(urm => urm.Get(It.IsAny<string>())).Returns((string email) =>
+            {
+                User? user = userList.FirstOrDefault(u => u.Email == email);
+                return Task.FromResult(user);
             });
 
-            mock.Setup(crm => crm.Update(It.IsAny<Customer>())).Returns((Customer targetCustomer) =>
+            mock.Setup(urm => urm.Insert(It.IsAny<User>())).Returns((User newUser) =>
             {
-                if (targetCustomer.Email == null || !customerList.Exists(c => c.Email == targetCustomer.Email)) { return Task.FromResult(0); }
+                if (newUser.Email == null || userList.Exists(u => u.Email == newUser.Email)) { return Task.FromResult(0); }
+
+                else { userList.Add(newUser); return Task.FromResult(1); }
+            });
+
+            mock.Setup(crm => crm.Update(It.IsAny<User>())).Returns((User targetUser) =>
+            {
+                if (targetUser.Email == null || !userList.Exists(u => u.Email == targetUser.Email)) { return Task.FromResult(0); }
                 else
                 {
-                    var orginal = customerList.Where(c => c.Email == targetCustomer.Email).Single().Email = targetCustomer.Email;
+                    var orginal = userList.Where(u => u.Email == targetUser.Email).Single().Email = targetUser.Email;
 
                     return Task.FromResult(1);
                 }
             });
 
-            mock.Setup(crm => crm.Delete(It.IsAny<string>())).Returns((string customerEmail) =>
+            mock.Setup(urm => urm.Delete(It.IsAny<string>())).Returns((string userEmail) =>
             {
-                if (customerEmail == null || !customerList.Exists(c => c.Email == customerEmail)) { return Task.FromResult(0); }
+                if (userEmail == null || !userList.Exists(c => c.Email == userEmail)) { return Task.FromResult(0); }
                 else
                 {
-                    customerList.RemoveAll(x => x.Email == customerEmail);
+                    userList.RemoveAll(x => x.Email == userEmail);
                     return Task.FromResult(1);
                 }
             });
@@ -161,7 +181,7 @@ namespace ShopBackend.Test
 
             mock.Setup(orm => orm.Get(It.IsAny<Guid>())).Returns((Guid Id) =>
             {
-                Order? order = orderList.FirstOrDefault(o => o.Id ==Id);
+                Order? order = orderList.FirstOrDefault(o => o.Id == Id);
                 return Task.FromResult(order);
             });
 
@@ -195,7 +215,6 @@ namespace ShopBackend.Test
 
             return mock;
         }
-
 
     }
 }

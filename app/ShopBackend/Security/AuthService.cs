@@ -11,15 +11,15 @@ namespace ShopBackend.Security
     //Build with inspiration from: https://www.youtube.com/watch?v=iIsaEzNXhoo&ab_channel=TrevoirWilliams
     public class AuthService : IAuthService
     {
-        private readonly ICustomerRepository _customerRepository;
+        private readonly IUserRepository _customerRepository;
 
         private readonly IConfiguration _configuration;
 
         private readonly IPasswordAuth _passwordAuth;
 
-        private Customer? _user;
+        private User? _user;
 
-        public AuthService(ICustomerRepository customerRepository, IConfiguration Configuration, IPasswordAuth passwordAuth)
+        public AuthService(IUserRepository customerRepository, IConfiguration Configuration, IPasswordAuth passwordAuth)
         {
             _customerRepository = customerRepository;
             _configuration = Configuration;

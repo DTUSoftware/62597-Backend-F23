@@ -12,14 +12,12 @@ namespace ShopBackend.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly IOrderDetailRepository _orderDetailRepository;
-        private readonly LinkGenerator _linkGenerator;
+        //private readonly LinkGenerator _linkGenerator;
 
-        public OrdersController(IOrderRepository orderRepository, IOrderDetailRepository orderDetailRepository,LinkGenerator linkGenerator)
+        public OrdersController(IOrderRepository orderRepository)
         {
             _orderRepository = orderRepository;
-            _orderDetailRepository = orderDetailRepository;
-            _linkGenerator = linkGenerator;
+            //_linkGenerator = linkGenerator;
         }
 
 
@@ -122,44 +120,35 @@ namespace ShopBackend.Controllers
         }
 
         //Based on https://code-maze.com/hateoas-aspnet-core-web-api/
-        private IEnumerable<Link> CreateLinksForOrder(Guid orderId, String requestType)
+        private IEnumerable<Link> CreateLinksForOrder(Guid orderId, string requestType)
         {
+            /*
+             var GetUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { orderId})!;
+             var DeleteUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { orderId })!;
+             var UpdateUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(Update), values: new { orderId })!;
+            */
+            var GetUrl = HttpContext + nameof(Get) + new { orderId };
+            var DeleteUrl = HttpContext + nameof(Delete) + new { orderId };
+            var UpdateUrl = HttpContext + nameof(Update) + new { orderId };
+
             switch (requestType)
             {
                 case "GET":
-                    var linksGet = new List<Link> {
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { orderId })!,
-            "delete_order",
-            "DELETE"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update), values: new { orderId })!,
-        "update_order",
-        "PUT")
-            };
-                    return linksGet;
+                    return new List<Link> {
+                        new Link(href: GetUrl, "delete_order", "DELETE"),
+                        new Link(href: UpdateUrl , "update_order", "PUT")
+                    };
                 case "PUT":
-                    var linksPut = new List<Link>
-                        {
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { orderId})!,
-            "self",
-            "GET"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { orderId })!,
-            "delete_order",
-            "DELETE")
-            };
-                    return linksPut;
+                    return new List<Link> {
+                        new Link(href: GetUrl, "self", "GET"),
+                        new Link(href:DeleteUrl, "delete_order", "DELETE")
+                    };
                 case "POST":
-                    var linksPost = new List<Link> {
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { orderId})!,
-            "self",
-            "GET"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { orderId })!,
-            "delete_order",
-            "DELETE"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update), values: new { orderId })!,
-        "update_order",
-        "PUT")
-            };
-                    return linksPost;
+                    return new List<Link> {
+                        new Link(href: GetUrl, "self", "GET"),
+                        new Link(href:DeleteUrl, "delete_order", "DELETE"),
+                        new Link(href: UpdateUrl , "update_order", "PUT")
+                    };
                 default:
                     throw new Exception("Invalid requestType");
             }

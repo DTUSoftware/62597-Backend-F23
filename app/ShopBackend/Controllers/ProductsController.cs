@@ -12,12 +12,12 @@ namespace ShopBackend.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
-        private readonly LinkGenerator _linkGenerator;
+        //private readonly LinkGenerator _linkGenerator;
 
-        public ProductsController(IProductRepository productRepository, LinkGenerator linkGenerator)
+        public ProductsController(IProductRepository productRepository)
         {
             _productRepository = productRepository;
-            _linkGenerator = linkGenerator;
+            //_linkGenerator = linkGenerator;
         }
 
 
@@ -156,44 +156,35 @@ namespace ShopBackend.Controllers
         }
 
         //Based on https://code-maze.com/hateoas-aspnet-core-web-api/
-        private IEnumerable<Link> CreateLinksForProduct(String productId, String requestType)
+        private IEnumerable<Link> CreateLinksForProduct(string productId, string requestType)
         {
+            /*
+            var GetUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { productId})!
+            var DeleteUrl= _linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId })!
+            var UpdateUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(Update))!
+           */
+            var GetUrl = HttpContext + nameof(Get) + new { productId };
+            var DeleteUrl = HttpContext + nameof(Delete) + new { productId };
+            var UpdateUrl = HttpContext + nameof(Update);
+
             switch (requestType)
             {
                 case "GET":
-                    var linksGet = new List<Link> {
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId })!,
-            "delete_product",
-            "DELETE"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update))!,
-        "update_product",
-        "PUT")
-            };
-            return linksGet;
+                    return new List<Link> {
+                        new Link(href: DeleteUrl, "delete_product", "DELETE"),
+                        new Link(href: UpdateUrl, "update_product", "PUT")
+                    };
                 case "PUT":
-                    var linksPut = new List<Link>
-                        {
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { productId})!,
-            "self",
-            "GET"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId })!,
-            "delete_product",
-            "DELETE")
-            };
-                    return linksPut;
+                    return new List<Link> {
+                        new Link(href: GetUrl, "self", "GET"),
+                        new Link(href: DeleteUrl, "delete_product", "DELETE")
+                    };
                 case "POST":
-                    var linksPost = new List<Link> {
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { productId})!,
-            "self",
-            "GET"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId })!,
-            "delete_product",
-            "DELETE"),
-        new Link(_linkGenerator.GetUriByAction(HttpContext, nameof(Update))!,
-        "update_product",
-        "PUT")
-            };
-                    return linksPost;
+                    return new List<Link> {
+                        new Link(href: GetUrl, "self", "GET"),
+                        new Link(href: DeleteUrl, "delete_product", "DELETE"),
+                        new Link(href: UpdateUrl, "update_product", "PUT")
+                    };
                 default:
                     throw new Exception("Invalid requestType");
             }

@@ -4,7 +4,7 @@ using ShopBackend.Utils;
 
 namespace ShopBackend.Dtos
 {
-    public class CustomerDto: LinkResourceBase
+    public class UserDto: LinkResourceBase
     {
         public required string Email { get; set; }
 

@@ -31,7 +31,7 @@ namespace ShopBackend.Models
 
         // Nullable for now, so that frontend can create an order without a Customer
         [ForeignKey("CustomerEmail")]
-        public virtual Customer? Customer { get; set; }
+        public virtual User? Customer { get; set; }
 
         [ForeignKey("ShippingAddressId")]
         public virtual Address ShippingAddress { get; set; } = null!;

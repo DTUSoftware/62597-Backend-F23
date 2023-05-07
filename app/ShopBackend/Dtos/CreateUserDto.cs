@@ -3,7 +3,7 @@ using ShopBackend.Models;
 
 namespace ShopBackend.Dtos
 {
-    public class CreateCustomerDto
+    public class CreateUserDto
     {
         public required string Email { get; set; }
 

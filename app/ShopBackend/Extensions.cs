@@ -6,13 +6,13 @@ namespace ShopBackend
 {
     public static class Extensions
     {
-        public static CustomerDto AsCustomerDto(this Customer customer)
+        public static UserDto AsUserDto(this User user)
         {
-            return new CustomerDto
+            return new UserDto
             {
-                Email = customer.Email,
-                Role = customer.Role,
-                Orders = customer.Orders != null ? new List<OrderDto>(customer.Orders.Select(x => x.AsOrderDto())) : new List<OrderDto>(),
+                Email = user.Email,
+                Role = user.Role,
+                Orders = user.Orders != null ? new List<OrderDto>(user.Orders.Select(x => x.AsOrderDto())) : new List<OrderDto>(),
             };
         }
 
@@ -21,6 +21,24 @@ namespace ShopBackend
             return new AddressDto
             {
                 Id = address.Id,
+                FirstName = address.FirstName,
+                LastName = address.LastName,
+                Email = address.Email,
+                MobileNr = address.MobileNr,
+                Company = address.Company,
+                VatNr = address.VatNr,
+                Country = address.Country,
+                ZipCode = address.ZipCode,
+                City = address.City,
+                Address1 = address.Address1,
+                Address2 = address.Address2,
+            };
+        }
+
+        public static CreateAddressDto AsCreateAddressDto(this Address address)
+        {
+            return new CreateAddressDto
+            {
                 FirstName = address.FirstName,
                 LastName = address.LastName,
                 Email = address.Email,
@@ -81,9 +99,9 @@ namespace ShopBackend
 
 
 
-        public static Customer AsCustomerModel(this CustomerDto customerDto)
+        public static User AsCustomerModel(this UserDto customerDto)
         {
-            return new Customer
+            return new User
             {
                 Email = customerDto.Email,
                 Role = customerDto.Role,

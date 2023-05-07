@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShopBackend.Models
 {
-    public class Customer
+    public class User
     {
         [Key]
         public required string Email { get; set; }

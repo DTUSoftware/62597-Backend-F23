@@ -1,6 +1,6 @@
 ﻿namespace ShopBackend.Dtos
 {
-    public class UpdateCustomerDto
+    public class UpdateUserDto
     {
         public required string Email { get; set; }
 
