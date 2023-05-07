@@ -32,7 +32,7 @@ namespace ShopBackend.Security
 
         public bool IsPasswordStrong(string password)
         {
-            Regex validPassword = new("^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-/*_]).{12,}$");
+            Regex validPassword = new("^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-/*_]).{8,}$");
             return validPassword.IsMatch(password);
         }
 

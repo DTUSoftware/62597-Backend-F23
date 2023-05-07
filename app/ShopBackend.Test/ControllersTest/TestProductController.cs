@@ -29,11 +29,12 @@ namespace ShopBackend.Test.ControllersTest
             productController = new ProductsController(mock.Object);
         }
 
-        [Fact]
-        public async Task GetAllProducts_onOk()
+        [Theory]
+        [InlineData(1)]
+        public async Task GetAllProducts_onOk(int page)
         {
             //Act
-            var actionResult = await productController.Get();
+            var actionResult = await productController.Get(page);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -43,8 +44,9 @@ namespace ShopBackend.Test.ControllersTest
         }
 
 
-        [Fact]
-        public async Task GetAllProducts_onNotFound()
+        [Theory]
+        [InlineData(1)]
+        public async Task GetAllProducts_onNotFound(int page)
         {
             //Arrange
             var emptyProductList = new List<Product>();
@@ -53,7 +55,7 @@ namespace ShopBackend.Test.ControllersTest
 
 
             //Act
-            var actionResult = await Controller.Get();
+            var actionResult = await Controller.Get(page);
 
             //Assert
             Assert.NotNull(actionResult);

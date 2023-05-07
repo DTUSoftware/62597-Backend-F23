@@ -163,7 +163,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task CreateUser_onBadRequest_EmailExist()
         {
             //Arrange 
-            var newUser = new CreateUserDto { Email = "goli@gmail.com", Password = "Dtu5678#" };
+            var newUser = new CreateUserDto { Email = "goli@gmail.com", Password = "Dtu56789#"};
 
             //Act
             var actionResult = await usersController.Register(newUser);
