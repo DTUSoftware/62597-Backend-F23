@@ -34,7 +34,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task GetAllUsers_OnOk()
         {
             //Act
-            var actionResult = await usersController.Get();
+            var actionResult = await usersController.GetAllUsers();
 
             //Assert
             Assert.NotNull(actionResult);
@@ -55,7 +55,7 @@ namespace ShopBackend.Test.ControllersTest
 
 
             //Act
-            var actionResult = await Controller.Get();
+            var actionResult = await Controller.GetAllUsers();
 
             //Assert
             Assert.NotNull(actionResult);
@@ -69,7 +69,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task GetUserByEmail_onOk(string userEmail)
         {
             //Act
-            var actionResult = await usersController.Get(userEmail);
+            var actionResult = await usersController.GetUser(userEmail);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -84,7 +84,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task GetUserByEmail_onNotFound(string userEmail)
         {
             //Act
-            var actionResult = await usersController.Get(userEmail);
+            var actionResult = await usersController.GetUser(userEmail);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -100,7 +100,7 @@ namespace ShopBackend.Test.ControllersTest
             var newUser = new CreateUserDto { Email = "dg@gmail.com", Password = "Dtu12345678#" };
 
             //Act
-            var actionResult = await usersController.Register(newUser);
+            var actionResult = await usersController.RegisterUser(newUser);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -117,7 +117,7 @@ namespace ShopBackend.Test.ControllersTest
             var newUser = new CreateUserDto { Email = "dg@gmail.com", Password = "1234" };
 
             //Act
-            var actionResult = await usersController.Register(newUser);
+            var actionResult = await usersController.RegisterUser(newUser);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -134,7 +134,7 @@ namespace ShopBackend.Test.ControllersTest
             var newUser = new CreateUserDto { Email = "dggmail.com", Password = "Dtu12345678#" };
 
             //Act
-            var actionResult = await usersController.Register(newUser);
+            var actionResult = await usersController.RegisterUser(newUser);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -150,7 +150,7 @@ namespace ShopBackend.Test.ControllersTest
             var newUser = new CreateUserDto { Email = "", Password = "Dtu12345678#" };
 
             //Act
-            var actionResult = await usersController.Register(newUser);
+            var actionResult = await usersController.RegisterUser(newUser);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -166,7 +166,7 @@ namespace ShopBackend.Test.ControllersTest
             var newUser = new CreateUserDto { Email = "goli@gmail.com", Password = "Dtu12345678#"};
 
             //Act
-            var actionResult = await usersController.Register(newUser);
+            var actionResult = await usersController.RegisterUser(newUser);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -183,7 +183,7 @@ namespace ShopBackend.Test.ControllersTest
             var targetUser = new UpdateUserDto { Email = "goli@gmail.com", Password = "Dtu12345678#" };
 
             //Act
-            var actionResult = await usersController.Update(targetUser);
+            var actionResult = await usersController.UpdateUser(targetUser);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -199,7 +199,7 @@ namespace ShopBackend.Test.ControllersTest
             var targetUser = new UpdateUserDto { Email = "dg@gmail.com", Password = "1234" };
 
             //Act
-            var actionResult = await usersController.Update(targetUser);
+            var actionResult = await usersController.UpdateUser(targetUser);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -215,7 +215,7 @@ namespace ShopBackend.Test.ControllersTest
             var targetUser = new UpdateUserDto { Email = "dggmail.com", Password = "Dtu12345678#" };
 
             //Act
-            var actionResult = await usersController.Update(targetUser);
+            var actionResult = await usersController.UpdateUser(targetUser);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -231,7 +231,7 @@ namespace ShopBackend.Test.ControllersTest
             var targetUser = new UpdateUserDto { Email = "", Password = "Dtu12345678#" };
 
             //Act
-            var actionResult = await usersController.Update(targetUser);
+            var actionResult = await usersController.UpdateUser(targetUser);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -247,7 +247,7 @@ namespace ShopBackend.Test.ControllersTest
             var targetUser = new UpdateUserDto { Email = "David@gmail.com", Password = "Dtu12345678#" };
 
             //Act
-            var actionResult = await usersController.Update(targetUser);
+            var actionResult = await usersController.UpdateUser(targetUser);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -261,7 +261,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task DeleteUser_onOk(string userEmail)
         {
             //Act
-            var actionResult = await usersController.Delete(userEmail);
+            var actionResult = await usersController.DeleteUser(userEmail);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -276,7 +276,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task DeleteUser_onBadRequest_EmptyEmail(string userEmail)
         {
             //Act
-            var actionResult = await usersController.Delete(userEmail);
+            var actionResult = await usersController.DeleteUser(userEmail);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -291,7 +291,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task DeleteUser_onNotFound(string userEmail)
         {
             //Act
-            var actionResult = await usersController.Delete(userEmail);
+            var actionResult = await usersController.DeleteUser(userEmail);
 
             //Assert
             Assert.NotNull(actionResult);

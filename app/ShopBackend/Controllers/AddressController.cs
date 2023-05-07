@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ShopBackend.Dtos;
-using ShopBackend.Models;
 using ShopBackend.Repositories;
 
 
@@ -20,7 +19,7 @@ namespace ShopBackend.Controllers
         // GET: api/addresses
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<IEnumerable<AddressDto>>> Get()
+        public async Task<ActionResult<IEnumerable<AddressDto>>> GetAllAdresses()
         {
             var addressList = (await _addressRepository.GetAll()).Select(address => address.AsAddressDto());
 
@@ -35,7 +34,7 @@ namespace ShopBackend.Controllers
         // GET api/addresses/{addressId}
         [HttpGet("{addressId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<AddressDto>> Get(Guid addressId)
+        public async Task<ActionResult<AddressDto>> GetAddress(Guid addressId)
         {
             var result = await _addressRepository.Get(addressId);
             if (result != default)
@@ -49,7 +48,7 @@ namespace ShopBackend.Controllers
         // POST api/addresses
         [HttpPost]
         [Authorize(Roles = "Customer,Admin")]
-        public async Task<ActionResult<string>> Create([FromBody] CreateAddressDto address)
+        public async Task<ActionResult<string>> CreateAddress([FromBody] CreateAddressDto address)
         {
             var result = await _addressRepository.Insert(address.CreateAsAddressModel());
             if (result != default && result > 0)
@@ -63,7 +62,7 @@ namespace ShopBackend.Controllers
         // PUT api/addresses
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<string>> Update([FromBody] AddressDto address)
+        public async Task<ActionResult<string>> UpdateAddress([FromBody] AddressDto address)
         {
             var existed = await _addressRepository.Get(address.Id);
             if (existed == null)
@@ -83,7 +82,7 @@ namespace ShopBackend.Controllers
         // DELETE api/addresses/{addressId}
         [HttpDelete("{addressId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<string>> Delete(Guid addressId)
+        public async Task<ActionResult<string>> DeleteAddress(Guid addressId)
         {
             var existed = await _addressRepository.Get(addressId);
             if (existed == null)

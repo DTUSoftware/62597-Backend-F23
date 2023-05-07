@@ -34,7 +34,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task GetAllProducts_onOk(int page)
         {
             //Act
-            var actionResult = await productController.Get(page);
+            var actionResult = await productController.GetAllProducts(page);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -55,7 +55,7 @@ namespace ShopBackend.Test.ControllersTest
 
 
             //Act
-            var actionResult = await Controller.Get(page);
+            var actionResult = await Controller.GetAllProducts(page);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -69,7 +69,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task GetProductById_onOk(string productId)
         {
             //Act
-            var actionResult = await productController.Get(productId);
+            var actionResult = await productController.GetProduct(productId);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -83,7 +83,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task GetProductById_onNotFound(string productId)
         {
             //Act
-            var actionResult = await productController.Get(productId);
+            var actionResult = await productController.GetProduct(productId);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -99,7 +99,7 @@ namespace ShopBackend.Test.ControllersTest
             var targetProduct = new CreateProductDto { Id = "2", Name = "Juice", Price = 20, Currency = "DKK", RebateQuantity = 2, RebatePercent = 10, UpsellProductId = "8" };
 
             //Act
-            var actionResult = await productController.Update(targetProduct);
+            var actionResult = await productController.UpdateProduct(targetProduct);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -116,7 +116,7 @@ namespace ShopBackend.Test.ControllersTest
             var targetProduct = new CreateProductDto { Id = "5", Name = "Icecream", Price = 5, Currency = "DKK", RebateQuantity = 2, RebatePercent = 10, UpsellProductId = "6" };
 
             //Act
-            var actionResult = await productController.Update(targetProduct);
+            var actionResult = await productController.UpdateProduct(targetProduct);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -132,7 +132,7 @@ namespace ShopBackend.Test.ControllersTest
             var targetProduct = new CreateProductDto { Id = "", Name = "Juice", Price = 20, Currency = "DKK", RebateQuantity = 2, RebatePercent = 10 };
 
             //Act
-            var actionResult = await productController.Update(targetProduct);
+            var actionResult = await productController.UpdateProduct(targetProduct);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -148,7 +148,7 @@ namespace ShopBackend.Test.ControllersTest
             var newProduct = new CreateProductDto { Id = "2", Name = "Juice", Price = 20, Currency = "DKK", RebateQuantity = 2, RebatePercent = 10, UpsellProductId = "8" };
 
             //Act
-            var actionResult = await productController.Create(newProduct);
+            var actionResult = await productController.CreateProduct(newProduct);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -164,7 +164,7 @@ namespace ShopBackend.Test.ControllersTest
             var newProduct = new CreateProductDto { Id = "", Name = "Banana", Price = 2, Currency = "DKK", RebateQuantity = 10, RebatePercent = 10, UpsellProductId = "20" };
 
             //Act
-            var actionResult = await productController.Create(newProduct);
+            var actionResult = await productController.CreateProduct(newProduct);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -178,7 +178,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task DeleteProduct_onOk(string productId)
         {
             //Act
-            var actionResult = await productController.Delete(productId);
+            var actionResult = await productController.DeleteProduct(productId);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -193,7 +193,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task DeleteProduct_onBadRequest_EmptyId(string productId)
         {
             //Act
-            var actionResult = await productController.Delete(productId);
+            var actionResult = await productController.DeleteProduct(productId);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -208,7 +208,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task DeleteProduct_onNotFound(string productId)
         {
             //Act
-            var actionResult = await productController.Delete(productId);
+            var actionResult = await productController.DeleteProduct(productId);
 
             //Assert
             Assert.NotNull(actionResult);

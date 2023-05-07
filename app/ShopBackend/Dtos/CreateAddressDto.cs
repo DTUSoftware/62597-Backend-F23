@@ -1,7 +1,4 @@
-﻿
-using ShopBackend.Models;
-
-namespace ShopBackend.Dtos
+﻿namespace ShopBackend.Dtos
 {
     public class CreateAddressDto
     {

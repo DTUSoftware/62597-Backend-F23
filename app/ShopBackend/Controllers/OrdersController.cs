@@ -24,7 +24,7 @@ namespace ShopBackend.Controllers
         // GET: api/orders
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<IEnumerable<OrderDto>>> Get()
+        public async Task<ActionResult<IEnumerable<OrderDto>>> GetAllOrders()
         {
             var orders = (await _orderRepository.GetAll()).Select(order => order.AsOrderDto());
             if (orders.Any())
@@ -44,7 +44,7 @@ namespace ShopBackend.Controllers
         // GET api/orders/{orderId}
         [HttpGet("{orderId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<OrderDto>> Get(Guid orderId)
+        public async Task<ActionResult<OrderDto>> GetOrder(Guid orderId)
         {
             var order = await _orderRepository.Get(orderId);
             if (order != default)
@@ -62,7 +62,7 @@ namespace ShopBackend.Controllers
         [HttpPost]
         [AllowAnonymous]
         [EnableCors("FrontendPolicy")]
-        public async Task<ActionResult<string>> Create([FromBody] CreateOrderDto order)
+        public async Task<ActionResult<string>> CreateOrder([FromBody] CreateOrderDto order)
         {
             if (order.OrderDetails.Count == 0)
             {
@@ -82,7 +82,7 @@ namespace ShopBackend.Controllers
         // PUT api/orders
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<string>> Update([FromBody] UpdateOrderDto order)   
+        public async Task<ActionResult<string>> UpdateOrder([FromBody] UpdateOrderDto order)   
         {
             var orderToUpdate = await _orderRepository.Get(order.Id);
             if (orderToUpdate == default)
@@ -108,7 +108,7 @@ namespace ShopBackend.Controllers
         // DELETE api/orders/{orderId}
         [HttpDelete("{orderId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<string>> Delete(Guid orderId)
+        public async Task<ActionResult<string>> DeleteOrder(Guid orderId)
         {
             var result = await _orderRepository.Delete(orderId);
 
@@ -127,9 +127,9 @@ namespace ShopBackend.Controllers
              var DeleteUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { orderId })!;
              var UpdateUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(Update), values: new { orderId })!;
             */
-            var GetUrl = HttpContext + nameof(Get) + new { orderId };
-            var DeleteUrl = HttpContext + nameof(Delete) + new { orderId };
-            var UpdateUrl = HttpContext + nameof(Update) + new { orderId };
+            var GetUrl = HttpContext + nameof(GetOrder) + new { orderId };
+            var DeleteUrl = HttpContext + nameof(DeleteOrder) + new { orderId };
+            var UpdateUrl = HttpContext + nameof(UpdateOrder) + new { orderId };
 
             switch (requestType)
             {

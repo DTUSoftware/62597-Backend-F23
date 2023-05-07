@@ -25,7 +25,7 @@ namespace ShopBackend.Controllers
         [HttpGet("all/{page}")]
         [AllowAnonymous]
         [EnableCors("FrontendPolicy")]
-        public async Task<ActionResult<IEnumerable<ProductDto>>> Get(int page)
+        public async Task<ActionResult<IEnumerable<ProductDto>>> GetAllProducts(int page)
         {
             var products = (await _productRepository.GetAll(page)).Select(product => product.AsProductDto());
             if (products.Any())
@@ -47,7 +47,7 @@ namespace ShopBackend.Controllers
         [HttpGet("{productId}")]
         [AllowAnonymous]
         [EnableCors("FrontendPolicy")]
-        public async Task<ActionResult<ProductDto>> Get(string productId)
+        public async Task<ActionResult<ProductDto>> GetProduct(string productId)
         {
             var product = await _productRepository.Get(productId);
             if (product != default)
@@ -64,7 +64,7 @@ namespace ShopBackend.Controllers
         // Post: api/products
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<string>> Create([FromBody] CreateProductDto product)
+        public async Task<ActionResult<string>> CreateProduct([FromBody] CreateProductDto product)
         {
             if (string.IsNullOrEmpty(product.Id))
             {
@@ -89,7 +89,7 @@ namespace ShopBackend.Controllers
         // Post: api/products/multiple
         [HttpPost("multiple")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<string>> CreateMultiple(IEnumerable<CreateProductDto> products)
+        public async Task<ActionResult<string>> CreateMultipleProducts(IEnumerable<CreateProductDto> products)
         {
             foreach (CreateProductDto product in products)
             {
@@ -107,7 +107,7 @@ namespace ShopBackend.Controllers
         // Put: api/products
         [HttpPut]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<string>> Update([FromBody] CreateProductDto product)
+        public async Task<ActionResult<string>> UpdateProduct([FromBody] CreateProductDto product)
         {
             if (string.IsNullOrEmpty(product.Id))
             {
@@ -141,7 +141,7 @@ namespace ShopBackend.Controllers
         // Delete: api/products/{productId}
         [HttpDelete("{productId}")]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<string>> Delete(string productId)
+        public async Task<ActionResult<string>> DeleteProduct(string productId)
         {
             if (string.IsNullOrEmpty(productId))
             {
@@ -164,9 +164,9 @@ namespace ShopBackend.Controllers
             var DeleteUrl= _linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId })!
             var UpdateUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(Update))!
            */
-            var GetUrl = HttpContext + nameof(Get) + new { productId };
-            var DeleteUrl = HttpContext + nameof(Delete) + new { productId };
-            var UpdateUrl = HttpContext + nameof(Update);
+            var GetUrl = HttpContext + nameof(GetProduct) + new { productId };
+            var DeleteUrl = HttpContext + nameof(DeleteProduct) + new { productId };
+            var UpdateUrl = HttpContext + nameof(UpdateProduct);
 
             switch (requestType)
             {

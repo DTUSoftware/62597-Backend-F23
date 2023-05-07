@@ -27,7 +27,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task GetAllAddresses_onOk()
         {
             //Act
-            var actionResult = await addressController.Get();
+            var actionResult = await addressController.GetAllAdresses();
 
             //Assert
             Assert.NotNull(actionResult);
@@ -45,7 +45,7 @@ namespace ShopBackend.Test.ControllersTest
             var Controller = new AddressController(mock.Object);
 
             //Act
-            var actionResult = await Controller.Get();
+            var actionResult = await Controller.GetAllAdresses();
 
             //Assert
             Assert.NotNull(actionResult);
@@ -62,7 +62,7 @@ namespace ShopBackend.Test.ControllersTest
             var addressId = Guid.Parse(Id);
 
             //Act            
-            var actionResult = await addressController.Get(addressId);
+            var actionResult = await addressController.GetAddress(addressId);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -79,7 +79,7 @@ namespace ShopBackend.Test.ControllersTest
             var addressId = Guid.Parse(Id);
 
             //Act            
-            var actionResult = await addressController.Get(addressId);
+            var actionResult = await addressController.GetAddress(addressId);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -108,7 +108,7 @@ namespace ShopBackend.Test.ControllersTest
             };
 
             //Act
-            var actionResult = await addressController.Create(newAddress);
+            var actionResult = await addressController.CreateAddress(newAddress);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -137,8 +137,8 @@ namespace ShopBackend.Test.ControllersTest
             };
 
             //Act
-            await addressController.Create(newAddress); //we create the address one time
-            var actionResult = await addressController.Create(newAddress); // so for the second time cannot be added.
+            await addressController.CreateAddress(newAddress); //we create the address one time
+            var actionResult = await addressController.CreateAddress(newAddress); // so for the second time cannot be added.
 
             //Assert
             Assert.NotNull(actionResult);
@@ -155,7 +155,7 @@ namespace ShopBackend.Test.ControllersTest
             var targetAddres = new AddressDto { Id = addressId, Email = "goli@student.dtu.dk" };
 
             //Act
-            var actionResult = await addressController.Update(targetAddres);
+            var actionResult = await addressController.UpdateAddress(targetAddres);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -172,7 +172,7 @@ namespace ShopBackend.Test.ControllersTest
             var targetAddres = new AddressDto { Id = addressId, Email = "goli@student.dtu.dk" };
 
             //Act
-            var actionResult = await addressController.Update(targetAddres);
+            var actionResult = await addressController.UpdateAddress(targetAddres);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -189,7 +189,7 @@ namespace ShopBackend.Test.ControllersTest
             var addressId = Guid.Parse(Id);
 
             //Act
-            var actionResult = await addressController.Delete(addressId);
+            var actionResult = await addressController.DeleteAddress(addressId);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -207,7 +207,7 @@ namespace ShopBackend.Test.ControllersTest
             var addressId = Guid.Parse(Id);
 
             //Act
-            var actionResult = await addressController.Delete(addressId);
+            var actionResult = await addressController.DeleteAddress(addressId);
 
             //Assert
             Assert.NotNull(actionResult);

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using ShopBackend.Discoverabillity;
 using ShopBackend.Dtos;
 using ShopBackend.Models;
@@ -29,7 +28,7 @@ namespace ShopBackend.Controllers
         //Get api/users
         [HttpGet]
         [Authorize(Roles = "Admin")]
-        public async Task<ActionResult<IEnumerable<UserDto>>> Get()
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetAllUsers()
         {
             var users = (await _userRepository.GetAll()).Select(user => user.AsUserDto());
             if (users.Any())
@@ -49,7 +48,7 @@ namespace ShopBackend.Controllers
         //Get api/users
         [HttpGet("{email}")]
         [Authorize(Roles = "Customer,Admin")]
-        public async Task<ActionResult<UserDto>> Get(string email)
+        public async Task<ActionResult<UserDto>> GetUser(string email)
         {
             var userEmail = _authService.GetEmailFromToken(User);
             var userRole = _authService.GetRoleFromToken(User);
@@ -73,7 +72,7 @@ namespace ShopBackend.Controllers
         //Post api/users/register
         [HttpPost]
         [AllowAnonymous]
-        public async Task<ActionResult<string>> Register([FromBody] CreateUserDto userDto)
+        public async Task<ActionResult<string>> RegisterUser([FromBody] CreateUserDto userDto)
         {
             var isPasswordStrong = _passwordAuth.IsPasswordStrong(userDto.Password);
             if (!isPasswordStrong)
@@ -121,7 +120,7 @@ namespace ShopBackend.Controllers
         //Put api/customers
         [HttpPut]
         [Authorize(Roles = "Customer,Admin")]
-        public async Task<ActionResult<string>> Update([FromBody] UpdateUserDto userDto)
+        public async Task<ActionResult<string>> UpdateUser([FromBody] UpdateUserDto userDto)
         {
             var isPasswordStrong = _passwordAuth.IsPasswordStrong(userDto.Password);
             if (!isPasswordStrong)
@@ -168,7 +167,7 @@ namespace ShopBackend.Controllers
         //Delete api/customers
         [HttpDelete("{email}")]
         [Authorize(Roles = "Customer,Admin")]
-        public async Task<ActionResult<string>> Delete(string email)
+        public async Task<ActionResult<string>> DeleteUser(string email)
         {
             if (string.IsNullOrEmpty(email))
             {
@@ -206,9 +205,9 @@ namespace ShopBackend.Controllers
             var DeleteUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { email })!;
             */
 
-            var GetUrl = HttpContext + nameof(Get) + new { email }; //"http:// www.shoppingApi/customer/All";
-            var DeleteUrl = HttpContext + nameof(Delete) + new { email };
-            var UpdateUrl = HttpContext + nameof(Update) + new { email };
+            var GetUrl = HttpContext + nameof(GetUser) + new { email }; //"http:// www.shoppingApi/customer/All";
+            var DeleteUrl = HttpContext + nameof(DeleteUser) + new { email };
+            var UpdateUrl = HttpContext + nameof(UpdateUser) + new { email };
 
             switch (requestType)
             {

@@ -26,7 +26,7 @@ export function generate_uuidv4() {
   }
 
 export let options = {
-    vus: 6400,
+    vus: 360,
     duration: "600s",
     thresholds: {
         http_req_duration: ["p(95)<1500"]

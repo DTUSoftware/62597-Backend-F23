@@ -26,7 +26,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task GetAllOrders_onOk()
         {
             //Act
-            var actionResult = await orderController.Get();
+            var actionResult = await orderController.GetAllOrders();
 
             //Assert
             Assert.NotNull(actionResult);
@@ -44,7 +44,7 @@ namespace ShopBackend.Test.ControllersTest
             var Controller = new OrdersController(mock.Object);
 
             //Act
-            var actionResult = await Controller.Get();
+            var actionResult = await Controller.GetAllOrders();
 
             //Assert
             Assert.NotNull(actionResult);
@@ -58,7 +58,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task GetOrderById_onOk(Guid orderId)
         {
             //Act
-            var actionResult = await orderController.Get(orderId);
+            var actionResult = await orderController.GetOrder(orderId);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -72,7 +72,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task GetOrderById_onNotFound(Guid orderId)
         {
             //Act
-            var actionResult = await orderController.Get(orderId);
+            var actionResult = await orderController.GetOrder(orderId);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -109,7 +109,7 @@ namespace ShopBackend.Test.ControllersTest
             };
 
             //Act
-            var actionResult = await orderController.Create(newOrder);
+            var actionResult = await orderController.CreateOrder(newOrder);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -132,7 +132,7 @@ namespace ShopBackend.Test.ControllersTest
             };
 
             //Act
-            var actionResult = await orderController.Create(newOrder);
+            var actionResult = await orderController.CreateOrder(newOrder);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -151,7 +151,7 @@ namespace ShopBackend.Test.ControllersTest
 
 
             //Act
-            var actionResult = await orderController.Update(targetOrder);
+            var actionResult = await orderController.UpdateOrder(targetOrder);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -169,7 +169,7 @@ namespace ShopBackend.Test.ControllersTest
             var targetOrder = new UpdateOrderDto { Id = orderId, OrderStatus = Utils.OrderStatus.Canceled };
 
             //Act
-            var actionResult = await orderController.Update(targetOrder);
+            var actionResult = await orderController.UpdateOrder(targetOrder);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -183,7 +183,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task DeleteOrder_onOk(Guid orderId)
         {
             //Act
-            var actionResult = await orderController.Delete(orderId);
+            var actionResult = await orderController.DeleteOrder(orderId);
 
             //Assert
             Assert.NotNull(actionResult);
@@ -198,7 +198,7 @@ namespace ShopBackend.Test.ControllersTest
         public async Task DeleteOrder_onNotFound(Guid orderId)
         {
             //Act
-            var actionResult = await orderController.Delete(orderId);
+            var actionResult = await orderController.DeleteOrder(orderId);
 
             //Assert
             Assert.NotNull(actionResult);
