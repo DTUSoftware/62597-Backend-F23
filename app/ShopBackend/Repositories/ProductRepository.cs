@@ -39,8 +39,16 @@ namespace ShopBackend.Repositories
 
         public async Task<int> Delete(string productId)
         {
-            _dbContext.Products.Remove( new Product { Id = productId} );
-            return await _dbContext.SaveChangesAsync();
+            var products = _dbContext.Products.Find(productId);
+            if (products != null)
+            {
+                _dbContext.Products.Remove(products);
+                return await _dbContext.SaveChangesAsync();
+            }
+            else
+            {
+                return 1;
+            }
         }
     }
 }

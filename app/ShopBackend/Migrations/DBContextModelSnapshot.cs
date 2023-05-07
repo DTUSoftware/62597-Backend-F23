@@ -232,7 +232,8 @@ namespace ShopBackend.Migrations
 
                     b.HasOne("ShopBackend.Models.User", "Customer")
                         .WithMany("Orders")
-                        .HasForeignKey("CustomerEmail");
+                        .HasForeignKey("CustomerEmail")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ShopBackend.Models.Address", "ShippingAddress")
                         .WithMany()

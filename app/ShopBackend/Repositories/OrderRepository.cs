@@ -15,6 +15,8 @@ namespace ShopBackend.Repositories
         public async Task<IEnumerable<Order>> GetAll()
         {
             return await _dbContext.Orders
+                .Include(x => x.BillingAddress)
+                .Include(x => x.ShippingAddress)
                 .Include(x => x.OrderDetails)
                 .ThenInclude(x => x.Product)
                 .ToListAsync();
@@ -23,6 +25,8 @@ namespace ShopBackend.Repositories
         public async Task<Order?> Get(Guid orderId)
         {
             return await _dbContext.Orders
+                .Include(x => x.BillingAddress)
+                .Include(x => x.ShippingAddress)
                 .Include(x => x.OrderDetails)
                 .ThenInclude(x => x.Product)
                 .FirstOrDefaultAsync(c => c.Id == orderId);
@@ -44,9 +48,15 @@ namespace ShopBackend.Repositories
 
         public async Task<int> Delete(Guid orderId)
         {
-            _dbContext.Orders.Remove(new Order { Id = orderId });
-            return await _dbContext.SaveChangesAsync();
+            var order = _dbContext.Orders.Find(orderId);
+            if (order != null)
+            {
+                _dbContext.Orders.Remove(order);
+                return await _dbContext.SaveChangesAsync();
+            } else
+            {
+                return 1;
+            }
         }
-
     }
 }

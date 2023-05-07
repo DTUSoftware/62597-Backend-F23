@@ -28,6 +28,14 @@ namespace ShopBackend.Contexts
 
             modelBuilder.Entity<User>().Property(x => x.Role)
             .HasConversion<string>();
+
+            modelBuilder.Entity<User>().HasMany(x => x.Orders).WithOne(x => x.Customer)
+            .HasForeignKey(x => x.CustomerEmail)
+            .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Order>().HasMany(x => x.OrderDetails).WithOne(x => x.Order)
+            .HasForeignKey(x => x.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

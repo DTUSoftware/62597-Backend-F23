@@ -11,7 +11,7 @@ using ShopBackend.Contexts;
 namespace ShopBackend.Migrations
 {
     [DbContext(typeof(DBContext))]
-    [Migration("20230507151116_initial_migration")]
+    [Migration("20230507173647_initial_migration")]
     partial class initial_migration
     {
         /// <inheritdoc />
@@ -235,7 +235,8 @@ namespace ShopBackend.Migrations
 
                     b.HasOne("ShopBackend.Models.User", "Customer")
                         .WithMany("Orders")
-                        .HasForeignKey("CustomerEmail");
+                        .HasForeignKey("CustomerEmail")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("ShopBackend.Models.Address", "ShippingAddress")
                         .WithMany()

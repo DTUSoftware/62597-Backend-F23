@@ -27,7 +27,7 @@ namespace ShopBackend.Controllers
             // _linkGenerator = linkGenerator;
         }
         //Get api/users
-        [HttpGet("all")]
+        [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<UserDto>>> Get()
         {
@@ -153,9 +153,7 @@ namespace ShopBackend.Controllers
                 return NotFound("User does not exsist!");
             }
 
-            userToUpdate.Email = userDto.Email;
             userToUpdate.Password = _passwordAuth.GeneratePasswordHash(userDto.Password);
-            userToUpdate.Orders = userDto.Orders != null ? new List<Order>(userDto.Orders.Select(x => x.AsOrderModel())) : new List<Order>();
 
             var result = await _userRepository.Update(userToUpdate);
             if (result != default && result > 0)
@@ -190,7 +188,7 @@ namespace ShopBackend.Controllers
                 return NotFound("User does not exsist!");
             }
 
-            var result = await _userRepository.Delete(_authService.GetEmailFromToken(User));
+            var result = await _userRepository.Delete(email);
             if (result != default)
             {
                 return Ok("User has been deleted!");

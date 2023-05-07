@@ -126,6 +126,7 @@ namespace ShopBackend.Controllers
             productToUpdate.RebateQuantity = product.RebateQuantity;
             productToUpdate.RebatePercent = product.RebatePercent;
             productToUpdate.UpsellProductId = product.UpsellProductId;
+            productToUpdate.ImageUrl = product.ImageUrl;
 
             var result = await _productRepository.Update(productToUpdate);
             if (result != default && result > 0)

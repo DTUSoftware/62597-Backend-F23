@@ -133,7 +133,8 @@ namespace ShopBackend.Migrations
                         name: "FK_Orders_Users_CustomerEmail",
                         column: x => x.CustomerEmail,
                         principalTable: "Users",
-                        principalColumn: "Email");
+                        principalColumn: "Email",
+                        onDelete: ReferentialAction.Cascade);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 

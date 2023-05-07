@@ -40,8 +40,16 @@ namespace ShopBackend.Repositories
 
         public async Task<int> Delete(string email)
         {
-            _dbContext.Users.Remove(new User { Email = email });
-            return await _dbContext.SaveChangesAsync();
+            var users = _dbContext.Users.Find(email);
+            if (users != null)
+            {
+                _dbContext.Users.Remove(users);
+                return await _dbContext.SaveChangesAsync();
+            }
+            else
+            {
+                return 1;
+            }
         }
     }
 }

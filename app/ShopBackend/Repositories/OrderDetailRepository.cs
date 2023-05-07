@@ -37,8 +37,16 @@ namespace ShopBackend.Repositories
 
         public async Task<int> Delete(Guid orderDetailId)
         {
-            _dbContext.OrdersDetails.Remove(new OrderDetail{ Id= orderDetailId } );
-            return await _dbContext.SaveChangesAsync();
+            var ordersDetails = _dbContext.OrdersDetails.Find(orderDetailId);
+            if (ordersDetails != null)
+            {
+                _dbContext.OrdersDetails.Remove(ordersDetails);
+                return await _dbContext.SaveChangesAsync();
+            }
+            else
+            {
+                return 1;
+            }
         }
     }
 }

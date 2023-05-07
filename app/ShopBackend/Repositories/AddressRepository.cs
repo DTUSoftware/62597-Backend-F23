@@ -38,8 +38,16 @@ namespace ShopBackend.Repositories
 
         public async Task<int> Delete(Guid addressId)
         {
-            _dbContext.Addresses.Remove(new Address { Id = addressId });
-            return await _dbContext.SaveChangesAsync();
+            var addresses = _dbContext.Addresses.Find(addressId);
+            if (addresses != null)
+            {
+                _dbContext.Addresses.Remove(addresses);
+                return await _dbContext.SaveChangesAsync();
+            }
+            else
+            {
+                return 1;
+            }
         }
     }
 }
