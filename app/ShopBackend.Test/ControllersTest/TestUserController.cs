@@ -106,7 +106,7 @@ namespace ShopBackend.Test.ControllersTest
             Assert.NotNull(actionResult);
             Assert.IsType<OkObjectResult>(actionResult.Result);
             var res = ((OkObjectResult)actionResult.Result).Value;
-            string msg = Assert.IsType<string>(res.GetType().GetProperty("Msg").GetValue(res));
+            string msg = Assert.IsType<string>(res!.GetType()!.GetProperty("Msg")!.GetValue(res!));
             Assert.Equal("User is inserted successfully!", msg);
         }
 
