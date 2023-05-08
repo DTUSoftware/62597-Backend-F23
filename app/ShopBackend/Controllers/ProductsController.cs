@@ -12,12 +12,12 @@ namespace ShopBackend.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
-        //private readonly LinkGenerator _linkGenerator;
+        private readonly LinkGenerator _linkGenerator;
 
-        public ProductsController(IProductRepository productRepository)
+        public ProductsController(IProductRepository productRepository, LinkGenerator linkGenerator)
         {
             _productRepository = productRepository;
-            //_linkGenerator = linkGenerator;
+            _linkGenerator = linkGenerator;
         }
 
 
@@ -159,14 +159,9 @@ namespace ShopBackend.Controllers
         //Based on https://code-maze.com/hateoas-aspnet-core-web-api/
         private IEnumerable<Link> CreateLinksForProduct(string productId, string requestType)
         {
-            /*
-            var GetUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { productId})!
-            var DeleteUrl= _linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId })!
-            var UpdateUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(Update))!
-           */
-            var GetUrl = HttpContext + nameof(GetProduct) + new { productId };
-            var DeleteUrl = HttpContext + nameof(DeleteProduct) + new { productId };
-            var UpdateUrl = HttpContext + nameof(UpdateProduct);
+            var GetUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(GetAllProducts), values: new { productId })!;
+            var DeleteUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(DeleteProduct), values: new { productId })!;
+            var UpdateUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(UpdateProduct))!;
 
             switch (requestType)
             {
