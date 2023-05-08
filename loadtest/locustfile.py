@@ -1,7 +1,8 @@
 from locust import FastHttpUser, task,between
 from pathlib import Path
 import time, random, uuid, json
-
+# Open a terminal inside this folder  and do the following-> ./startlocust.sh
+# This will start 1 master and 8 workers, to utilize up to 8 cores for your local computer.
 # GUI: 
 # http://localhost:8089
 # API: 
