@@ -26,7 +26,7 @@ export function generate_uuidv4() {
   }
 
 export let options = {
-    vus: 360,
+    vus: 3600,
     duration: "600s",
     thresholds: {
         http_req_duration: ["p(95)<1500"]
@@ -37,7 +37,6 @@ export default function() {
       var params = {
         headers: {
             "Content-Type": "application/json",
-            //"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJzdHJpbmdAc2Rmc2RmIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQ3VzdG9tZXIiLCJleHAiOjE2ODI2MTg1MjksImlzcyI6IlNob3BCYWNrZW5kIn0.gsMfI4deIH8ozbzljpSIq35iwNSKIWVkZJypWnps_8E"
         }
       }
 
