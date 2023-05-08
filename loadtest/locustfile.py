@@ -1,5 +1,6 @@
 from locust import FastHttpUser, task,between
-import time, random, uuid
+from pathlib import Path
+import time, random, uuid, json
 
 # GUI: 
 # http://localhost:8089
@@ -7,16 +8,20 @@ import time, random, uuid
 # https://dtu-api.herogamers.dev/api
 # Installation Guide:
 # https://docs.locust.io/en/stable/installation.html
+
+# Get local 
+filepath = Path(__file__).parent / "products.json"
+with open(filepath) as fp:
+    data = json.load(fp)
+
 class LocustUser(FastHttpUser):
     wait_time = between(5, 15)
     @task
     def get_products(self):
         self.client.get("/products/all/"+str(random.randint(0,1)))
-        #time.sleep(random.randint(5,10))
 
     @task
     def post_order(self):
-      
         self.client.post("/orders",
                         json={
         "checkMarketing": True,
@@ -49,11 +54,14 @@ class LocustUser(FastHttpUser):
         },
         "orderDetails": [
           {
-            "quantity": random.randInt(1,10),
+            "quantity": random.randint(1,10),
             "giftWrap": True,
             "recurringOrder": False,
-            "productId": "the-english-100g",
+            "productId": str(data[random.randint(0,28)]["id"]),
           }
         ]
       })
         
+# Read local json file:
+# https://stackoverflow.com/questions/62818625/read-local-json-file-with-python
+# https://stackoverflow.com/questions/70175221/cant-open-file-in-the-same-directory
