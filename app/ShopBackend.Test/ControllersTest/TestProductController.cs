@@ -3,6 +3,8 @@ using ShopBackend.Models;
 using ShopBackend.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using ShopBackend.Discoverabillity;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Http;
 
 namespace ShopBackend.Test.ControllersTest
 {
@@ -12,6 +14,7 @@ namespace ShopBackend.Test.ControllersTest
      */
     public class TestProductsController
     {
+
 
         private readonly List<Product> productList;
         private readonly ProductsController productController;
@@ -25,8 +28,12 @@ namespace ShopBackend.Test.ControllersTest
             };
 
             //Mutual Arrange
-            var mock = MockIRepositories.GetProductRepository(productList);
-            productController = new ProductsController(mock.Object);
+            var mockProduct = MockIRepositories.GetProductRepository(productList);
+            var mockLinkGenerator = MockIRepositories.GetLinkGenerator();
+            productController = new ProductsController(mockProduct.Object, mockLinkGenerator.Object);
+            var httpContext = new DefaultHttpContext();
+            productController.ControllerContext.HttpContext = httpContext;
+
         }
 
         [Theory]
@@ -50,8 +57,9 @@ namespace ShopBackend.Test.ControllersTest
         {
             //Arrange
             var emptyProductList = new List<Product>();
-            var mock = MockIRepositories.GetProductRepository(emptyProductList);
-            var Controller = new ProductsController(mock.Object);
+            var mockProduct = MockIRepositories.GetProductRepository(emptyProductList);
+            var mockLinkGenerator = MockIRepositories.GetLinkGenerator();
+            var Controller = new ProductsController(mockProduct.Object, mockLinkGenerator.Object);
 
 
             //Act

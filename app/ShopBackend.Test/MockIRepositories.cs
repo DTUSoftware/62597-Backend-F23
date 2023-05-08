@@ -4,6 +4,11 @@ using ShopBackend.Dtos;
 using ShopBackend.Repositories;
 using ShopBackend.Security;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
+using System.Net.Http;
+using System.Net.NetworkInformation;
 
 namespace ShopBackend.Test
 {
@@ -212,6 +217,23 @@ namespace ShopBackend.Test
                     return Task.FromResult(1);
                 }
             });
+
+            return mock;
+        }
+
+        public static Mock<LinkGenerator> GetLinkGenerator()
+        {
+            var mock = new Mock<LinkGenerator>();
+
+            mock.Setup(g => g.GetPathByAddress(
+            It.IsAny<HttpContext>(),
+            It.IsAny<string?>(),
+            It.IsAny<RouteValueDictionary>(),
+            It.IsAny<RouteValueDictionary>(),
+            It.IsAny<string?>(),
+            It.IsAny<FragmentString>(),
+            It.IsAny<LinkOptions?>()))
+            .Returns("/");
 
             return mock;
         }

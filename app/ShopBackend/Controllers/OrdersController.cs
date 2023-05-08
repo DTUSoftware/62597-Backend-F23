@@ -12,12 +12,12 @@ namespace ShopBackend.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly IOrderRepository _orderRepository;
-        //private readonly LinkGenerator _linkGenerator;
+        private readonly LinkGenerator _linkGenerator;
 
-        public OrdersController(IOrderRepository orderRepository)
+        public OrdersController(IOrderRepository orderRepository, LinkGenerator linkGenerator)
         {
             _orderRepository = orderRepository;
-            //_linkGenerator = linkGenerator;
+            _linkGenerator = linkGenerator;
         }
 
 
@@ -122,15 +122,11 @@ namespace ShopBackend.Controllers
         //Based on https://code-maze.com/hateoas-aspnet-core-web-api/
         private IEnumerable<Link> CreateLinksForOrder(Guid orderId, string requestType)
         {
-            /*
-             var GetUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { orderId})!;
-             var DeleteUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { orderId })!;
-             var UpdateUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(Update), values: new { orderId })!;
-            */
-            var GetUrl = HttpContext + nameof(GetOrder) + new { orderId };
-            var DeleteUrl = HttpContext + nameof(DeleteOrder) + new { orderId };
-            var UpdateUrl = HttpContext + nameof(UpdateOrder) + new { orderId };
-
+            
+             var GetUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(GetOrder), values: new { orderId})!;
+             var DeleteUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(DeleteOrder), values: new { orderId })!;
+             var UpdateUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(UpdateOrder))!;
+   
             switch (requestType)
             {
                 case "GET":
