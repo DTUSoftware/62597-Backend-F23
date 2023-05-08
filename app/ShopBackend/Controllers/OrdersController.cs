@@ -127,9 +127,9 @@ namespace ShopBackend.Controllers
              var DeleteUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { orderId })!;
              var UpdateUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(Update), values: new { orderId })!;
             */
-            var GetUrl = HttpContext + nameof(GetOrder) + new { orderId };
-            var DeleteUrl = HttpContext + nameof(DeleteOrder) + new { orderId };
-            var UpdateUrl = HttpContext + nameof(UpdateOrder) + new { orderId };
+            var GetUrl = "https://dtu-api.herogamers.dev/api" +"/orders/" + orderId;
+            var DeleteUrl = "https://dtu-api.herogamers.dev/api" + "/orders/" + orderId;
+            var UpdateUrl = "https://dtu-api.herogamers.dev/api" + "/orders";
 
             switch (requestType)
             {

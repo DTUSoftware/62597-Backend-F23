@@ -4,6 +4,7 @@ using ShopBackend.Dtos;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Authorization;
 using ShopBackend.Discoverabillity;
+using ShopBackend.Models;
 
 namespace ShopBackend.Controllers
 {
@@ -164,9 +165,10 @@ namespace ShopBackend.Controllers
             var DeleteUrl= _linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { productId })!
             var UpdateUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(Update))!
            */
-            var GetUrl = HttpContext + nameof(GetProduct) + new { productId };
-            var DeleteUrl = HttpContext + nameof(DeleteProduct) + new { productId };
-            var UpdateUrl = HttpContext + nameof(UpdateProduct);
+
+            var GetUrl = "https://dtu-api.herogamers.dev/api" + "/products/" + productId;
+            var DeleteUrl = "https://dtu-api.herogamers.dev/api" + "/products/" + productId;
+            var UpdateUrl = "https://dtu-api.herogamers.dev/api" + "/products";
 
             switch (requestType)
             {
