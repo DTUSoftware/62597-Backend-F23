@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using ShopBackend.Controllers;
 using ShopBackend.Dtos;
 using ShopBackend.Models;
@@ -18,8 +19,11 @@ namespace ShopBackend.Test.ControllersTest
         {
             //Mutual Arrange
             orderList = DataHelper.GetFakeOrderList();
-            var mock = MockIRepositories.GetOrderRepository(orderList);
-            orderController = new OrdersController(mock.Object);
+            var mockOrders = MockIRepositories.GetOrderRepository(orderList);
+            var mockLinkGenerator = MockIRepositories.GetLinkGenerator();
+            orderController = new OrdersController(mockOrders.Object, mockLinkGenerator.Object);
+            var httpContext = new DefaultHttpContext();
+            orderController.ControllerContext.HttpContext = httpContext;
         }
 
         [Fact]
@@ -40,8 +44,9 @@ namespace ShopBackend.Test.ControllersTest
         {
             //Arrange
             var emptyOrderList = new List<Order>();
-            var mock = MockIRepositories.GetOrderRepository(emptyOrderList);
-            var Controller = new OrdersController(mock.Object);
+            var mockOrders = MockIRepositories.GetOrderRepository(emptyOrderList);
+            var mockLinkGenerator = MockIRepositories.GetLinkGenerator();
+            var Controller = new OrdersController(mockOrders.Object, mockLinkGenerator.Object);
 
             //Act
             var actionResult = await Controller.GetAllOrders();
@@ -207,7 +212,5 @@ namespace ShopBackend.Test.ControllersTest
             Assert.Equal("Order could not be deleted!", msg);
             Assert.Equal(2, orderList.Count);
         }
-
     }
-
 }

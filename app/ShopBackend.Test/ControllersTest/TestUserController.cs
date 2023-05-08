@@ -1,9 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿    using Microsoft.AspNetCore.Mvc;
 using ShopBackend.Controllers;
 using ShopBackend.Discoverabillity;
 using ShopBackend.Dtos;
 using ShopBackend.Models;
 using ShopBackend.Security;
+using Microsoft.AspNetCore.Http;
 
 namespace ShopBackend.Test.ControllersTest
 {
@@ -25,8 +26,10 @@ namespace ShopBackend.Test.ControllersTest
             passwordAuth = new PasswordAuth();
             var urMock = MockIRepositories.GetUserRepository(userList);
             var arMock = MockIRepositories.GetAuthService(userList);
-
-            usersController = new UsersController(urMock.Object, arMock.Object, passwordAuth);
+            var mockLinkGenerator = MockIRepositories.GetLinkGenerator();
+            usersController = new UsersController(urMock.Object, arMock.Object, passwordAuth,mockLinkGenerator.Object);
+            var httpContext = new DefaultHttpContext();
+            usersController.ControllerContext.HttpContext = httpContext;
         }
 
 
@@ -51,7 +54,8 @@ namespace ShopBackend.Test.ControllersTest
             var emptyCustomerList = new List<User>();
             var mock = MockIRepositories.GetUserRepository(emptyCustomerList);
             var arMock = MockIRepositories.GetAuthService(emptyCustomerList);
-            var Controller = new UsersController(mock.Object, arMock.Object, passwordAuth);
+            var mockLinkGenerator = MockIRepositories.GetLinkGenerator();
+            var Controller = new UsersController(mock.Object, arMock.Object, passwordAuth,mockLinkGenerator.Object);
 
 
             //Act

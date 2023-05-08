@@ -16,14 +16,14 @@ namespace ShopBackend.Controllers
         private readonly IUserRepository _userRepository;
         private readonly IAuthService _authService;
         private readonly IPasswordAuth _passwordAuth;
-        //private readonly LinkGenerator _linkGenerator;
+        private readonly LinkGenerator _linkGenerator;
 
-        public UsersController(IUserRepository userRepository, IAuthService authService, IPasswordAuth passwordAuth )
+        public UsersController(IUserRepository userRepository, IAuthService authService, IPasswordAuth passwordAuth, LinkGenerator linkGenerator )
         {
             _userRepository = userRepository;
             _authService = authService;
             _passwordAuth = passwordAuth;
-            // _linkGenerator = linkGenerator;
+            _linkGenerator = linkGenerator;
         }
         //Get api/users
         [HttpGet]
@@ -199,34 +199,28 @@ namespace ShopBackend.Controllers
         //Based on https://code-maze.com/hateoas-aspnet-core-web-api/
         private IEnumerable<Link> CreateLinksForUser(string email, string requestType)
         {
-            /*
-            var GetUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(Get), values: new { email })!;
-            var UpdateUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(Update), values: new { email })!;
-            var DeleteUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(Delete), values: new { email })!;
-            */
-
-            var GetUrl = HttpContext + nameof(GetUser) + new { email }; //"http:// www.shoppingApi/customer/All";
-            var DeleteUrl = HttpContext + nameof(DeleteUser) + new { email };
-            var UpdateUrl = HttpContext + nameof(UpdateUser) + new { email };
-
+            
+            var GetUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(GetUser), values: new { email })!;
+            var UpdateUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(UpdateUser))!;
+            var DeleteUrl = _linkGenerator.GetUriByAction(HttpContext, nameof(DeleteUser), values: new { email })!;
             switch (requestType)
             {
                 case "GET":
                     return new List<Link> {
-                        new Link(DeleteUrl, "delete_customer", "DELETE"),
-                        new Link(UpdateUrl, "update_customer",  "PUT")
+                        new Link(DeleteUrl, "delete_user", "DELETE"),
+                        new Link(UpdateUrl, "update_user",  "PUT")
                     };
                 case "PUT":
                     return new List<Link>
                     {
                         new Link(href: GetUrl, "self", "GET"),
-                        new Link(href: DeleteUrl, "delete_customer", "DELETE")
+                        new Link(href: DeleteUrl, "delete_user", "DELETE")
                     };
                 case "POST":
                     return new List<Link> {
                         new Link(href: GetUrl, "self", "GET"),
-                        new Link(href: DeleteUrl, "delete_customer", "DELETE"),
-                        new Link(href: UpdateUrl, "update_customer",  "PUT")
+                        new Link(href: DeleteUrl, "delete_user", "DELETE"),
+                        new Link(href: UpdateUrl, "update_user",  "PUT")
                      };
                 default:
                     throw new Exception("Invalid requestType");
