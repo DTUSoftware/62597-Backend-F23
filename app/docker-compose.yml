@@ -1,0 +1,38 @@
+version: '3'
+services:
+    shop-backend:
+        container_name: shop-backend
+        hostname: shop-backend
+        restart: unless-stopped
+        build:
+            context: ShopBackend
+            dockerfile: Dockerfile
+        env_file:
+            - backend-variables.env
+        networks:
+            - shop_backend
+            - shop_db
+        depends_on:
+            - "shop-database"
+    shop-database:
+        container_name: shop-database
+        hostname: shop-database
+        image: mariadb
+        restart: unless-stopped
+        security_opt:
+            - seccomp:unconfined
+        env_file:
+            - db-variables.env
+        volumes:
+            - shop-db-data:/var/lib/mysql
+        networks:
+            - shop_db
+        ports:
+            - 127.0.0.1:3306:3306
+volumes:
+    shop-db-data:
+networks:
+    shop_backend:
+        name: shop_backend
+    shop_db:
+        name: shop_db
