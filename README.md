@@ -1,6 +1,17 @@
 # 62597-Backend-F23
 Backend for 62597 Course at DTU
 
+## URLs for our server side API, webshop and dashboards
+To try our REST API, you can use the following URLs:
+
+* https://dtu-api.herogamers.dev/api - This is the URL for our ASP.NET REST API. You can send HTTP requests to this URL to interact with our API endpoints.
+
+To try our webshop and dashboards, use the following URLs:
+
+* https://dtu.herogamers.dev - This is the URL for our frontend webshop, developed as part of our front end course. You can browse the webshop and place orders using this URL.
+* https://dtu-grafana.herogamers.dev - This is the URL for our Grafana dashboard. You can use this dashboard to monitor various metrics related to our system.
+* https://dtu-prometheus.herogamers.dev - This is the URL for our Prometheus dashboard. You can use this dashboard to view detailed metrics about our system.
+
 ## Running the backend locally
 Follow the following steps to start the backend, or just run it locally:
 
