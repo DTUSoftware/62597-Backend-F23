@@ -142,8 +142,8 @@ internal class Program
             options.SaveToken = true;
             options.TokenValidationParameters = new TokenValidationParameters()
             {
-                ValidateIssuer = false, //for dev
-                ValidateAudience = false, //for dev
+                ValidateIssuer = true, //false for dev
+                ValidateAudience = true, //false for dev
                 ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = jwtSettings.GetSection("Issuer").Value,
